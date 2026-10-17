@@ -9,7 +9,6 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         
-        /* 1. FIXED SCROLLING ISSUE - Removed overflow hidden, allowed natural scrolling */
         body { 
             font-family: 'Inter', sans-serif; 
             background-color: #0f172a; 
@@ -31,15 +30,12 @@
         .btn-move:active { transform: scale(0.92); }
         .selected-move { border-color: #10b981 !important; box-shadow: 0 0 20px rgba(16,185,129,0.6); background: rgba(16,185,129,0.25) !important; color: white !important;}
         
-        /* Proper Screen toggling without breaking flex/scroll */
         .screen { display: none; width: 100%; min-height: calc(100vh - 64px); flex-direction: column; padding-bottom: 40px; }
         .active-screen { display: flex; }
 
-        /* Modal Z-index fix for bowler selection */
         .high-z-modal { z-index: 99999; }
     </style>
     
-    <!-- FIREBASE COMPAT SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
@@ -53,6 +49,8 @@
             <h1 class="text-xl font-black uppercase tracking-widest">HC <span class="text-emerald-400">Pro</span></h1>
         </div>
         <div class="flex items-center gap-4">
+            <!-- Puraani tag wapas add kar di -->
+            <img id="user-profile-pic" src="" class="w-8 h-8 rounded-full border border-emerald-500 object-cover hidden sm:block">
             <span id="nav-user" class="text-sm font-bold uppercase text-slate-300">Player</span>
             <button onclick="auth.signOut()" class="text-red-500 hover:text-red-400 text-lg"><i class="fa-solid fa-right-from-bracket"></i></button>
         </div>
@@ -69,13 +67,11 @@
 
     <!-- 2. DASHBOARD SCREEN -->
     <div id="dashboard" class="screen p-4 max-w-5xl mx-auto w-full pt-8">
-        <!-- Join Match/Tourney Box -->
         <div class="flex flex-col sm:flex-row gap-3 bg-black/60 p-4 rounded-2xl border border-white/10 mb-8 shadow-lg">
             <input type="text" id="join-input" placeholder="ENTER ROOM/TOURNEY CODE" class="input-glass flex-1 p-4 rounded-xl font-mono font-bold uppercase text-center sm:text-left text-lg">
             <button onclick="joinAction()" class="bg-emerald-600 hover:bg-emerald-500 py-4 px-10 rounded-xl font-black uppercase tracking-widest text-lg shadow-[0_0_20px_rgba(16,185,129,0.4)]">JOIN</button>
         </div>
 
-        <!-- Create Buttons -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <button onclick="prepSetup('match')" class="glass p-8 rounded-[2rem] text-left hover:border-blue-500 transition border-t-4 border-blue-500/60 group">
                 <i class="fa-solid fa-gamepad text-5xl text-blue-400 mb-4 group-hover:scale-110 transition duration-300"></i>
@@ -89,7 +85,6 @@
             </button>
         </div>
 
-        <!-- Resume Active Games -->
         <div class="glass p-6 rounded-2xl border-t-2 border-yellow-500/50">
             <h3 class="text-yellow-400 font-black uppercase text-sm mb-4 tracking-widest"><i class="fa-solid fa-clock-rotate-left mr-2"></i>Resume Active Games</h3>
             <div id="resume-list" class="space-y-3 text-sm font-bold">
@@ -113,7 +108,7 @@
             <div>
                 <label class="text-[10px] font-black text-yellow-400 uppercase tracking-widest mb-3 block">Enter 11 Players (Top to Bottom)</label>
                 <div id="player-inputs" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <!-- JS will inject 11 inputs here safely -->
+                    <!-- JS will inject 11 inputs here -->
                 </div>
             </div>
             <button onclick="saveSquadAndProceed()" class="w-full bg-blue-600 hover:bg-blue-500 py-5 rounded-xl font-black uppercase text-xl shadow-[0_0_20px_rgba(37,99,235,0.4)] mt-4">Confirm Squad <i class="fa-solid fa-arrow-right ml-2"></i></button>
@@ -168,7 +163,7 @@
             <p class="text-slate-400 font-bold mt-6 uppercase animate-pulse tracking-widest" id="lobby-status"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Waiting for opponent to join...</p>
         </div>
         
-        <!-- Tournament Points Table (Only shows in tourney mode) -->
+        <!-- Tournament Points Table -->
         <div id="tourney-ui" class="hidden w-full glass p-6 rounded-2xl border-t border-purple-500">
             <h3 class="font-black uppercase text-xl text-purple-400 mb-4 tracking-widest"><i class="fa-solid fa-table-list mr-2"></i> Points Table</h3>
             <div class="overflow-x-auto rounded-xl border border-white/10 bg-black/50">
@@ -178,9 +173,7 @@
                             <th class="p-4">Team</th><th class="p-4 text-center">P</th><th class="p-4 text-center text-emerald-400">W</th><th class="p-4 text-center text-red-400">L</th><th class="p-4 text-center text-yellow-400 font-black">PTS</th><th class="p-4 text-right">NRR</th>
                         </tr>
                     </thead>
-                    <tbody id="pt-body">
-                        <!-- Populated by JS -->
-                    </tbody>
+                    <tbody id="pt-body"></tbody>
                 </table>
             </div>
         </div>
@@ -193,7 +186,7 @@
             <h2 class="text-4xl font-black uppercase text-yellow-400 mb-6">The Toss</h2>
             <p id="toss-text" class="text-slate-200 font-bold text-lg mb-10">Host is flipping the coin...</p>
             
-            <div id="toss-btns" class="hidden flex justify-center gap-6">
+            <div id="toss-btns" class="hidden justify-center gap-6">
                 <button onclick="submitToss('bat')" class="bg-blue-600 hover:bg-blue-500 hover:-translate-y-2 p-8 rounded-3xl w-32 h-32 font-black text-2xl text-white shadow-[0_10px_20px_rgba(37,99,235,0.4)] transition-all flex flex-col items-center justify-center gap-2"><i class="fa-solid fa-baseball-bat-ball"></i> BAT</button>
                 <button onclick="submitToss('bowl')" class="bg-red-600 hover:bg-red-500 hover:-translate-y-2 p-8 rounded-3xl w-32 h-32 font-black text-2xl text-white shadow-[0_10px_20px_rgba(220,38,38,0.4)] transition-all flex flex-col items-center justify-center gap-2"><i class="fa-solid fa-baseball"></i> BOWL</button>
             </div>
@@ -201,15 +194,12 @@
         </div>
     </div>
 
-    <!-- 8. PRO MATCH ARENA (Fully Responsive & Scrollable) -->
+    <!-- 8. PRO MATCH ARENA (Fully Responsive) -->
     <div id="arena" class="screen p-2 max-w-5xl mx-auto w-full pt-4">
-        
-        <!-- Top Controls -->
         <div class="flex justify-between items-center mb-3">
             <button onclick="nav('dashboard')" class="bg-black/60 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-300 uppercase hover:bg-slate-800"><i class="fa-solid fa-pause mr-1"></i> Exit / Save</button>
         </div>
 
-        <!-- Master Scoreboard Header -->
         <div class="glass border-t-4 border-emerald-500 rounded-2xl p-4 sm:p-6 mb-4 flex justify-between items-center bg-gradient-to-br from-slate-900/95 to-black/95 shadow-2xl">
             <div class="w-1/3 text-left">
                 <div class="text-[10px] sm:text-xs text-slate-400 font-black uppercase tracking-widest mb-1" id="ui-bat-team">BAT TEAM</div>
@@ -225,26 +215,21 @@
             </div>
         </div>
 
-        <!-- Middle Player Stats Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-            <!-- Left: Batters -->
             <div class="glass p-4 sm:p-5 rounded-2xl border-l-4 border-blue-500 bg-black/70 shadow-lg flex flex-col justify-center">
                 <div class="flex justify-between text-[10px] sm:text-xs uppercase text-slate-500 font-black mb-3 px-1 tracking-widest"><span>Batters</span><span class="flex gap-4 sm:gap-6"><span>R(B)</span><span>SR</span></span></div>
                 
-                <!-- Striker (Active) -->
                 <div class="flex justify-between items-center mb-2 bg-blue-900/40 p-2 sm:p-3 rounded-xl border border-blue-500/40 shadow-inner">
                     <div class="font-black text-white text-sm sm:text-base truncate w-1/2 flex items-center"><i class="fa-solid fa-caret-right text-blue-400 text-lg mr-2 animate-pulse"></i><span id="ui-s-name">Player 1</span></div>
                     <div class="flex gap-4 sm:gap-6 font-mono text-sm sm:text-base"><span class="font-black text-white w-12 sm:w-16 text-right" id="ui-s-score">0 (0)</span><span class="text-blue-200 w-8 sm:w-10 text-right font-bold" id="ui-s-sr">0.0</span></div>
                 </div>
                 
-                <!-- Non-Striker -->
                 <div class="flex justify-between items-center p-2 sm:p-3 rounded-xl">
                     <div class="font-bold text-slate-400 text-sm sm:text-base pl-6 truncate w-1/2" id="ui-ns-name">Player 2</div>
                     <div class="flex gap-4 sm:gap-6 font-mono text-sm sm:text-base"><span class="font-bold text-slate-300 w-12 sm:w-16 text-right" id="ui-ns-score">0 (0)</span><span class="text-slate-500 w-8 sm:w-10 text-right font-bold" id="ui-ns-sr">0.0</span></div>
                 </div>
             </div>
 
-            <!-- Right: Bowler & Over Summary -->
             <div class="glass p-4 sm:p-5 rounded-2xl border-l-4 border-red-500 bg-black/70 shadow-lg flex flex-col justify-between">
                 <div>
                     <div class="flex justify-between text-[10px] sm:text-xs uppercase text-slate-500 font-black mb-3 px-1 tracking-widest"><span>Bowler</span><span class="flex gap-3 sm:gap-4"><span>O</span><span>R</span><span>W</span><span>ECO</span></span></div>
@@ -254,7 +239,6 @@
                     </div>
                 </div>
                 
-                <!-- Over Summary Balls -->
                 <div class="bg-black/60 p-3 rounded-xl border border-white/5 mt-4 shadow-inner">
                     <div class="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-2">This Over</div>
                     <div class="flex gap-2 font-mono font-black overflow-x-auto pb-1" id="ui-summary">
@@ -264,41 +248,38 @@
             </div>
         </div>
 
-        <!-- Warning / Status Message Area -->
         <div id="action-msg" class="w-full text-center py-2 font-black text-yellow-400 uppercase tracking-widest text-xs sm:text-sm animate-pulse">
             Make Your Move
         </div>
 
-        <!-- 0-6 Move Buttons (Always accessible at bottom) -->
         <div class="glass p-3 sm:p-5 rounded-[2rem] border-t-2 border-slate-600 mt-2 bg-slate-900/90 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
             <div class="grid grid-cols-4 md:grid-cols-7 gap-2 sm:gap-3">
-                <button onclick="sendMove(0)" id="btn-0" class="btn-move bg-slate-800 text-slate-400 rounded-xl sm:rounded-2xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:border-slate-400 hover:text-white shadow-lg">0</button>
-                <button onclick="sendMove(1)" id="btn-1" class="btn-move bg-slate-800 text-white rounded-xl sm:rounded-2xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:border-blue-400 hover:bg-slate-700 shadow-lg">1</button>
-                <button onclick="sendMove(2)" id="btn-2" class="btn-move bg-slate-800 text-white rounded-xl sm:rounded-2xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:border-blue-400 hover:bg-slate-700 shadow-lg">2</button>
-                <button onclick="sendMove(3)" id="btn-3" class="btn-move bg-slate-800 text-white rounded-xl sm:rounded-2xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:border-blue-400 hover:bg-slate-700 shadow-lg">3</button>
-                <button onclick="sendMove(4)" id="btn-4" class="btn-move bg-slate-800 text-emerald-400 rounded-xl sm:rounded-2xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:border-emerald-400 hover:bg-slate-700 shadow-lg">4</button>
-                <button onclick="sendMove(5)" id="btn-5" class="btn-move bg-slate-800 text-white rounded-xl sm:rounded-2xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:border-blue-400 hover:bg-slate-700 shadow-lg">5</button>
-                <button onclick="sendMove(6)" id="btn-6" class="btn-move bg-slate-800 text-purple-400 rounded-xl sm:rounded-2xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:border-purple-400 hover:bg-slate-700 shadow-lg col-span-2 md:col-span-1">6</button>
+                <button onclick="sendMove(0)" class="btn-move bg-slate-800 text-slate-400 rounded-xl sm:rounded-2xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:border-slate-400 hover:text-white shadow-lg">0</button>
+                <button onclick="sendMove(1)" class="btn-move bg-slate-800 text-white rounded-xl sm:rounded-2xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:border-blue-400 hover:bg-slate-700 shadow-lg">1</button>
+                <button onclick="sendMove(2)" class="btn-move bg-slate-800 text-white rounded-xl sm:rounded-2xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:border-blue-400 hover:bg-slate-700 shadow-lg">2</button>
+                <button onclick="sendMove(3)" class="btn-move bg-slate-800 text-white rounded-xl sm:rounded-2xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:border-blue-400 hover:bg-slate-700 shadow-lg">3</button>
+                <button onclick="sendMove(4)" class="btn-move bg-slate-800 text-emerald-400 rounded-xl sm:rounded-2xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:border-emerald-400 hover:bg-slate-700 shadow-lg">4</button>
+                <button onclick="sendMove(5)" class="btn-move bg-slate-800 text-white rounded-xl sm:rounded-2xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:border-blue-400 hover:bg-slate-700 shadow-lg">5</button>
+                <button onclick="sendMove(6)" class="btn-move bg-slate-800 text-purple-400 rounded-xl sm:rounded-2xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:border-purple-400 hover:bg-slate-700 shadow-lg col-span-2 md:col-span-1">6</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: BOWLER SELECTION (High Z-Index fixed, 100% visible) -->
+    <!-- MODAL: BOWLER SELECTION -->
     <div id="bowler-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md high-z-modal items-center justify-center p-4 flex-col">
         <div class="glass p-8 rounded-[2rem] w-full max-w-sm border-t-4 border-red-500 text-center shadow-[0_0_50px_rgba(220,38,38,0.3)]">
             <i class="fa-solid fa-baseball text-5xl text-red-500 mb-4"></i>
             <h3 class="text-2xl font-black uppercase text-white mb-2">Select Bowler</h3>
             <p class="text-xs text-red-300 mb-6 font-bold uppercase tracking-widest">Previous bowler cannot bowl again.</p>
             
-            <div id="bowler-list" class="space-y-3 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+            <div id="bowler-list" class="space-y-3 max-h-64 overflow-y-auto pr-2">
                 <!-- Bowlers injected here -->
             </div>
         </div>
     </div>
 
-    <!-- CORE FIREBASE JAVASCRIPT ENGINE -->
+    <!-- FIREBASE AND JAVASCRIPT ENGINE -->
     <script>
-        // 1. Firebase Config
         const fc = { 
             apiKey: "AIzaSyAofevQrPWUKWxWAkBLtXl4f_lH5FjjPZE", 
             authDomain: "hand-cricket-c2d70.firebaseapp.com", 
@@ -309,11 +290,9 @@
         const auth = firebase.auth(); 
         const db = firebase.database();
         
-        // 2. Global State Variables
         let u = null, mRole = null, mId = null, mType = null; 
         let squadData = { name: "Team A", p: [] };
 
-        // Generate 11 Player inputs for Squad Builder securely
         const pInp = document.getElementById('player-inputs');
         for(let i=1; i<=11; i++) {
             pInp.innerHTML += `
@@ -323,35 +302,33 @@
                 </div>`;
         }
 
-        // Navigation Controller
         const screens = ['login', 'dashboard', 'match-config', 'tourney-config', 'lobby', 'toss', 'arena', 'squad-builder'];
         function nav(id) { 
             screens.forEach(s => {
                 let el = document.getElementById(s);
                 if(el) { el.classList.remove('active-screen'); }
             });
-            document.getElementById(id).classList.add('active-screen'); 
+            let target = document.getElementById(id);
+            if(target) target.classList.add('active-screen'); 
         }
         
-        // Auth Listeners
         function login() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
+        
         auth.onAuthStateChanged(user => { 
             if(user) { 
                 u = user; 
-                document.getElementById('nav-user').innerText = u.displayName.split(" ")[0]; 
-                document.getElementById('user-profile-pic').src = u.photoURL;
+                let navUser = document.getElementById('nav-user');
+                if(navUser) navUser.innerText = u.displayName.split(" ")[0]; 
+                
+                let profPic = document.getElementById('user-profile-pic');
+                if(profPic) profPic.src = u.photoURL;
+                
                 nav('dashboard'); 
                 fetchResumes(); 
             } else { nav('login'); } 
         });
 
-        // ==========================================
-        // SQUAD & JOINING FLOW
-        // ==========================================
-        function prepSetup(type) { 
-            mType = type; 
-            nav('squad-builder'); 
-        }
+        function prepSetup(type) { mType = type; nav('squad-builder'); }
 
         function saveSquadAndProceed() {
             squadData.name = document.getElementById('team-name').value || "Custom Team";
@@ -366,9 +343,6 @@
             else { nav('tourney-config'); }
         }
 
-        // ==========================================
-        // HOSTING & JOINING ROOMS
-        // ==========================================
         function hostMatch() {
             mId = Math.random().toString(36).substring(2,7).toUpperCase(); 
             mRole = 'p1';
@@ -384,10 +358,7 @@
                 state: { 
                     inn: 1, bat: null, scr: 0, wic: 0, bls: 0, trg: 0, 
                     sIdx: 0, nsIdx: 1, bwIdx: 10, prevBw: null, needBowler: false,
-                    st: { 
-                        p1: Array(11).fill().map(()=>({...initSt})), 
-                        p2: Array(11).fill().map(()=>({...initSt})) 
-                    },
+                    st: { p1: Array(11).fill().map(()=>({...initSt})), p2: Array(11).fill().map(()=>({...initSt})) },
                     sum: [], mov: { p1: null, p2: null }
                 }
             }).then(() => {
@@ -398,7 +369,6 @@
             });
         }
 
-        // (Tournament setup preserved for UI, backend structure kept minimal for match testing)
         function hostTourney() {
             mId = Math.random().toString(36).substring(2,7).toUpperCase();
             db.ref('tournaments/'+mId).set({
@@ -452,47 +422,41 @@
             }); 
         }
 
-        // ==========================================
-        // REALTIME LISTENER & LOGIC
-        // ==========================================
         function listenMatch() {
             db.ref('matches/'+mId).on('value', snap => {
                 let m = snap.val(); 
                 if(!m) return;
                 
-                // State 1: TOSS
                 if(m.status === 'toss') {
                     nav('toss');
                     let tossWin = m.tossWin || (Math.random() < 0.5 ? 'p1' : 'p2');
                     if(mRole === 'p1' && !m.tossWin) db.ref('matches/'+mId).update({tossWin: tossWin});
                     
+                    let tossBtns = document.getElementById('toss-btns');
                     if(mRole === tossWin) {
                         document.getElementById('toss-text').innerText = "You won the toss! Choose Bat or Bowl.";
-                        document.getElementById('toss-btns').classList.remove('hidden'); document.getElementById('toss-btns').classList.add('flex');
+                        if(tossBtns) { tossBtns.classList.remove('hidden'); tossBtns.classList.add('flex'); }
                         document.getElementById('toss-wait').classList.add('hidden');
                     } else {
                         document.getElementById('toss-text').innerText = "Opponent won the toss and is deciding...";
-                        document.getElementById('toss-btns').classList.add('hidden'); document.getElementById('toss-btns').classList.remove('flex');
+                        if(tossBtns) { tossBtns.classList.add('hidden'); tossBtns.classList.remove('flex'); }
                         document.getElementById('toss-wait').classList.remove('hidden');
                     }
                 }
                 
-                // State 2: PLAYING
                 if(m.status === 'playing') {
                     nav('arena');
                     
-                    // HOST Calculates Ball if both players moved
                     if(mRole === 'p1' && m.state.mov.p1 !== null && m.state.mov.p2 !== null) {
                         calcBall(m);
                     }
                     
-                    // BUG FIX: Bowler Selection Logic
                     if(m.state.needBowler && m.state.mov.p1 === null && m.state.mov.p2 === null) {
                         if(mRole !== m.state.bat) {
-                            showBowlerModal(m); // Bowling team selects
+                            showBowlerModal(m); 
                         } else {
                             document.getElementById('bowler-modal').classList.add('hidden');
-                            document.getElementById('action-msg').innerText = "Waiting for fielding team to select next bowler...";
+                            document.getElementById('action-msg').innerText = "Fielding team is selecting bowler...";
                             disableMoves(true);
                         }
                     } else {
@@ -511,9 +475,6 @@
             db.ref('matches/'+mId+'/status').set('playing');
         }
 
-        // ==========================================
-        // CORE MATCH ENGINE & 0-6 SYSTEM
-        // ==========================================
         function disableMoves(disable) {
             document.querySelectorAll('.btn-move').forEach(b => {
                 b.disabled = disable;
@@ -537,7 +498,6 @@
             
             let res = ''; let out = false; let run = 0;
 
-            // BUG FIX LOGIC: 0-0 DOT BALL 
             if(btM === 0 && bwM === 0) { res = '0'; }
             else if(btM === bwM) { out = true; res = 'W'; }
             else { run = btM; res = run; }
@@ -545,25 +505,22 @@
             s.bls++;
             if(out) {
                 s.wic++; s.st[bowlR][s.bwIdx].w++;
-                s.sIdx = Math.max(s.sIdx, s.nsIdx) + 1; // New batter automatically
+                s.sIdx = Math.max(s.sIdx, s.nsIdx) + 1;
             } else {
                 s.scr += run; s.st[s.bat][s.sIdx].r += run; s.st[bowlR][s.bwIdx].br += run;
-                // 1, 3, 5 Strike Rotation
                 if(run % 2 !== 0) { let t = s.sIdx; s.sIdx = s.nsIdx; s.nsIdx = t; } 
             }
             s.st[s.bat][s.sIdx].b++; s.st[bowlR][s.bwIdx].b++;
             
             if(!s.sum) s.sum = []; s.sum.push(res);
 
-            // OVER END LOGIC (Strike rotate & force bowler change)
             if(s.bls % 6 === 0) {
                 s.sum = []; 
-                let t = s.sIdx; s.sIdx = s.nsIdx; s.nsIdx = t; // Rotate strike on over end
+                let t = s.sIdx; s.sIdx = s.nsIdx; s.nsIdx = t; 
                 s.prevBw = s.bwIdx; 
-                s.needBowler = true; // Trigger bowler modal
+                s.needBowler = true; 
             }
 
-            // INNINGS CHANGE
             if(s.wic >= m.set.wk || s.bls >= m.set.ov * 6 || (s.inn === 2 && s.scr >= s.trg)) {
                 if(s.inn === 1) {
                     s.inn = 2; s.trg = s.scr + 1; s.scr = 0; s.wic = 0; s.bls = 0; s.sum = [];
@@ -578,14 +535,11 @@
             db.ref(`matches/${mId}/state`).set(s);
         }
 
-        // ==========================================
-        // UI UPDATES & BOWLER SELECTOR
-        // ==========================================
         function showBowlerModal(m) {
             let bwTeam = m.state.bat === 'p1' ? m.p2 : m.p1;
             let html = '';
             bwTeam.team.p.forEach((pName, i) => {
-                if(i < 11) { // Ensure max 11 players
+                if(i < 11) { 
                     let isPrev = (i === m.state.prevBw);
                     let disClass = isPrev ? 'opacity-30 cursor-not-allowed bg-slate-900 border-red-500/30' : 'bg-slate-800 hover:border-emerald-500 border-slate-600 hover:-translate-y-1';
                     let disBtn = isPrev ? 'disabled' : '';
@@ -595,8 +549,10 @@
                 }
             });
             document.getElementById('bowler-list').innerHTML = html;
-            document.getElementById('bowler-modal').classList.remove('hidden');
-            document.getElementById('bowler-modal').classList.add('flex');
+            
+            let modal = document.getElementById('bowler-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
         }
         
         window.setBowler = function(idx) {
@@ -609,7 +565,6 @@
             let tBat = bRole === 'p1' ? m.p1 : m.p2; 
             let tBw = bRole === 'p2' ? m.p1 : m.p2;
             
-            // Teams & Score
             document.getElementById('ui-bat-team').innerText = tBat.team.name + " (BAT)"; 
             document.getElementById('ui-bowl-team').innerText = tBw.team.name + " (BOWL)";
             document.getElementById('ui-inn').innerText = s.inn;
@@ -618,7 +573,6 @@
             document.getElementById('ui-max-overs').innerText = `(/${m.set.ov})`;
             document.getElementById('ui-target').innerText = s.trg ? s.trg : '--';
 
-            // Batters Stats
             let stS = s.st[bRole][s.sIdx] || {r:0, b:0}; 
             let stNS = s.st[bRole][s.nsIdx] || {r:0, b:0};
             
@@ -630,25 +584,22 @@
             document.getElementById('ui-s-sr').innerText = stS.b > 0 ? ((stS.r/stS.b)*100).toFixed(1) : "0.0";
             document.getElementById('ui-ns-sr').innerText = stNS.b > 0 ? ((stNS.r/stNS.b)*100).toFixed(1) : "0.0";
 
-            // Bowler Stats
             let bwS = s.st[bwRole][s.bwIdx] || {b:0, br:0, w:0};
             document.getElementById('ui-b-name').innerHTML = `<i class="fa-solid fa-baseball text-red-400 mr-2"></i>${tBw.team.p[s.bwIdx]||'Bowler'}`;
             let eco = bwS.b > 0 ? ((bwS.br/bwS.b)*6).toFixed(1) : "0.0";
             document.getElementById('ui-b-stats').innerHTML = `<span>${Math.floor(bwS.b/6)}.${bwS.b%6}</span><span>${bwS.br}</span><span class="text-red-400">${bwS.w}</span><span class="text-slate-400">${eco}</span>`;
 
-            // Over Summary Box
             let sumH = '';
             if(s.sum && s.sum.length > 0) {
                 s.sum.forEach(b => { 
                     let c = b==='W' ? 'bg-red-600' : (b===4 || b===6 ? 'bg-emerald-600 text-black' : 'bg-slate-700 text-white'); 
-                    sumH += `<div class="w-8 h-8 rounded flex justify-center items-center font-black text-sm shadow-md ${c}">${b}</div>`; 
+                    sumH += `<div class="w-8 h-8 rounded flex justify-center items-center font-black text-sm shadow-md flex-shrink-0 ${c}">${b}</div>`; 
                 });
             } else {
                 sumH = '<span class="text-slate-500 text-xs italic mt-1">Waiting for next ball...</span>';
             }
             document.getElementById('ui-summary').innerHTML = sumH;
 
-            // Reset Move Buttons state when both have played
             if(s.mov[mRole] === null && !s.needBowler) {
                 document.querySelectorAll('.btn-move').forEach(b => b.classList.remove('selected-move'));
                 
