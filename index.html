@@ -28,6 +28,7 @@
             background: rgba(255, 255, 255, 0.9);
             color: #000;
             transition: all 0.3s ease;
+            cursor: pointer;
         }
         .google-btn:hover {
             background: #fff;
@@ -35,6 +36,10 @@
             box-shadow: 0 10px 25px rgba(255,255,255,0.2);
         }
     </style>
+
+    <!-- FIREBASE BULLETPROOF SCRIPTS (No type="module" needed) -->
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
 </head>
 <body>
 
@@ -48,6 +53,7 @@
             <p class="text-slate-400 text-sm">Sign in to sync your career stats and trophies.</p>
         </div>
 
+        <!-- Yahan direct function call hai -->
         <button onclick="loginWithGoogle()" class="google-btn w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3">
             <svg class="w-6 h-6" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -96,11 +102,8 @@
         </button>
     </div>
 
-    <!-- FIREBASE AUTHENTICATION LOGIC -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
-        import { getAuth, signInWithRedirect, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
-        
+    <script>
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyAofevQrPWUKWxWAkBLtXl4f_lH5fjjPZE",
             authDomain: "hand-cricket-c2d70.firebaseapp.com",
@@ -111,19 +114,24 @@
             appId: "1:113004537618:web:9f23689c5c4c4a62eaf5cb"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
+        // Initialize Firebase using Compat SDK
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const provider = new firebase.auth.GoogleAuthProvider();
 
-        window.loginWithGoogle = function() {
-            signInWithRedirect(auth, provider);
+        function loginWithGoogle() {
+            alert("Google page khul raha hai... OK press karo.");
+            auth.signInWithRedirect(provider).catch((error) => {
+                alert("Error aa gaya bhai: " + error.message);
+            });
         }
 
-        window.logout = function() {
-            signOut(auth);
+        function logout() {
+            auth.signOut();
         }
 
-        onAuthStateChanged(auth, (user) => {
+        // Check Login Status
+        auth.onAuthStateChanged((user) => {
             if (user) {
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('dashboard-section').classList.remove('hidden');
