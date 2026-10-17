@@ -1,957 +1,470 @@
-
-
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Hand Cricket Pro — Tournament Edition</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
-
-<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
-
-<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
-
-<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
-
-<style>
-
-*{box-sizing:border-box}
-
-body{
-
- margin:0;background:#07111f;color:#f1f5f9;
-
- font-family:Arial,sans-serif;min-height:100vh
-
-}
-
-.card{
-
- background:#101d30;border:1px solid #263750;
-
- border-radius:18px;padding:20px;margin-bottom:16px
-
-}
-
-input,select{
-
- width:100%;padding:13px;background:#07111f;color:white;
-
- border:1px solid #34445d;border-radius:10px;margin-top:6px
-
-}
-
-label{display:block;color:#9fb1ca;font-size:12px;font-weight:bold;margin-top:14px}
-
-button{
-
- cursor:pointer;border:0;border-radius:10px;padding:13px;
-
- font-weight:bold;color:white;background:#087f5b
-
-}
-
-button:disabled{opacity:.4;cursor:not-allowed}
-
-.primary{background:#087f5b}
-
-.purple{background:#7138c8}
-
-.blue{background:#2563eb}
-
-.dark{background:#263750}
-
-.danger{background:#a92740}
-
-.screen{display:none;padding:18px;max-width:1000px;margin:auto}
-
-.screen.active{display:block}
-
-.muted{color:#94a3b8}
-
-.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-
-.table-wrap{overflow-x:auto}
-
-table{width:100%;border-collapse:collapse;white-space:nowrap}
-
-th,td{padding:12px;text-align:center;border-bottom:1px solid #29384e}
-
-th{background:#192940;color:#9fc7ff;font-size:12px}
-
-td:first-child,th:first-child{text-align:left}
-
-.hidden{display:none!important}
-
-.player-row{display:flex;align-items:center;gap:8px}
-
-.player-row span{width:24px;color:#94a3b8}
-
-header{
-
- position:sticky;top:0;background:#050b14;z-index:10;
-
- padding:15px;display:flex;justify-content:space-between;
-
- align-items:center;border-bottom:1px solid #263750
-
-}
-
-.score{font-size:38px;font-weight:900}
-
-.ball{display:inline-flex;align-items:center;justify-content:center;
-
- width:34px;height:34px;background:#29384e;border-radius:50%;
-
- margin:3px;font-weight:bold}
-
-.ball.wicket{background:#be123c}
-
-.ball.boundary{background:#059669;color:white}
-
-@media(max-width:550px){
-
- .grid2{grid-template-columns:1fr}
-
- .card{padding:15px}
-
- .score{font-size:30px}
-
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hand Cricket Pro - Ultimate Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #0f172a; color: #f8fafc; margin: 0; min-height: 100vh; overflow-x: hidden; 
+            background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.95)), url('https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=2000'); 
+            background-size: cover; background-position: center; background-attachment: fixed;
+        }
+        
+        .glass { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .input-glass { background: rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.2); color: white; outline: none; transition: 0.3s; }
+        .input-glass:focus { border-color: #3b82f6; box-shadow: 0 0 15px rgba(59,130,246,0.5); }
+        
+        .screen { display: none; width: 100%; min-height: calc(100vh - 64px); flex-direction: column; padding-bottom: 2rem; overflow-y: auto;}
+        .active-screen { display: flex; }
+        
+        .btn-move { transition: transform 0.1s; } 
+        .btn-move:active { transform: scale(0.9); }
+        .selected-move { border-color: #10b981 !important; box-shadow: 0 0 20px rgba(16,185,129,0.5); background: rgba(16,185,129,0.3) !important; color: white !important;}
+        
+        #bowler-modal { z-index: 99999; }
+    </style>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
 </head>
-
 <body>
 
-<header>
-
- <strong>🏏 HC <span style="color:#34d399">PRO</span></strong>
-
- <span id="user-label">Guest</span>
-
- <button class="danger" onclick="logout()">Logout</button>
-
-</header>
-
-<!-- LOGIN -->
-
-<section id="login-screen" class="screen active">
-
- <div class="card" style="margin-top:35px;text-align:center;padding:35px 20px">
-
-  <div style="font-size:55px">🏏</div>
-
-  <h1 style="font-size:32px;font-weight:900">HAND CRICKET PRO</h1>
-
-  <p class="muted">Create leagues. Play matches. Rule the table.</p>
-
-  <button class="blue" onclick="login()">CONTINUE WITH GOOGLE</button>
-
-  <button class="dark" onclick="guestLogin()" style="margin-left:6px">DEMO MODE</button>
-
-  <p class="muted" style="font-size:12px;margin-top:15px">
-
-   Multiplayer and permanent cloud saves require Firebase setup.
-
-  </p>
-
- </div>
-
-</section>
-
-<!-- DASHBOARD -->
-
-<section id="dashboard-screen" class="screen">
-
- <h1 style="font-size:28px;font-weight:900">DASHBOARD</h1>
-
- <p class="muted">Your cricket control room.</p>
-
- <div class="card">
-
-  <h2>Join Tournament / Match</h2>
-
-  <label>Enter code</label>
-
-  <input id="join-code" placeholder="TOURNAMENT CODE">
-
-  <button style="width:100%;margin-top:12px" onclick="joinTournament()">JOIN TOURNAMENT</button>
-
- </div>
-
- <div class="grid2">
-
-  <button class="blue" onclick="show('squad-screen');setupMode='tournament'">
-
-   👥 CREATE TOURNAMENT
-
-  </button>
-
-  <button class="dark" onclick="show('squad-screen');setupMode='match'">
-
-   🏏 CREATE MATCH
-
-  </button>
-
- </div>
-
- <div class="card" style="margin-top:18px">
-
-  <h2>MY CURRENT TOURNAMENTS</h2>
-
-  <div id="my-tournaments" class="muted">No tournaments loaded.</div>
-
- </div>
-
- <div class="card">
-
-  <h2>CURRENT MATCHES</h2>
-
-  <div id="my-matches" class="muted">No active matches.</div>
-
- </div>
-
-</section>
-
-<!-- TEAM / SQUAD -->
-
-<section id="squad-screen" class="screen">
-
- <button class="dark" onclick="show('dashboard-screen')">← BACK</button>
-
- <div class="card" style="margin-top:15px">
-
-  <h2>YOUR TEAM</h2>
-
-  <label>Team name</label>
-
-  <input id="team-name" value="India">
-
-  <label>Playing XI</label>
-
-  <div id="player-inputs"></div>
-
-  <button style="width:100%;margin-top:18px" onclick="saveSquad()">CONTINUE →</button>
-
- </div>
-
-</section>
-
-<!-- TOURNAMENT CONFIG -->
-
-<section id="config-screen" class="screen">
-
- <button class="dark" onclick="show('squad-screen')">← BACK</button>
-
- <div class="card" style="margin-top:15px">
-
-  <h2>🏆 TOURNAMENT SETUP</h2>
-
-  <label>Format</label>
-
-  <select id="format">
-
-   <option value="T20">T20</option>
-
-   <option value="ODI">ODI</option>
-
-   <option value="TEST">TEST</option>
-
-  </select>
-
-  <label>Overs per innings</label>
-
-  <select id="overs">
-
-   <option value="2">2 Overs</option>
-
-   <option value="5">5 Overs</option>
-
-   <option value="10">10 Overs</option>
-
-   <option value="20">20 Overs</option>
-
-   <option value="50">50 Overs</option>
-
-  </select>
-
-  <label>Wickets per innings</label>
-
-  <select id="wickets">
-
-   <option value="3">3 Wickets</option>
-
-   <option value="5">5 Wickets</option>
-
-   <option value="10">10 Wickets</option>
-
-  </select>
-
-  <label>Total teams</label>
-
-  <select id="team-count">
-
-   <option>3</option><option>4</option><option>5</option>
-
-   <option>6</option><option>7</option><option>8</option>
-
-   <option>9</option><option>10</option>
-
-  </select>
-
-  <label>Matches against each opponent</label>
-
-  <select id="meetings">
-
-   <option value="1">1 Match</option>
-
-   <option value="2">2 Matches</option>
-
-   <option value="3">3 Matches</option>
-
-  </select>
-
-  <p class="muted" style="font-size:12px;margin-top:15px">
-
-   Every team will play the same number of league matches.
-
-  </p>
-
-  <button style="width:100%;margin-top:12px" onclick="createTournament()">
-
-   CREATE TOURNAMENT
-
-  </button>
-
- </div>
-
-</section>
-
-<!-- TOURNAMENT LOBBY -->
-
-<section id="tournament-screen" class="screen">
-
- <button class="dark" onclick="show('dashboard-screen')">← MAIN MENU</button>
-
- <div class="card" style="margin-top:15px;text-align:center">
-
-  <p class="muted">TOURNAMENT CODE</p>
-
-  <h1 id="t-code" style="font-size:38px;letter-spacing:5px">-----</h1>
-
-  <button class="blue" onclick="copyCode()">COPY CODE</button>
-
-  <p id="t-status" style="color:#fbbf24;margin-top:15px">Waiting for teams...</p>
-
-  <p id="t-queue" class="muted"></p>
-
-  <button id="start-tournament" class="purple hidden" onclick="startTournament()">
-
-   START TOURNAMENT
-
-  </button>
-
- </div>
-
- <div class="card">
-
-  <h2>REGISTERED TEAMS</h2>
-
-  <div id="registered-teams"></div>
-
- </div>
-
- <div class="card">
-
-  <h2>POINTS TABLE</h2>
-
-  <div class="table-wrap">
-
-   <table>
-
-    <thead><tr>
-
-     <th>Team</th><th>P</th><th>W</th><th>L</th>
-
-     <th>T</th><th>PTS</th><th>NRR</th>
-
-    </tr></thead>
-
-    <tbody id="points-body"></tbody>
-
-   </table>
-
-  </div>
-
- </div>
-
- <div class="card">
-
-  <h2>FIXTURES & RESULTS</h2>
-
-  <div id="fixtures"></div>
-
- </div>
-
-</section>
-
-<!-- MATCH ARENA -->
-
-<section id="match-screen" class="screen">
-
- <button class="dark" onclick="backToTournament()">← TOURNAMENT</button>
-
- <div class="card" style="margin-top:15px">
-
-  <div class="muted" id="match-heading">LEAGUE MATCH</div>
-
-  <div style="text-align:center;padding:18px">
-
-   <div id="bat-team">BATTING</div>
-
-   <div class="score" id="score">0/0</div>
-
-   <div id="over-count">Overs 0.0</div>
-
-   <div class="muted" id="target-label"></div>
-
-  </div>
-
- </div>
-
- <div class="grid2">
-
-  <div class="card">
-
-   <h3>BATTERS</h3>
-
-   <div id="batters"></div>
-
-  </div>
-
-  <div class="card">
-
-   <h3>BOWLER</h3>
-
-   <div id="bowler-info"></div>
-
-   <h3 style="margin-top:18px">THIS OVER</h3>
-
-   <div id="over-summary"></div>
-
-  </div>
-
- </div>
-
- <div class="card">
-
-  <h3>SELECT RUNS</h3>
-
-  <div class="grid2" id="run-buttons">
-
-   <button class="dark" onclick="playBall(0)">0</button>
-
-   <button class="dark" onclick="playBall(1)">1</button>
-
-   <button class="dark" onclick="playBall(2)">2</button>
-
-   <button class="dark" onclick="playBall(3)">3</button>
-
-   <button class="primary" onclick="playBall(4)">4</button>
-
-   <button class="dark" onclick="playBall(5)">5</button>
-
-   <button class="purple" onclick="playBall(6)">6</button>
-
-  </div>
-
-  <div id="match-message" style="margin-top:15px;color:#fbbf24"></div>
-
- </div>
-
- <div class="card">
-
-  <h3>SELECT NEXT BOWLER</h3>
-
-  <select id="bowler-select"></select>
-
-  <button style="width:100%;margin-top:10px" onclick="changeBowler()">CONFIRM BOWLER</button>
-
- </div>
-
-</section>
-
-<script>
-
-/*
-
-  CONFIGURATION:
-
-  Add your Firebase project's config below.
-
-  Never use public, unrestricted database rules in production.
-
-*/
-
-const firebaseConfig = {
-
- apiKey: "YOUR_FIREBASE_API_KEY",
-
- authDomain: "YOUR_PROJECT.firebaseapp.com",
-
- databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-
- projectId: "YOUR_PROJECT"
-
-};
-
-let app=null, auth=null, db=null, user=null;
-
-try {
-
- if(firebaseConfig.apiKey !== "YOUR_FIREBASE_API_KEY"){
-
-  app=firebase.initializeApp(firebaseConfig);
-
-  auth=firebase.auth();
-
-  db=firebase.database();
-
-  auth.onAuthStateChanged(u=>{
-
-   if(u){user=u;updateUser();show('dashboard-screen');loadMyTournaments();}
-
-   else {user=null;show('login-screen');}
-
-  });
-
- }
-
-} catch(e){console.error(e)}
-
-let setupMode='tournament';
-
-let myTeam=null;
-
-let currentTournament=null;
-
-let currentMatch=null;
-
-let localTournaments={};
-
-let localMatches={};
-
-let isDemo=false;
-
-const $=id=>document.getElementById(id);
-
-const uid=()=>user?.uid || 'guest-'+sessionId;
-
-const sessionId=Math.random().toString(36).slice(2,10).toUpperCase();
-
-function show(id){
-
- document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
-
- $(id).classList.add('active');
-
-}
-
-function updateUser(){
-
- $('user-label').textContent=user?.displayName?.split(' ')[0] || 'Guest';
-
-}
-
-function login(){
-
- if(!auth){alert('Firebase config add kar bhai, ya Demo Mode use kar.');return;}
-
- auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>alert(e.message));
-
-}
-
-function logout(){
-
- if(auth)auth.signOut();
-
- user=null;isDemo=false;show('login-screen');
-
-}
-
-function guestLogin(){
-
- isDemo=true;user={uid:uid(),displayName:'Demo Player'};
-
- updateUser();show('dashboard-screen');
-
-}
-
-for(let i=1;i<=11;i++){
-
- const row=document.createElement('div');
-
- row.className='player-row';
-
- row.innerHTML='<span>'+i+'</span><input id="player-'+i+'" placeholder="Player '+i+'">';
-
- $('player-inputs').appendChild(row);
-
-}
-
-function saveSquad(){
-
- const name=$('team-name').value.trim();
-
- if(!name){alert('Team name enter kar.');return;}
-
- const players=[];
-
- for(let i=1;i<=11;i++)
-
-  players.push($('player-'+i).value.trim()||'Player '+i);
-
- myTeam={name,players,owner:uid()};
-
- if(setupMode==='tournament')show('config-screen');
-
- else alert('Standalone match creation ko next integration step mein connect karna hai.');
-
-}
-
-function readTournaments(){
-
- return db ? db.ref('tournaments').once('value').then(s=>s.val()||{}) :
-
- Promise.resolve(localTournaments);
-
-}
-
-function saveTournament(t){
-
- if(db)return db.ref('tournaments/'+t.code).set(t);
-
- localTournaments[t.code]=t;
-
- return Promise.resolve();
-
-}
-
-function watchTournament(code){
-
- currentTournament=code;
-
- if(db){
-
-  db.ref('tournaments/'+code).off();
-
-  db.ref('tournaments/'+code).on('value',s=>{
-
-   const t=s.val();if(t){localTournaments[code]=t;renderTournament(t);}
-
-  });
-
- }else{
-
-  renderTournament(localTournaments[code]);
-
- }
-
-}
-
-function createTournament(){
-
- if(!myTeam){alert('Pehle team setup kar.');return;}
-
- const count=+$('team-count').value;
-
- const meetings=+$('meetings').value;
-
- const code=Math.random().toString(36).slice(2,7).toUpperCase();
-
- const t={
-
-  code,host:uid(),status:'waiting',
-
-  settings:{format:$('format').value,overs:+$('overs').value,
-
-  wickets:+$('wickets').value,teamCount:count,meetings},
-
-  teams:{},fixtures:[],createdAt:Date.now()
-
- };
-
- t.teams[uid()]={...myTeam,played:0,wins:0,losses:0,ties:0,points:0,
-
-  runsFor:0,ballsFor:0,runsAgainst:0,ballsAgainst:0,done:[]};
-
- saveTournament(t).then(()=>{
-
-  currentTournament=code;watchTournament(code);
-
-  show('tournament-screen');
-
- });
-
-}
-
-function joinTournament(){
-
- const code=$('join-code').value.trim().toUpperCase();
-
- if(!code){alert('Tournament code enter kar.');return;}
-
- readTournaments().then(all=>{
-
-  const t=all[code];
-
-  if(!t){alert('Tournament nahi mila.');return;}
-
-  if(t.status!=='waiting' && !t.teams?.[uid()]){
-
-   alert('Tournament already started.');return;
-
-  }
-
-  if(!t.teams?.[uid()]){
-
-   if(Object.keys(t.teams||{}).length>=t.settings.teamCount){
-
-    alert('Tournament full hai.');return;
-
-   }
-
-   if(!myTeam){setupMode='join';show('squad-screen');return;}
-
-   t.teams[uid()]={...myTeam,played:0,wins:0,losses:0,ties:0,
-
-    points:0,runsFor:0,ballsFor:0,runsAgainst:0,ballsAgainst:0,done:[]};
-
-   saveTournament(t);
-
-  }
-
-  currentTournament=code;watchTournament(code);show('tournament-screen');
-
- });
-
-}
-
-function renderTournament(t){
-
- if(!t)return;
-
- $('t-code').textContent=t.code;
-
- const teams=Object.values(t.teams||{});
-
- $('registered-teams').innerHTML=teams.map(x=>
-
-  '<div class="card">'+escapeHtml(x.name)+' '+(x.owner===uid()?'(YOU)':'')+'</div>'
-
- ).join('');
-
- const ready=teams.length===t.settings.teamCount;
-
- $('t-status').textContent=t.status==='waiting'?
-
-  (ready?'All teams joined — ready to start':'Waiting for teams to join'):
-
-  t.status.toUpperCase();
-
- $('t-queue').textContent=teams.length+' / '+t.settings.teamCount+' teams joined';
-
- $('start-tournament').classList.toggle('hidden',!(t.host===uid()&&ready&&t.status==='waiting'));
-
- renderPoints(t);
-
- renderFixtures(t);
-
-}
-
-function escapeHtml(s){
-
- return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-
-}
-
-function renderPoints(t){
-
- const rows=Object.values(t.teams||{}).sort((a,b)=>
-
-  b.points-a.points || calculateNRR(b)-calculateNRR(a)
-
- );
-
- $('points-body').innerHTML=rows.map(x=>
-
-  '<tr><td>'+escapeHtml(x.name)+'</td><td>'+x.played+
-
-  '</td><td>'+x.wins+'</td><td>'+x.losses+'</td><td>'+x.ties+
-
-  '</td><td><b>'+x.points+'</b></td><td>'+calculateNRR(x).toFixed(3)+'</td></tr>'
-
- ).join('');
-
-}
-
-function calculateNRR(t){
-
- const bf=t.ballsFor||0,ba=t.ballsAgainst||0;
-
- const rf=t.runsFor||0,ra=t.runsAgainst||0;
-
- return (bf?rf/(bf/6):0)-(ba?ra/(ba/6):0);
-
-}
-
-function generateFixtures(t){
-
- const teams=Object.entries(t.teams);
-
- const fixtures=[];
-
- for(let round=0;round<t.settings.meetings;round++){
-
-  for(let i=0;i<teams.length;i++){
-
-   for(let j=i+1;j<teams.length;j++){
-
-    fixtures.push({
-
-     id:'M'+(fixtures.length+1),
-
-     a:teams[i][0],b:teams[j][0],
-
-     status:'scheduled',result:null
-
-    });
-
-   }
-
-  }
-
- }
-
- return fixtures;
-
-}
-
-function startTournament(){
-
- readTournaments().then(all=>{
-
-  const t=all[currentTournament];
-
-  if(!t||t.host!==uid())return;
-
-  if(Object.keys(t.teams).length!==t.settings.teamCount){
-
-   alert('Sab teams join hone do.');return;
-
-  }
-
-  t.fixtures=generateFixtures(t);
-
-  t.status='playing';
-
-  saveTournament(t);
-
- });
-
-}
-
-function renderFixtures(t){
-
- $('fixtures').innerHTML=(t.fixtures||[]).map(f=>{
-
-  const a=t.teams[f.a]?.name||'Team A';
-
-  const b=t.teams[f.b]?.name||'Team B';
-
-  const label=f.result?escapeHtml(f.result):f.status.toUpperCase();
-
-  const canPlay=t.status==='playing'&&f.status!=='finished';
-
-  return '<div class="card"><b>'+escapeHtml(a)+' vs '+escapeHtml(b)+
-
-   '</b><p class="muted">'+label+'</p>'+
-
-   (canPlay?'<button onclick="openMatch(\''+f.id+'\')">OPEN MATCH</button>':'')+
-
-   '</div>';
-
- }).join('')||'<p class="muted">Fixtures tournament start hone ke baad aayenge.</p>';
-
-}
-
-function copyCode(){
-
- const code=$('t-code').textContent;
-
- if(navigator.clipboard)navigator.clipboard.writeText(code).then(()=>alert('Code copied!'));
-
- else alert('Code: '+code);
-
-}
-
-function loadMyTournaments(){
-
- readTournaments().then(all=>{
-
-  const mine=Object.values(all).filter(t=>t.teams?.[uid()]);
-
-  $('my-tournaments').innerHTML=mine.map(t=>
-
-   '<button class="dark" style="width:100%;margin:5px 0" onclick="currentTournament=\''+
-
-   t.code+'\';watchTournament(\''+t.code+'\');show(\'tournament-screen\')">'+
-
-   escapeHtml(t.code)+' — '+escapeHtml(t.status)+'</button>'
-
-  ).join('')||'No tournaments yet.';
-
- });
-
-}
-
-function backToTournament(){
-
- if(currentTournament){watchTournament(currentTournament);show('tournament-screen');}
-
- else show('dashboard-screen');
-
-}
-
-function openMatch(fixtureId){
-
- alert('Match engine integration next part mein complete karna hai. Fixture: '+fixtureId);
-
-}
-
-function playBall(runs){
-
- alert('Live ball engine next part mein connect karna hai. Selected runs: '+runs);
-
-}
-
-function changeBowler(){
-
- alert('Bowler selection engine next part mein connect karna hai.');
-
-}
-
-</script>
-
+    <!-- NAV -->
+    <header class="w-full h-16 px-4 flex justify-between items-center bg-black/80 border-b border-white/10 z-50 sticky top-0 backdrop-blur-md">
+        <div class="flex items-center gap-2 cursor-pointer" onclick="nav('dashboard')">
+            <i class="fa-solid fa-bolt text-emerald-400 text-2xl"></i><h1 class="text-xl font-black uppercase tracking-widest">HC <span class="text-emerald-400">Pro</span></h1>
+        </div>
+        <div class="flex items-center gap-3">
+            <img id="user-profile-pic" src="https://via.placeholder.com/150" class="w-8 h-8 rounded-full border border-emerald-500 object-cover" onerror="this.style.display='none'">
+            <span id="nav-user" class="text-sm font-bold uppercase text-slate-300">Player</span>
+            <button onclick="auth.signOut()" class="text-red-500 hover:text-red-400 text-lg ml-2"><i class="fa-solid fa-power-off"></i></button>
+        </div>
+    </header>
+
+    <!-- 1. LOGIN -->
+    <div id="login" class="screen items-center justify-center p-4">
+        <div class="glass w-full max-w-md p-10 rounded-[2rem] text-center">
+            <h1 class="text-4xl font-black mb-8 uppercase text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">Login</h1>
+            <button onclick="login()" class="w-full bg-white text-black py-4 rounded-xl font-black text-lg flex justify-center items-center gap-3 shadow-xl"><i class="fa-brands fa-google text-blue-600 text-2xl"></i> Continue with Google</button>
+        </div>
+    </div>
+
+    <!-- 2. DASHBOARD (Matches & Tournaments Resume) -->
+    <div id="dashboard" class="screen p-4 max-w-5xl mx-auto w-full pt-8">
+        <div class="flex flex-col md:flex-row gap-3 bg-black/60 p-4 rounded-2xl border border-white/10 mb-6 shadow-lg">
+            <input type="text" id="join-input" placeholder="ENTER ROOM/TOURNEY CODE" class="input-glass flex-1 p-4 rounded-xl font-mono font-bold uppercase text-center md:text-left text-lg">
+            <button onclick="joinAction()" class="bg-emerald-600 hover:bg-emerald-500 py-4 px-10 rounded-xl font-black uppercase text-lg">JOIN</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <button onclick="prepSetup('match')" class="glass p-8 rounded-[2rem] text-left hover:border-blue-500 transition border-t-4 border-blue-500">
+                <i class="fa-solid fa-gamepad text-5xl text-blue-400 mb-4"></i>
+                <h2 class="font-black text-3xl uppercase">Create Match</h2>
+                <p class="text-sm font-bold text-slate-400 mt-2">Play Head-to-Head Multiplayer</p>
+            </button>
+            <button onclick="prepSetup('tourney')" class="glass p-8 rounded-[2rem] text-left hover:border-purple-500 transition border-t-4 border-purple-500">
+                <i class="fa-solid fa-trophy text-5xl text-purple-400 mb-4"></i>
+                <h2 class="font-black text-3xl uppercase">Tournament</h2>
+                <p class="text-sm font-bold text-slate-400 mt-2">Host League, Points Table & NRR</p>
+            </button>
+        </div>
+
+        <div class="glass p-6 rounded-2xl border-t-2 border-yellow-500/50">
+            <h3 class="text-yellow-400 font-black uppercase text-sm mb-4"><i class="fa-solid fa-clock-rotate-left mr-2"></i>Resume Active Games</h3>
+            <div id="resume-list" class="space-y-2 text-sm font-bold"><div class="text-slate-400">Loading saves...</div></div>
+        </div>
+    </div>
+
+    <!-- 3. TEAM SQUAD BUILDER -->
+    <div id="squad-builder" class="screen p-4 max-w-3xl mx-auto w-full pt-6">
+        <h2 class="text-2xl font-black uppercase text-blue-400 mb-4">Set Playing 11</h2>
+        <div class="glass p-6 sm:p-8 rounded-[2rem]">
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Team Name</label>
+            <input type="text" id="team-name" value="India" class="input-glass w-full p-4 rounded-xl font-black text-lg uppercase mb-6">
+            
+            <label class="text-[10px] font-black text-yellow-400 uppercase tracking-widest block mb-2">11 Players (Top to Bottom)</label>
+            <div id="player-inputs" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+            
+            <button onclick="saveSquadAndProceed()" class="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-xl font-black uppercase text-xl mt-6">Confirm Squad</button>
+        </div>
+    </div>
+
+    <!-- 4. TOURNAMENT & MATCH RULES -->
+    <div id="tourney-config" class="screen p-4 max-w-xl mx-auto w-full pt-8">
+        <div class="glass p-8 rounded-[2rem] border-t-4 border-purple-500">
+            <h2 class="text-3xl font-black uppercase mb-6 text-purple-400 text-center">League Rules</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div><label class="text-xs font-black text-slate-400 uppercase">Format</label><select id="t-format" class="input-glass w-full p-3 rounded-lg font-bold"><option>T20</option><option>ODI</option><option>TEST</option></select></div>
+                <div><label class="text-xs font-black text-slate-400 uppercase">Overs</label><select id="t-overs" class="input-glass w-full p-3 rounded-lg font-bold"><option value="5">5</option><option value="20">20</option></select></div>
+                <div><label class="text-xs font-black text-slate-400 uppercase">Wickets</label><select id="t-wickets" class="input-glass w-full p-3 rounded-lg font-bold"><option value="10" selected>10</option></select></div>
+                <div><label class="text-xs font-black text-slate-400 uppercase">Teams Qty</label><select id="t-teams" class="input-glass w-full p-3 rounded-lg font-bold"><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option></select></div>
+                <div class="col-span-2"><label class="text-xs font-black text-slate-400 uppercase">Matches/Team</label><select id="t-qty" class="input-glass w-full p-3 rounded-lg font-bold"><option value="1">1 (Single)</option><option value="2">2 (Double)</option></select></div>
+            </div>
+            <button onclick="hostTourney()" class="w-full bg-purple-600 py-4 rounded-xl font-black text-lg mt-6 uppercase">Host League</button>
+        </div>
+    </div>
+
+    <div id="match-config" class="screen p-4 max-w-xl mx-auto w-full pt-8">
+        <div class="glass p-8 rounded-[2rem] border-t-4 border-blue-500">
+            <h2 class="text-3xl font-black uppercase mb-6 text-blue-400 text-center">Match Rules</h2>
+            <div class="space-y-4">
+                <div><label class="text-xs font-black text-slate-400 uppercase">Format</label><select id="m-format" class="input-glass w-full p-3 rounded-lg font-bold"><option>T20</option><option>ODI</option></select></div>
+                <div><label class="text-xs font-black text-slate-400 uppercase">Overs</label><select id="m-overs" class="input-glass w-full p-3 rounded-lg font-bold"><option value="2">2</option><option value="5" selected>5</option><option value="20">20</option></select></div>
+                <div><label class="text-xs font-black text-slate-400 uppercase">Wickets</label><select id="m-wickets" class="input-glass w-full p-3 rounded-lg font-bold"><option value="3">3</option><option value="10" selected>10</option></select></div>
+            </div>
+            <button onclick="hostMatch()" class="w-full bg-emerald-600 py-4 rounded-xl font-black text-lg mt-6 uppercase">Generate Room</button>
+        </div>
+    </div>
+
+    <!-- 5. LOBBY & POINTS TABLE -->
+    <div id="lobby" class="screen p-4 max-w-5xl mx-auto w-full pt-8">
+        <div class="glass p-8 rounded-[2rem] text-center border-t-2 border-emerald-500 mb-6">
+            <p class="text-emerald-400 font-black uppercase text-sm mb-2">Room Code</p>
+            <div class="text-5xl md:text-7xl font-mono font-black text-white bg-black/60 p-4 rounded-2xl inline-block tracking-widest border border-white/10" id="lobby-code">----</div>
+            <p id="lobby-status" class="text-slate-400 font-bold mt-4 uppercase animate-pulse">Waiting for teams...</p>
+        </div>
+        
+        <div id="tourney-ui" class="hidden w-full glass p-6 rounded-2xl border-t-2 border-purple-500">
+            <h3 class="font-black uppercase text-lg text-purple-400 mb-4"><i class="fa-solid fa-table-list mr-2"></i>Points Table</h3>
+            <div class="overflow-x-auto rounded-xl border border-white/10 bg-black/50">
+                <table class="w-full text-left text-sm font-bold min-w-max">
+                    <thead class="bg-purple-900/40"><tr class="uppercase text-slate-300 text-[10px] tracking-widest"><th class="p-3">Team</th><th class="p-3 text-center">P</th><th class="p-3 text-center text-emerald-400">W</th><th class="p-3 text-center text-red-400">L</th><th class="p-3 text-center text-yellow-400">PTS</th><th class="p-3 text-right">NRR</th></tr></thead>
+                    <tbody id="pt-body"></tbody>
+                </table>
+            </div>
+            <button id="start-t-match" class="w-full bg-emerald-600 mt-4 py-3 rounded-lg font-black uppercase hidden">Play Next Scheduled Match</button>
+        </div>
+    </div>
+
+    <!-- 6. TOSS -->
+    <div id="toss" class="screen p-4 max-w-lg mx-auto w-full items-center justify-center">
+        <div class="glass p-12 rounded-[3rem] text-center w-full shadow-[0_0_50px_rgba(234,179,8,0.2)] border-t border-yellow-500/50">
+            <h2 class="text-4xl font-black uppercase text-yellow-400 mb-6">The Toss</h2>
+            <p id="toss-text" class="text-white font-bold text-lg mb-8">Host is tossing...</p>
+            <div id="toss-btns" class="hidden justify-center gap-6">
+                <button onclick="submitToss('bat')" class="bg-blue-600 p-8 rounded-3xl w-32 h-32 font-black text-2xl text-white shadow-lg"><i class="fa-solid fa-baseball-bat-ball block mb-2"></i> BAT</button>
+                <button onclick="submitToss('bowl')" class="bg-red-600 p-8 rounded-3xl w-32 h-32 font-black text-2xl text-white shadow-lg"><i class="fa-solid fa-baseball block mb-2"></i> BOWL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. PRO ARENA -->
+    <div id="arena" class="screen p-2 max-w-5xl mx-auto w-full pt-4 h-full">
+        <!-- Scoreboard -->
+        <div class="glass border-t-4 border-emerald-500 rounded-2xl p-4 sm:p-6 mb-3 flex justify-between items-center bg-black/90">
+            <div class="w-1/3 text-left">
+                <div class="text-[10px] sm:text-xs text-slate-400 font-black uppercase mb-1" id="ui-bat-team">BAT TEAM</div>
+                <div class="text-3xl sm:text-5xl font-black text-white truncate" id="ui-score">0<span class="text-lg sm:text-2xl text-slate-400">/0</span></div>
+            </div>
+            <div class="w-1/3 text-center px-1">
+                <div class="text-emerald-400 font-black text-[10px] sm:text-xs uppercase bg-emerald-500/10 px-2 py-1 rounded-full mb-1">Innings <span id="ui-inn">1</span></div>
+                <div class="text-sm sm:text-lg font-black text-white uppercase">Overs: <span id="ui-overs">0.0</span><span class="text-slate-500 text-[10px] sm:text-xs ml-1" id="ui-max-overs">(/20)</span></div>
+            </div>
+            <div class="w-1/3 text-right">
+                <div class="text-[10px] sm:text-xs text-slate-400 font-black uppercase mb-1" id="ui-bowl-team">BOWL TEAM</div>
+                <div class="text-[10px] sm:text-xs font-black text-slate-400 uppercase mt-2">Target: <br class="sm:hidden"><span class="text-white text-lg sm:text-xl" id="ui-target">--</span></div>
+            </div>
+        </div>
+
+        <!-- Players -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3">
+            <div class="glass p-4 rounded-xl border-l-4 border-blue-500 bg-black/70">
+                <div class="flex justify-between text-[10px] sm:text-xs uppercase text-slate-500 font-black mb-2 px-1"><span>Batters</span><span class="flex gap-4 sm:gap-6"><span>R(B)</span><span>SR</span></span></div>
+                <div class="flex justify-between items-center mb-2 bg-blue-900/40 p-2 rounded-lg border border-blue-500/40">
+                    <div class="font-black text-white text-sm sm:text-base truncate w-1/2 flex items-center"><i class="fa-solid fa-caret-right text-blue-400 mr-2 animate-pulse"></i><span id="ui-s-name">Striker</span></div>
+                    <div class="flex gap-4 sm:gap-6 font-mono text-sm"><span class="font-black text-white w-12 text-right" id="ui-s-score">0(0)</span><span class="text-blue-200 w-8 text-right font-bold" id="ui-s-sr">0.0</span></div>
+                </div>
+                <div class="flex justify-between items-center p-2 rounded-lg">
+                    <div class="font-bold text-slate-400 text-sm sm:text-base pl-5 truncate w-1/2" id="ui-ns-name">Non-Striker</div>
+                    <div class="flex gap-4 sm:gap-6 font-mono text-sm"><span class="font-bold text-slate-300 w-12 text-right" id="ui-ns-score">0(0)</span><span class="text-slate-500 w-8 text-right font-bold" id="ui-ns-sr">0.0</span></div>
+                </div>
+            </div>
+            <div class="glass p-4 rounded-xl border-l-4 border-red-500 bg-black/70">
+                <div class="flex justify-between text-[10px] sm:text-xs uppercase text-slate-500 font-black mb-2 px-1"><span>Bowler</span><span class="flex gap-3 sm:gap-4"><span>O</span><span>R</span><span>W</span><span>ECO</span></span></div>
+                <div class="flex justify-between items-center bg-red-900/30 p-2 rounded-lg border border-red-500/30 mb-3">
+                    <div class="font-black text-white text-sm sm:text-base truncate w-1/3 flex items-center"><i class="fa-solid fa-baseball text-red-400 mr-2"></i><span id="ui-b-name">Bowler</span></div>
+                    <div class="flex gap-3 sm:gap-4 font-mono text-sm text-slate-200 font-black justify-end w-2/3" id="ui-b-stats"><span>0.0</span><span>0</span><span class="text-red-400">0</span><span class="text-slate-400">0.0</span></div>
+                </div>
+                <div class="bg-black/60 p-2 rounded-lg border border-white/5">
+                    <div class="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">Over Summary</div>
+                    <div class="flex gap-1 overflow-x-auto" id="ui-summary"><span class="text-slate-600 text-xs italic">Waiting...</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="action-msg" class="w-full text-center py-1 font-black text-yellow-400 uppercase text-xs animate-pulse">Make Your Move</div>
+
+        <div class="glass p-3 sm:p-5 rounded-[2rem] border-t-2 border-slate-600 mt-2 bg-slate-900/90">
+            <div class="grid grid-cols-4 md:grid-cols-7 gap-2">
+                <button onclick="sendMove(0)" class="btn-move bg-slate-800 text-slate-400 rounded-xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:text-white">0</button>
+                <button onclick="sendMove(1)" class="btn-move bg-slate-800 text-white rounded-xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:bg-slate-700">1</button>
+                <button onclick="sendMove(2)" class="btn-move bg-slate-800 text-white rounded-xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:bg-slate-700">2</button>
+                <button onclick="sendMove(3)" class="btn-move bg-slate-800 text-white rounded-xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:bg-slate-700">3</button>
+                <button onclick="sendMove(4)" class="btn-move bg-slate-800 text-emerald-400 rounded-xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:bg-slate-700">4</button>
+                <button onclick="sendMove(5)" class="btn-move bg-slate-800 text-white rounded-xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:bg-slate-700">5</button>
+                <button onclick="sendMove(6)" class="btn-move bg-slate-800 text-purple-400 rounded-xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:bg-slate-700 col-span-2 md:col-span-1">6</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALS -->
+    <div id="bowler-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md items-center justify-center p-4">
+        <div class="glass p-6 rounded-[2rem] w-full max-w-sm border-t-4 border-red-500 text-center">
+            <h3 class="text-xl font-black uppercase text-white mb-2">Select Bowler</h3>
+            <p class="text-[10px] text-red-400 mb-4 uppercase">Can't bowl consecutive overs</p>
+            <div id="bowler-list" class="space-y-2 max-h-64 overflow-y-auto pr-1 text-sm"></div>
+        </div>
+    </div>
+
+    <script>
+        // FIREBASE SETUP
+        const fc = { apiKey: "AIzaSyAofevQrPWUKWxWAkBLtXl4f_lH5FjjPZE", authDomain: "hand-cricket-c2d70.firebaseapp.com", databaseURL: "https://hand-cricket-c2d70-default-rtdb.firebaseio.com", projectId: "hand-cricket-c2d70" };
+        firebase.initializeApp(fc); const auth = firebase.auth(); const db = firebase.database();
+        
+        let u=null, mRole=null, mId=null, mType=null; 
+        let squadData = { name: "Team", p: [] };
+
+        // Generate 11 inputs securely
+        const pInp = document.getElementById('player-inputs');
+        for(let i=1; i<=11; i++) {
+            pInp.innerHTML += `<div class="flex items-center bg-black/50 border border-white/10 rounded-lg"><div class="bg-white/10 px-3 py-3 font-mono text-xs font-black text-white/50 w-10 text-center border-r border-white/10">${i}</div><input type="text" id="sq-${i}" placeholder="Player Name" class="w-full bg-transparent text-white px-3 py-3 text-sm outline-none font-bold uppercase"></div>`;
+        }
+
+        const screens = ['login', 'dashboard', 'match-config', 'tourney-config', 'lobby', 'toss', 'arena', 'squad-builder'];
+        function nav(id) { screens.forEach(s => { let el = document.getElementById(s); if(el) el.classList.remove('active-screen'); }); document.getElementById(id).classList.add('active-screen'); }
+        
+        function login() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
+        auth.onAuthStateChanged(user => { 
+            if(user) { 
+                u = user; document.getElementById('nav-user').innerText = u.displayName.split(" ")[0]; 
+                let pic = document.getElementById('user-profile-pic'); if(pic){ pic.src = u.photoURL; pic.style.display = 'block'; }
+                nav('dashboard'); fetchResumes(); 
+            } else { nav('login'); } 
+        });
+
+        function prepSetup(type) { mType = type; nav('squad-builder'); }
+        function saveSquadAndProceed() {
+            squadData.name = document.getElementById('team-name').value || "Team";
+            squadData.p = [];
+            for(let i=1; i<=11; i++) squadData.p.push(document.getElementById(`sq-${i}`).value.trim() || `Player ${i}`);
+            if(mRole === 'join_prep') finishJoin();
+            else if(mType === 'match') nav('match-config');
+            else nav('tourney-config');
+        }
+
+        function hostMatch() {
+            mId = Math.random().toString(36).substring(2,7).toUpperCase(); mRole = 'p1';
+            let ov = parseInt(document.getElementById('m-overs').value); let wk = parseInt(document.getElementById('m-wickets').value);
+            let initSt = { r:0, b:0, o:0, br:0, w:0 };
+            db.ref('matches/'+mId).set({
+                type: 'match', status: 'waiting', set: { ov: ov, wk: wk }, p1: { uid: u.uid, name: u.displayName, team: squadData },
+                state: { inn: 1, bat: null, scr: 0, wic: 0, bls: 0, trg: 0, sIdx: 0, nsIdx: 1, bwIdx: 10, prevBw: null, needBw: false, st: { p1: Array(11).fill().map(()=>({...initSt})), p2: Array(11).fill().map(()=>({...initSt})) }, sum: [], mov: { p1: null, p2: null } }
+            }).then(() => { document.getElementById('lobby-code').innerText = mId; document.getElementById('tourney-ui').classList.add('hidden'); nav('lobby'); listenMatch(); });
+        }
+
+        // Tourney setup logic added
+        function hostTourney() {
+            mId = Math.random().toString(36).substring(2,7).toUpperCase(); mRole='tHost';
+            db.ref('tournaments/'+mId).set({
+                status: 'waiting', set: { tQty: parseInt(document.getElementById('t-teams').value) },
+                teams: { [u.uid]: { name: squadData.name, p:0, w:0, l:0, pts:0, nrr:0, squad: squadData.p } }
+            }).then(()=> { document.getElementById('lobby-code').innerText = mId; document.getElementById('tourney-ui').classList.remove('hidden'); nav('lobby'); listenTourney(); });
+        }
+
+        function joinAction() {
+            let code = document.getElementById('join-input').value.toUpperCase().trim();
+            if(!code) return;
+            // Check match
+            db.ref('matches/'+code).once('value', s => {
+                if(s.exists() && s.val().status === 'waiting') { mId = code; mRole = 'join_prep'; mType='match'; nav('squad-builder'); }
+                else {
+                    // Check tourney
+                    db.ref('tournaments/'+code).once('value', ts => {
+                        if(ts.exists() && ts.val().status === 'waiting') { mId = code; mRole = 'join_prep'; mType='tourney'; nav('squad-builder'); }
+                        else alert("Invalid Code or Room Full");
+                    });
+                }
+            });
+        }
+
+        function finishJoin() {
+            if(mType==='match') { mRole = 'p2'; db.ref('matches/'+mId).update({ status: 'toss', p2: { uid: u.uid, name: u.displayName, team: squadData } }).then(()=> listenMatch()); }
+            else { db.ref(`tournaments/${mId}/teams/${u.uid}`).set({ name: squadData.name, p:0, w:0, l:0, pts:0, nrr:0, squad: squadData.p }).then(()=> { listenTourney(); nav('lobby'); }); }
+        }
+
+        function fetchResumes() {
+            db.ref('matches').orderByChild('p1/uid').equalTo(u?.uid).once('value', sn => buildResumes(sn));
+            db.ref('matches').orderByChild('p2/uid').equalTo(u?.uid).once('value', sn => buildResumes(sn));
+        }
+        function buildResumes(sn) {
+            if(!sn.exists()) return;
+            let h = document.getElementById('resume-list').innerHTML;
+            if(h.includes('Loading')) h = '';
+            sn.forEach(c => {
+                if(c.val().status !== 'finished') h += `<button onclick="mId='${c.key}'; mRole=(c.val().p1.uid==='${u.uid}'?'p1':'p2'); listenMatch();" class="w-full bg-black/60 p-4 rounded-xl text-left border border-slate-600 hover:border-emerald-500 font-black uppercase flex justify-between group text-xs mb-2"><span class="text-white">Match: <span class="text-emerald-400">${c.key}</span></span> <i class="fa-solid fa-play text-emerald-500 opacity-0 group-hover:opacity-100"></i></button>`;
+            });
+            document.getElementById('resume-list').innerHTML = h || '<span class="text-slate-500">No active matches</span>';
+        }
+
+        function listenMatch() {
+            db.ref('matches/'+mId).on('value', snap => {
+                let m = snap.val(); if(!m) return;
+                
+                if(m.status === 'toss') {
+                    nav('toss');
+                    let tossWin = m.tossWin || (Math.random() < 0.5 ? 'p1' : 'p2');
+                    if(mRole === 'p1' && !m.tossWin) db.ref('matches/'+mId).update({tossWin: tossWin});
+                    
+                    if(mRole === tossWin) { document.getElementById('toss-text').innerText = "You won! Choose Bat/Bowl."; document.getElementById('toss-btns').classList.replace('hidden','flex'); } 
+                    else { document.getElementById('toss-text').innerText = "Opponent deciding..."; document.getElementById('toss-btns').classList.replace('flex','hidden'); }
+                }
+                
+                if(m.status === 'playing') {
+                    nav('arena');
+                    if(mRole === 'p1' && m.state.mov.p1 !== null && m.state.mov.p2 !== null) calcBall(m);
+                    
+                    // Bowler Modal Logic
+                    if(m.state.needBw && m.state.mov.p1 === null && m.state.mov.p2 === null) {
+                        if(mRole !== m.state.bat) { showBowlerModal(m); } 
+                        else { document.getElementById('bowler-modal').classList.replace('flex','hidden'); disableMoves(true); document.getElementById('action-msg').innerText = "Fielding team selecting bowler..."; }
+                    } else {
+                        document.getElementById('bowler-modal').classList.replace('flex','hidden'); disableMoves(false);
+                    }
+                    renderScore(m);
+                }
+            });
+        }
+        
+        function listenTourney() {
+            document.getElementById('tourney-ui').classList.remove('hidden');
+            db.ref('tournaments/'+mId).on('value', snap => {
+                let t = snap.val(); if(!t) return;
+                let tCount = Object.keys(t.teams).length;
+                document.getElementById('lobby-status').innerHTML = `Waiting... (${tCount}/${t.set.tQty} Joined)`;
+                
+                let ptHtml = '';
+                Object.values(t.teams).sort((a,b)=> b.pts - a.pts || b.nrr - a.nrr).forEach(tm => {
+                    ptHtml += `<tr class="border-b border-white/5"><td class="p-3 text-white truncate">${tm.name}</td><td class="p-3 text-center font-mono">${tm.p}</td><td class="p-3 text-center font-mono text-emerald-400">${tm.w}</td><td class="p-3 text-center font-mono text-red-400">${tm.l}</td><td class="p-3 text-center font-mono text-yellow-400 font-black">${tm.pts}</td><td class="p-3 text-right font-mono text-slate-400">${tm.nrr.toFixed(3)}</td></tr>`;
+                });
+                document.getElementById('pt-body').innerHTML = ptHtml;
+                
+                if(tCount >= t.set.tQty && mRole === 'tHost') { document.getElementById('start-t-match').classList.remove('hidden'); }
+            });
+        }
+
+        window.submitToss = function(ch) {
+            let bat = ch === 'bat' ? mRole : (mRole === 'p1'?'p2':'p1');
+            db.ref('matches/'+mId+'/state').update({bat: bat}); db.ref('matches/'+mId+'/status').set('playing');
+        }
+        
+        function disableMoves(d) { document.querySelectorAll('.btn-move').forEach(b => { b.disabled = d; b.style.opacity = d ? 0.5 : 1; }); }
+
+        window.sendMove = function(v) {
+            document.querySelectorAll('.btn-move').forEach(b => b.classList.remove('selected-move'));
+            event.target.classList.add('selected-move');
+            document.getElementById('action-msg').innerText = "WAITING FOR OPPONENT...";
+            db.ref(`matches/${mId}/state/mov/${mRole}`).set(v);
+        }
+
+        // MATCH ENGINE - Core 0-0 Logic, Strike Rotation, Over Rotation
+        function calcBall(m) {
+            let s = m.state; let r1 = s.mov.p1; let r2 = s.mov.p2;
+            let btM = s.bat === 'p1' ? r1 : r2; let bwM = s.bat === 'p2' ? r1 : r2;
+            let bowlR = s.bat === 'p1' ? 'p2' : 'p1';
+            let res = ''; let out = false; let run = 0;
+
+            if(btM === 0 && bwM === 0) { res = '0'; } // 0-0 Dot Ball
+            else if(btM === bwM) { out = true; res = 'W'; }
+            else { run = btM; res = run; }
+
+            s.bls++;
+            if(out) {
+                s.wic++; s.st[bowlR][s.bwIdx].w++;
+                s.sIdx = Math.max(s.sIdx, s.nsIdx) + 1; // New batter automatically
+            } else {
+                s.scr += run; s.st[s.bat][s.sIdx].r += run; s.st[bowlR][s.bwIdx].br += run;
+                if(run % 2 !== 0) { let t = s.sIdx; s.sIdx = s.nsIdx; s.nsIdx = t; } // Strike change 1,3,5
+            }
+            s.st[s.bat][s.sIdx].b++; s.st[bowlR][s.bwIdx].b++;
+            if(!s.sum) s.sum = []; s.sum.push(res);
+
+            if(s.bls % 6 === 0) {
+                s.sum = []; let t = s.sIdx; s.sIdx = s.nsIdx; s.nsIdx = t; // Strike change over end
+                s.prevBw = s.bwIdx; s.needBw = true; // Trigger Bowler select
+            }
+
+            if(s.wic >= m.set.wk || s.bls >= m.set.ov * 6 || (s.inn === 2 && s.scr >= s.trg)) {
+                if(s.inn === 1) {
+                    s.inn = 2; s.trg = s.scr + 1; s.scr = 0; s.wic = 0; s.bls = 0; s.sum = [];
+                    s.sIdx = 0; s.nsIdx = 1; s.bwIdx = 10; s.prevBw = null; s.needBw = true;
+                    s.bat = s.bat === 'p1' ? 'p2' : 'p1';
+                } else db.ref('matches/'+mId+'/status').set('finished');
+            }
+            s.mov = {p1:null, p2:null};
+            db.ref(`matches/${mId}/state`).set(s);
+        }
+
+        function showBowlerModal(m) {
+            let bwTeam = m.state.bat === 'p1' ? m.p2 : m.p1;
+            let html = '';
+            bwTeam.team.p.forEach((pName, i) => {
+                if(i < 11) { 
+                    let isPrev = (i === m.state.prevBw);
+                    let disClass = isPrev ? 'opacity-30 cursor-not-allowed bg-slate-900' : 'bg-slate-800 border-slate-600';
+                    let disBtn = isPrev ? 'disabled' : '';
+                    html += `<button onclick="setBowler(${i})" class="w-full p-4 rounded-xl text-left border font-black text-white mb-2 transition shadow-lg ${disClass}" ${disBtn}>${pName}</button>`;
+                }
+            });
+            document.getElementById('bowler-list').innerHTML = html;
+            document.getElementById('bowler-modal').classList.replace('hidden', 'flex');
+        }
+        window.setBowler = function(idx) { db.ref(`matches/${mId}/state`).update({ bwIdx: idx, needBw: false }); }
+
+        function renderScore(m) {
+            let s = m.state; let bRole = s.bat; let bwRole = bRole === 'p1' ? 'p2' : 'p1';
+            let tBat = bRole === 'p1' ? m.p1 : m.p2; let tBw = bRole === 'p2' ? m.p1 : m.p2;
+            
+            document.getElementById('ui-bat-team').innerText = tBat.team.name; document.getElementById('ui-bowl-team').innerText = tBw.team.name;
+            document.getElementById('ui-inn').innerText = s.inn;
+            document.getElementById('ui-score').innerHTML = `${s.scr}<span class="text-lg sm:text-2xl text-slate-400">/${s.wic}</span>`;
+            document.getElementById('ui-overs').innerText = `${Math.floor(s.bls/6)}.${s.bls%6}`;
+            document.getElementById('ui-max-overs').innerText = `(/${m.set.ov})`;
+            document.getElementById('ui-target').innerText = s.trg ? s.trg : '--';
+
+            let stS = s.st[bRole][s.sIdx] || {r:0, b:0}; let stNS = s.st[bRole][s.nsIdx] || {r:0, b:0};
+            document.getElementById('ui-s-name').innerHTML = `<i class="fa-solid fa-caret-right text-blue-400 mr-1 animate-pulse"></i>${tBat.team.p[s.sIdx]||'Bat 1'}`;
+            document.getElementById('ui-ns-name').innerText = tBat.team.p[s.nsIdx]||'Bat 2';
+            document.getElementById('ui-s-score').innerText = `${stS.r}(${stS.b})`; document.getElementById('ui-ns-score').innerText = `${stNS.r}(${stNS.b})`;
+            document.getElementById('ui-s-sr').innerText = stS.b > 0 ? ((stS.r/stS.b)*100).toFixed(1) : "0.0";
+            document.getElementById('ui-ns-sr').innerText = stNS.b > 0 ? ((stNS.r/stNS.b)*100).toFixed(1) : "0.0";
+
+            let bwS = s.st[bwRole][s.bwIdx] || {b:0, br:0, w:0};
+            document.getElementById('ui-b-name').innerHTML = `<i class="fa-solid fa-baseball text-red-400 mr-1"></i>${tBw.team.p[s.bwIdx]||'Bowler'}`;
+            let eco = bwS.b > 0 ? ((bwS.br/bwS.b)*6).toFixed(1) : "0.0";
+            document.getElementById('ui-b-stats').innerHTML = `<span>${Math.floor(bwS.b/6)}.${bwS.b%6}</span><span>${bwS.br}</span><span class="text-red-400">${bwS.w}</span><span class="text-slate-400">${eco}</span>`;
+
+            let sumH = '';
+            if(s.sum && s.sum.length > 0) {
+                s.sum.forEach(b => { 
+                    let c = b==='W' ? 'bg-red-600' : (b===4||b===6 ? 'bg-emerald-600 text-black' : 'bg-slate-700'); 
+                    sumH += `<div class="w-6 h-6 sm:w-8 sm:h-8 rounded flex justify-center items-center font-black text-xs sm:text-sm flex-shrink-0 ${c}">${b}</div>`; 
+                });
+            } else sumH = '<span class="text-slate-500 text-[10px] italic mt-1">Waiting...</span>';
+            document.getElementById('ui-summary').innerHTML = sumH;
+
+            if(s.mov[mRole] === null && !s.needBw) {
+                document.querySelectorAll('.btn-move').forEach(b => b.classList.remove('selected-move'));
+                if(m.status === 'finished') { document.getElementById('action-msg').innerText = "MATCH FINISHED"; disableMoves(true); } 
+                else document.getElementById('action-msg').innerText = "MAKE YOUR MOVE";
+            }
+        }
+    </script>
 </body>
-
 </html>
