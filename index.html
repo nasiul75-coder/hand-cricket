@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Cricket Pro - Multiplayer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        
+        .game-container { background: #1e293b; width: 100%; max-width: 900px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow: hidden; display: flex; flex-direction: column; }
+        
+        /* Scoreboard */
+        .scoreboard { background: #020617; padding: 20px; text-align: center; border-bottom: 2px solid #334155; }
+        .match-info { font-size: 14px; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+        .score { font-size: 40px; font-weight: bold; color: #38bdf8; }
+        .run-rate { font-size: 14px; color: #cbd5e1; margin-top: 5px; }
+
+        /* Battle Arena */
+        .arena { display: flex; justify-content: space-between; padding: 30px; background: #0f172a; align-items: center; }
+        .player-card { text-align: center; width: 30%; }
+        .avatar { width: 100px; height: 100px; border-radius: 50%; border: 3px solid #38bdf8; object-fit: cover; margin-bottom: 10px; }
+        .player-name { font-size: 20px; font-weight: bold; }
+        .player-role { font-size: 14px; color: #10b981; margin-top: 5px; }
+        
+        .vs-badge { font-size: 24px; font-weight: bold; color: #ef4444; text-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
+
+        /* Action Buttons */
+        .controls-section { padding: 20px; text-align: center; background: #1e293b; border-top: 2px solid #334155; }
+        .instruction { margin-bottom: 15px; font-size: 16px; color: #94a3b8; }
+        .buttons-grid { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        
+        .action-btn { 
+            background: #334155; color: white; border: none; width: 60px; height: 60px; 
+            border-radius: 10px; font-size: 24px; font-weight: bold; cursor: pointer;
+            transition: all 0.2s ease; border-bottom: 4px solid #0f172a;
+        }
+        .action-btn:hover { background: #38bdf8; transform: translateY(-2px); }
+        .action-btn:active { transform: translateY(2px); border-bottom: 0; }
+
+        /* Quick Chat Placeholder */
+        .chat-bar { padding: 15px; background: #020617; display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: #94a3b8; }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <!-- Top Scoreboard -->
+    <div class="scoreboard">
+        <div class="match-info">T20 Match • IND vs AUS • 20 Overs</div>
+        <div class="score" id="main-score">IND 45/0 <span style="font-size: 20px; color: #94a3b8;">(4.2)</span></div>
+        <div class="run-rate">CRR: 10.38 • Target: 180</div>
+    </div>
+
+    <!-- Middle Battle Arena -->
+    <div class="arena">
+        <!-- You (Batter) -->
+        <div class="player-card">
+            <img src="https://via.placeholder.com/100" alt="Batter" class="avatar" style="border-color: #10b981;">
+            <div class="player-name">Tu (Batter)</div>
+            <div class="player-role">Strike Rate: 150.0</div>
+        </div>
+
+        <div class="vs-badge">VS</div>
+
+        <!-- Friend (Bowler) -->
+        <div class="player-card">
+            <img src="https://via.placeholder.com/100" alt="Bowler" class="avatar" style="border-color: #ef4444;">
+            <div class="player-name">Dost (Bowler)</div>
+            <div class="player-role">Economy: 8.5</div>
+        </div>
+    </div>
+
+    <!-- Bottom Controls -->
+    <div class="controls-section">
+        <div class="instruction">Select your move before the timer runs out!</div>
+        <div class="buttons-grid">
+            <button class="action-btn" onclick="playMove(1)">1</button>
+            <button class="action-btn" onclick="playMove(2)">2</button>
+            <button class="action-btn" onclick="playMove(3)">3</button>
+            <button class="action-btn" onclick="playMove(4)">4</button>
+            <button class="action-btn" onclick="playMove(5)">5</button>
+            <button class="action-btn" onclick="playMove(6)">6</button>
+        </div>
+    </div>
+
+    <!-- Mini Chat Bar -->
+    <div class="chat-bar">
+        <span>💬 Room Chat: 🟢 2 Players Online</span>
+        <span>Tap to open chat...</span>
+    </div>
+</div>
+
+<script>
+    // Placeholder function for next step
+    function playMove(number) {
+        console.log("You selected: " + number);
+        alert("Tune " + number + " select kiya. Waiting for opponent...");
+        // Yahan hum apna logic lagayenge 3 aur 6 wala
+    }
+</script>
+
+</body>
+</html>
