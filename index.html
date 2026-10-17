@@ -4,153 +4,117 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hand Cricket Pro - Multiplayer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        
-        .game-container { background: #1e293b; width: 100%; max-width: 900px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow: hidden; display: flex; flex-direction: column; }
-        
-        /* Scoreboard */
-        .scoreboard { background: #020617; padding: 20px; text-align: center; border-bottom: 2px solid #334155; }
-        .match-info { font-size: 14px; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
-        .score { font-size: 40px; font-weight: bold; color: #38bdf8; }
-        .run-rate { font-size: 14px; color: #cbd5e1; margin-top: 5px; }
-
-        /* Battle Arena */
-        .arena { display: flex; justify-content: space-between; padding: 30px; background: #0f172a; align-items: center; }
-        .player-card { text-align: center; width: 30%; }
-        .avatar { width: 100px; height: 100px; border-radius: 50%; border: 3px solid #38bdf8; object-fit: cover; margin-bottom: 10px; }
-        .player-name { font-size: 20px; font-weight: bold; }
-        .player-role { font-size: 14px; color: #10b981; margin-top: 5px; }
-        
-        .vs-badge { font-size: 24px; font-weight: bold; color: #ef4444; text-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
-
-        /* Action Buttons */
-        .controls-section { padding: 20px; text-align: center; background: #1e293b; border-top: 2px solid #334155; }
-        .instruction { margin-bottom: 15px; font-size: 16px; color: #94a3b8; }
-        .buttons-grid { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
-        
-        .action-btn { 
-            background: #334155; color: white; border: none; width: 60px; height: 60px; 
-            border-radius: 10px; font-size: 24px; font-weight: bold; cursor: pointer;
-            transition: all 0.2s ease; border-bottom: 4px solid #0f172a;
-        }
-        .action-btn:hover { background: #38bdf8; transform: translateY(-2px); }
-        .action-btn:active { transform: translateY(2px); border-bottom: 0; }
-
-        /* Quick Chat Placeholder */
-        .chat-bar { padding: 15px; background: #020617; display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: #94a3b8; }
+        body { background-color: #0f172a; color: #f8fafc; }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid #334155; }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex items-center justify-center p-4">
 
-<div class="game-container">
-    <!-- Top Scoreboard -->
-    <div class="scoreboard">
-        <div class="match-info">T20 Match • IND vs AUS • 20 Overs</div>
-        <div class="score" id="main-score">IND 45/0 <span style="font-size: 20px; color: #94a3b8;">(4.2)</span></div>
-        <div class="run-rate">CRR: 10.38 • Target: 180</div>
-    </div>
+    <div class="glass-panel w-full max-w-md p-8 rounded-2xl shadow-2xl">
+        <h1 class="text-4xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 mb-8 tracking-wider">
+            HAND CRICKET
+        </h1>
 
-    <!-- Middle Battle Arena -->
-    <div class="arena">
-        <!-- You (Batter) -->
-        <div class="player-card">
-            <img src="https://via.placeholder.com/100" alt="Batter" class="avatar" style="border-color: #10b981;">
-            <div class="player-name">Tu (Batter)</div>
-            <div class="player-role">Strike Rate: 150.0</div>
+        <!-- LOBBY SECTION -->
+        <div id="lobby-screen" class="space-y-6">
+            <div>
+                <label class="block text-sm font-medium text-slate-400 mb-2">Player Name</label>
+                <input type="text" id="playerName" placeholder="Enter your name" 
+                    class="w-full p-4 bg-slate-900 border border-slate-700 rounded-xl focus:outline-none focus:border-blue-500 text-lg transition">
+            </div>
+
+            <button onclick="createRoom()" 
+                class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 p-4 rounded-xl font-bold text-lg shadow-lg shadow-blue-500/30 transition transform hover:-translate-y-1">
+                🏏 Create New Match
+            </button>
+
+            <div class="flex items-center my-4">
+                <div class="flex-grow border-t border-slate-700"></div>
+                <span class="px-3 text-slate-500 text-sm">OR</span>
+                <div class="flex-grow border-t border-slate-700"></div>
+            </div>
+
+            <div class="flex gap-3">
+                <input type="text" id="roomCode" placeholder="Room Code" 
+                    class="w-2/3 p-4 bg-slate-900 border border-slate-700 rounded-xl focus:outline-none focus:border-emerald-500 text-lg font-mono uppercase transition">
+                <button onclick="joinRoom()" 
+                    class="w-1/3 bg-emerald-600 hover:bg-emerald-500 p-4 rounded-xl font-bold shadow-lg shadow-emerald-500/30 transition">
+                    Join
+                </button>
+            </div>
         </div>
 
-        <div class="vs-badge">VS</div>
-
-        <!-- Friend (Bowler) -->
-        <div class="player-card">
-            <img src="https://via.placeholder.com/100" alt="Bowler" class="avatar" style="border-color: #ef4444;">
-            <div class="player-name">Dost (Bowler)</div>
-            <div class="player-role">Economy: 8.5</div>
+        <!-- WAITING ROOM -->
+        <div id="waiting-screen" class="hidden text-center space-y-4">
+            <h2 class="text-xl text-slate-300">Room Code:</h2>
+            <div id="display-room-code" class="text-5xl font-mono font-bold text-blue-400 tracking-widest bg-slate-900 p-4 rounded-xl border border-slate-700">
+                ----
+            </div>
+            <p class="text-emerald-400 animate-pulse mt-4">Waiting for opponent to join...</p>
         </div>
     </div>
 
-    <!-- Bottom Controls -->
-    <div class="controls-section">
-        <div class="instruction">Select your move before the timer runs out!</div>
-        <div class="buttons-grid">
-            <button class="action-btn" onclick="playMove(1)">1</button>
-            <button class="action-btn" onclick="playMove(2)">2</button>
-            <button class="action-btn" onclick="playMove(3)">3</button>
-            <button class="action-btn" onclick="playMove(4)">4</button>
-            <button class="action-btn" onclick="playMove(5)">5</button>
-            <button class="action-btn" onclick="playMove(6)">6</button>
-        </div>
-    </div>
+    <!-- FIREBASE MULTIPLAYER LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
 
-    <!-- Mini Chat Bar -->
-    <div class="chat-bar">
-        <span>💬 Room Chat: 🟢 2 Players Online</span>
-        <span>Tap to open chat...</span>
-    </div>
-</div>
+        // Maine teri details yahan daal di hain
+        const firebaseConfig = {
+            apiKey: "AIzaSyAofevQrPWUKWxWAkBLtXl4f_lH5fjjPZE",
+            authDomain: "hand-cricket-c2d70.firebaseapp.com",
+            databaseURL: "https://hand-cricket-c2d70-default-rtdb.firebaseio.com",
+            projectId: "hand-cricket-c2d70",
+            storageBucket: "hand-cricket-c2d70.firebasestorage.app",
+            messagingSenderId: "113004537618",
+            appId: "1:113004537618:web:9f23689c5c4c4a62eaf5cb",
+            measurementId: "G-DH3RLFQBK5"
+        };
 
-<script>
-    let score = 0;
-    let wickets = 0;
-    let balls = 0;
-    let isFreeHit = false;
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-    function playMove(batterChoice) {
-        // Computer bowler randomly picks 1 to 6
-        let bowlerChoice = Math.floor(Math.random() * 6) + 1;
-        let resultMessage = "";
-
-        // T20/ODI Rule: 3 aur 6 aamne samne
-        if ((batterChoice === 3 && bowlerChoice === 6) || (batterChoice === 6 && bowlerChoice === 3)) {
-            score += batterChoice; // Batter ke runs
-            score += 1; // No ball ka extra run
-            resultMessage = "🔥 NO BALL! Tu bach gaya. +" + batterChoice + " runs. Next ball FREE HIT hai!";
-            isFreeHit = true;
-        } 
-        // Wicket Rule (Same Number)
-        else if (batterChoice === bowlerChoice) {
-            if (isFreeHit) {
-                resultMessage = "😅 SAVED BY FREE HIT! Bowler ne bhi " + bowlerChoice + " dala.";
-                isFreeHit = false; // Free hit khatam
-                balls++;
-            } else {
-                resultMessage = "❌ WICKET! Bowler ne bhi " + bowlerChoice + " dala. Tu OUT!";
-                wickets++;
-                isFreeHit = false;
-                balls++;
-            }
-        } 
-        // Normal Runs (Different Numbers)
-        else {
-            resultMessage = "🏏 Good Shot! +" + batterChoice + " Runs. Bowler ne " + bowlerChoice + " dala.";
-            score += batterChoice;
-            isFreeHit = false;
-            balls++;
+        window.createRoom = function() {
+            let name = document.getElementById("playerName").value;
+            if(!name) return alert("Pehle apna naam daal bhai!");
+            
+            let code = Math.random().toString(36).substring(2, 6).toUpperCase();
+            
+            set(ref(db, 'rooms/' + code), {
+                player1: { name: name, choice: 0 },
+                status: 'waiting'
+            }).then(() => {
+                document.getElementById("lobby-screen").classList.add("hidden");
+                document.getElementById("waiting-screen").classList.remove("hidden");
+                document.getElementById("display-room-code").innerText = code;
+                
+                onValue(ref(db, 'rooms/' + code), (snapshot) => {
+                    const data = snapshot.val();
+                    if(data && data.player2) {
+                        alert("🔥 Opponent (" + data.player2.name + ") Join Ho Gaya!");
+                    }
+                });
+            }).catch((error) => {
+                alert("Database Error: " + error.message);
+            });
         }
 
-        // Over Calculation (e.g. 1.2 overs)
-        let overs = Math.floor(balls / 6);
-        let currentBalls = balls % 6;
-        let overText = overs + "." + currentBalls;
+        window.joinRoom = function() {
+            let name = document.getElementById("playerName").value;
+            let code = document.getElementById("roomCode").value.toUpperCase();
+            if(!name || !code) return alert("Naam aur Room Code dono daal!");
 
-        // UI Scoreboard Update
-        document.getElementById("main-score").innerHTML = `IND ${score}/${wickets} <span style="font-size: 20px; color: #94a3b8;">(${overText})</span>`;
-        
-        // Show result on screen
-        alert(resultMessage);
-
-        // All Out Check
-        if (wickets >= 10) {
-            alert("⚠️ INNINGS OVER! Total Score: " + score + " runs.");
-            // Reset Match
-            score = 0; wickets = 0; balls = 0; isFreeHit = false;
-            document.getElementById("main-score").innerHTML = `IND 0/0 <span style="font-size: 20px; color: #94a3b8;">(0.0)</span>`;
+            update(ref(db, 'rooms/' + code), {
+                'player2': { name: name, choice: 0 },
+                'status': 'playing'
+            }).then(() => {
+                alert("🔥 Joined Successfully!");
+            }).catch((error) => {
+                alert("Database Error: " + error.message);
+            });
         }
-    }
-</script>
-
-
+    </script>
 </body>
 </html>
