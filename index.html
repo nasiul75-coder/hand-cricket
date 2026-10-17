@@ -92,13 +92,65 @@
 </div>
 
 <script>
-    // Placeholder function for next step
-    function playMove(number) {
-        console.log("You selected: " + number);
-        alert("Tune " + number + " select kiya. Waiting for opponent...");
-        // Yahan hum apna logic lagayenge 3 aur 6 wala
+    let score = 0;
+    let wickets = 0;
+    let balls = 0;
+    let isFreeHit = false;
+
+    function playMove(batterChoice) {
+        // Computer bowler randomly picks 1 to 6
+        let bowlerChoice = Math.floor(Math.random() * 6) + 1;
+        let resultMessage = "";
+
+        // T20/ODI Rule: 3 aur 6 aamne samne
+        if ((batterChoice === 3 && bowlerChoice === 6) || (batterChoice === 6 && bowlerChoice === 3)) {
+            score += batterChoice; // Batter ke runs
+            score += 1; // No ball ka extra run
+            resultMessage = "🔥 NO BALL! Tu bach gaya. +" + batterChoice + " runs. Next ball FREE HIT hai!";
+            isFreeHit = true;
+        } 
+        // Wicket Rule (Same Number)
+        else if (batterChoice === bowlerChoice) {
+            if (isFreeHit) {
+                resultMessage = "😅 SAVED BY FREE HIT! Bowler ne bhi " + bowlerChoice + " dala.";
+                isFreeHit = false; // Free hit khatam
+                balls++;
+            } else {
+                resultMessage = "❌ WICKET! Bowler ne bhi " + bowlerChoice + " dala. Tu OUT!";
+                wickets++;
+                isFreeHit = false;
+                balls++;
+            }
+        } 
+        // Normal Runs (Different Numbers)
+        else {
+            resultMessage = "🏏 Good Shot! +" + batterChoice + " Runs. Bowler ne " + bowlerChoice + " dala.";
+            score += batterChoice;
+            isFreeHit = false;
+            balls++;
+        }
+
+        // Over Calculation (e.g. 1.2 overs)
+        let overs = Math.floor(balls / 6);
+        let currentBalls = balls % 6;
+        let overText = overs + "." + currentBalls;
+
+        // UI Scoreboard Update
+        document.getElementById("main-score").innerHTML = `IND ${score}/${wickets} <span style="font-size: 20px; color: #94a3b8;">(${overText})</span>`;
+        
+        // Show result on screen
+        alert(resultMessage);
+
+        // All Out Check
+        if (wickets >= 10) {
+            alert("⚠️ INNINGS OVER! Total Score: " + score + " runs.");
+            // Reset Match
+            score = 0; wickets = 0; balls = 0; isFreeHit = false;
+            document.getElementById("main-score").innerHTML = `IND 0/0 <span style="font-size: 20px; color: #94a3b8;">(0.0)</span>`;
+        }
     }
 </script>
+
 
 </body>
 </html>
