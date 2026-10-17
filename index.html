@@ -6,7 +6,6 @@
     <title>Hand Cricket Pro - Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Apple-style smooth typography and background */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
         body { 
             font-family: 'Inter', sans-serif; 
@@ -18,8 +17,6 @@
             align-items: center;
             justify-content: center;
         }
-        
-        /* Premium Frosted Glass Effect */
         .glass-panel { 
             background: rgba(255, 255, 255, 0.05); 
             backdrop-filter: blur(20px); 
@@ -27,7 +24,6 @@
             border: 1px solid rgba(255, 255, 255, 0.1); 
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
-
         .google-btn {
             background: rgba(255, 255, 255, 0.9);
             color: #000;
@@ -63,7 +59,7 @@
         </button>
     </div>
 
-    <!-- DASHBOARD SCREEN (Hidden until logged in) -->
+    <!-- DASHBOARD SCREEN -->
     <div id="dashboard-section" class="hidden glass-panel w-full max-w-4xl p-10 rounded-[2rem] mx-4">
         <div class="flex items-center justify-between border-b border-white/10 pb-6 mb-6">
             <div class="flex items-center gap-4">
@@ -103,7 +99,7 @@
     <!-- FIREBASE AUTHENTICATION LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
+        import { getAuth, signInWithRedirect, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js";
         
         const firebaseConfig = {
             apiKey: "AIzaSyAofevQrPWUKWxWAkBLtXl4f_lH5fjjPZE",
@@ -120,27 +116,21 @@
         const provider = new GoogleAuthProvider();
 
         window.loginWithGoogle = function() {
-            signInWithPopup(auth, provider).catch((error) => {
-                alert("Login Error: " + error.message);
-            });
+            signInWithRedirect(auth, provider);
         }
 
         window.logout = function() {
             signOut(auth);
         }
 
-        // Real-time check if user is logged in
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Hide Login, Show Dashboard
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('dashboard-section').classList.remove('hidden');
                 
-                // Put user data in UI
                 document.getElementById('user-name').innerText = user.displayName;
                 document.getElementById('user-profile-pic').src = user.photoURL;
             } else {
-                // Show Login, Hide Dashboard
                 document.getElementById('login-section').classList.remove('hidden');
                 document.getElementById('dashboard-section').classList.add('hidden');
             }
