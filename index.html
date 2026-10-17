@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hand Cricket Pro - The Ultimate Engine</title>
+    <title>Hand Cricket Pro - Bulletproof Engine</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -17,29 +17,22 @@
         .glass { background: rgba(10, 20, 40, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(255, 215, 0, 0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
         .input-glass { background: rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.2); color: white; outline: none; transition: 0.3s; }
         .input-glass:focus { border-color: #ffd700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
-        
         .screen { display: none; width: 100%; min-height: calc(100vh - 64px); flex-direction: column; padding-bottom: 2rem; overflow-y: auto;}
         .active-screen { display: flex; }
-        
-        .btn-move { transition: transform 0.1s; } 
-        .btn-move:active { transform: scale(0.9); }
+        .btn-move { transition: transform 0.1s; } .btn-move:active { transform: scale(0.9); }
         .selected-move { border-color: #ffd700 !important; box-shadow: 0 0 20px rgba(255,215,0,0.4); background: rgba(255,215,0,0.15) !important; color: white !important;}
-        
-        #bowler-modal { z-index: 999999; }
         .score-font { font-family: 'Teko', sans-serif; letter-spacing: 1px; line-height: 0.9; }
-        
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
     </style>
     
-    <!-- FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
 </head>
 <body>
 
-    <!-- AUDIO SFX -->
+    <!-- AUDIO SFX (Protected with silent catch) -->
     <audio id="sfx-click" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" preload="auto"></audio>
     <audio id="sfx-0" src="https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3" preload="auto"></audio>
     <audio id="sfx-1" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" preload="auto"></audio>
@@ -68,12 +61,15 @@
         </div>
     </div>
 
-    <!-- 2. DASHBOARD & STATS -->
+    <!-- 2. DASHBOARD -->
     <div id="dashboard" class="screen p-4 max-w-5xl mx-auto w-full pt-6">
         <div class="glass p-4 rounded-2xl border border-white/10 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gradient-to-r from-blue-900/40 to-slate-900/40 shadow-lg">
             <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-full bg-[#ffd700]/20 flex items-center justify-center border border-[#ffd700]/50"><i class="fa-solid fa-chart-simple text-[#ffd700] text-xl"></i></div>
-                <div><h3 class="text-xs text-slate-400 font-bold uppercase tracking-widest">Career Stats</h3><div class="text-lg font-black text-white" id="stat-team-name">Loading Team...</div></div>
+                <div>
+                    <h3 class="text-xs text-slate-400 font-bold uppercase tracking-widest">Career Stats</h3>
+                    <div class="text-lg font-black text-white" id="stat-team-name">Loading Team...</div>
+                </div>
             </div>
             <div class="flex gap-4 sm:gap-8 text-center">
                 <div><div class="text-[10px] text-slate-400 uppercase font-bold">Played</div><div class="text-xl font-black text-white" id="stat-p">0</div></div>
@@ -123,7 +119,7 @@
         </div>
     </div>
 
-    <!-- 4. MATCH RULES -->
+    <!-- 4. MATCH CONFIG -->
     <div id="match-config" class="screen p-4 max-w-xl mx-auto w-full pt-8">
         <div class="glass p-8 rounded-[2rem] border-t-4 border-blue-600">
             <h2 class="text-3xl font-black uppercase mb-6 text-blue-400 text-center">Match Rules</h2>
@@ -138,7 +134,7 @@
         </div>
     </div>
 
-    <!-- TOURNAMENT RULES -->
+    <!-- TOURNAMENT CONFIG -->
     <div id="tourney-config" class="screen p-4 max-w-xl mx-auto w-full pt-8">
         <div class="glass p-8 rounded-[2rem] border-t-4 border-[#ffd700]">
             <h2 class="text-3xl font-black uppercase mb-6 text-[#ffd700] text-center">League Rules</h2>
@@ -154,14 +150,13 @@
         </div>
     </div>
 
-    <!-- 5. LOBBY & POINTS TABLE -->
+    <!-- 5. LOBBY -->
     <div id="lobby" class="screen p-4 max-w-5xl mx-auto w-full pt-8">
         <div class="glass p-8 rounded-[2rem] text-center border-t-2 border-emerald-500 mb-6 bg-black/80">
             <p class="text-emerald-400 font-black uppercase text-sm mb-2">Share Room Code</p>
             <div class="text-5xl md:text-7xl font-mono font-black text-white bg-black/60 p-4 rounded-2xl inline-block tracking-widest border border-emerald-500/30 score-font" id="lobby-code">----</div>
             <p id="lobby-status" class="text-yellow-400 font-bold mt-4 uppercase animate-pulse">Waiting for opponent to join/resume...</p>
         </div>
-        
         <div id="tourney-ui" class="hidden w-full glass p-6 rounded-2xl border-t-2 border-[#ffd700]">
             <h3 class="font-black uppercase text-lg text-[#ffd700] mb-4"><i class="fa-solid fa-table-list mr-2"></i>Points Table</h3>
             <div class="overflow-x-auto rounded-xl border border-white/10 bg-black/50 custom-scroll">
@@ -170,7 +165,6 @@
                     <tbody id="pt-body"></tbody>
                 </table>
             </div>
-            <button id="start-t-match" class="w-full bg-[#ffd700] text-black mt-4 py-3 rounded-lg font-black uppercase hidden">Play Scheduled Match</button>
         </div>
     </div>
 
@@ -187,9 +181,8 @@
         </div>
     </div>
 
-    <!-- 7. PRO BROADCAST ARENA -->
+    <!-- 7. ARENA -->
     <div id="arena" class="screen p-2 max-w-5xl mx-auto w-full pt-4 h-full">
-        <!-- Main Scoreboard Banner -->
         <div class="glass border-b-4 border-[#ffd700] rounded-t-2xl p-4 sm:p-6 mb-3 flex justify-between items-center bg-gradient-to-b from-[#0a1128] to-black">
             <div class="w-1/3 text-left">
                 <div class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-widest mb-1" id="ui-bat-team">BAT TEAM</div>
@@ -226,7 +219,6 @@
                         <div class="flex gap-3 sm:gap-4 font-mono text-sm sm:text-base text-white font-black justify-end w-2/3" id="ui-b-stats"><span>0.0</span><span>0</span><span class="text-red-400">0</span><span class="text-slate-400">0.0</span></div>
                     </div>
                 </div>
-                <!-- Live Commentary Box -->
                 <div class="bg-black/80 p-2 rounded border border-white/5 mt-auto">
                     <div class="text-[10px] text-[#ffd700] font-black uppercase tracking-widest mb-1 border-b border-white/10 pb-1 flex justify-between"><span>Live Commentary</span></div>
                     <div class="h-16 overflow-y-auto custom-scroll font-mono text-[10px] sm:text-xs text-slate-300 space-y-1 pt-1" id="ui-commentary">
@@ -255,7 +247,7 @@
     <div id="summary-screen" class="screen p-4 max-w-4xl mx-auto w-full pt-8">
         <div class="glass p-8 rounded-[2rem] border-t-4 border-[#ffd700] text-center shadow-[0_0_50px_rgba(255,215,0,0.15)]">
             <h2 class="text-4xl font-black uppercase text-white mb-2 score-font tracking-widest">Match Analysis</h2>
-            <div class="text-2xl font-black text-[#ffd700] uppercase tracking-widest mb-8" id="summary-result">Team Won by X Runs</div>
+            <div class="text-2xl font-black text-[#ffd700] uppercase tracking-widest mb-8" id="summary-result">Match Concluded</div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-left">
                 <div class="bg-black/50 p-4 rounded-xl border border-white/10">
@@ -273,7 +265,7 @@
         </div>
     </div>
 
-    <!-- MODAL: BOWLER SELECTION (100% Guaranteed visual feedback) -->
+    <!-- MODAL: BOWLER SELECTION -->
     <div id="bowler-modal" style="display: none;" class="fixed inset-0 bg-black/95 backdrop-blur-lg items-center justify-center p-4 flex-col">
         <div class="glass p-6 rounded-[2rem] w-full max-w-md border-t-4 border-red-500 text-center shadow-[0_0_50px_rgba(220,38,38,0.4)]">
             <h3 class="text-3xl font-black uppercase text-white mb-2 score-font tracking-widest">Select Next Bowler</h3>
@@ -282,6 +274,7 @@
         </div>
     </div>
 
+    <!-- FIREBASE AND JS LOGIC -->
     <script>
         const fc = { apiKey: "AIzaSyAofevQrPWUKWxWAkBLtXl4f_lH5FjjPZE", authDomain: "hand-cricket-c2d70.firebaseapp.com", databaseURL: "https://hand-cricket-c2d70-default-rtdb.firebaseio.com", projectId: "hand-cricket-c2d70" };
         firebase.initializeApp(fc); const auth = firebase.auth(); const db = firebase.database();
@@ -290,11 +283,9 @@
         let squadData = { name: "Team", p: [] };
         let lastBallProcessed = -1; 
 
-        // SOUND EFFECTS
         const sfx = { click: document.getElementById('sfx-click'), dot: document.getElementById('sfx-0'), single: document.getElementById('sfx-1'), run: document.getElementById('sfx-2'), four: document.getElementById('sfx-4'), six: document.getElementById('sfx-6'), wicket: document.getElementById('sfx-w') };
-        function playSound(type) { try { if(sfx[type]) { sfx[type].currentTime = 0; sfx[type].play(); } } catch(e) {} }
+        function playSound(type) { try { if(sfx[type]) { sfx[type].currentTime = 0; sfx[type].play().catch(()=>{}); } } catch(e) {} }
 
-        // SQUAD INPUTS
         const pInp = document.getElementById('player-inputs');
         for(let i=1; i<=11; i++) {
             pInp.innerHTML += `<div class="flex items-center bg-black/50 border border-white/10 rounded-lg"><div class="bg-white/10 px-3 py-3 font-mono text-xs font-black text-white/50 w-10 text-center border-r border-white/10">${i}</div><input type="text" id="sq-${i}" placeholder="Player Name" class="w-full bg-transparent text-white px-3 py-3 text-sm outline-none font-bold uppercase"></div>`;
@@ -305,7 +296,6 @@
         
         function login() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
         
-        // AUTH & LOAD STATS
         auth.onAuthStateChanged(user => { 
             if(user) { 
                 u = user; document.getElementById('nav-user').innerText = u.displayName.split(" ")[0]; 
@@ -419,11 +409,11 @@
             }); 
         }
 
-        // TOSS ATOMIC UPDATE (Fix for freeze)
+        // TOSS FIX: Zero freezing
         window.submitToss = function(ch) {
             playSound('click');
             let bat = ch === 'bat' ? mRole : (mRole === 'p1'?'p2':'p1');
-            db.ref('matches/'+mId).update({ 'state/bat': bat, 'state/needBw': true, 'status': 'playing' });
+            db.ref('matches/'+mId).update({ 'state/bat': bat, 'state/needBw': false, 'status': 'playing' });
         }
 
         function listenMatch() {
@@ -440,18 +430,16 @@
                 }
                 
                 if(m.status === 'playing') {
-                    if(document.getElementById('arena').classList.contains('hidden')) nav('arena');
-                    
+                    nav('arena');
                     if(mRole === 'p1' && m.state.mov.p1 !== null && m.state.mov.p2 !== null) calcBall(m);
                     
-                    // SFX Trigger
                     if(m.state.bls > lastBallProcessed && m.state.sum && m.state.sum.length > 0) {
                         lastBallProcessed = m.state.bls;
                         let lastRes = m.state.sum[m.state.sum.length-1];
                         if(lastRes === 'W') playSound('wicket'); else if(lastRes === 6) playSound('six'); else if(lastRes === 4) playSound('four'); else if(lastRes === 2 || lastRes === 3) playSound('run'); else if(lastRes === 1) playSound('single'); else playSound('dot');
                     }
                     
-                    // THE FIX: MODAL WITH VISUAL FEEDBACK
+                    // MODAL LOGIC WITH IMMEDIATE DISMISS
                     if(m.state.needBw && m.state.mov.p1 === null && m.state.mov.p2 === null) {
                         let bwRole = m.state.bat === 'p1' ? 'p2' : 'p1';
                         if(mRole === bwRole) { 
@@ -518,7 +506,9 @@
             let btName = btTeam.team.p[s.sIdx] || "Batter"; let bwName = bwTeam.team.p[s.bwIdx] || "Bowler";
             let commTxt = "";
 
-            if(btM === 0 && bwM === 0) { res = '0'; commTxt = `<span class='text-slate-400'>${bwName} to ${btName}, 0 run. Solid defense.</span>`; } 
+            s.needBw = false; // Prevent stuck on balls
+
+            if(btM === 0 && bwM === 0) { res = '0'; commTxt = `<span class='text-slate-400'>${bwName} to ${btName}, 0 run. Dot ball.</span>`; } 
             else if(btM === bwM) { out = true; res = 'W'; commTxt = `<span class='text-red-400 font-bold'>${bwName} to ${btName}, OUT! Got him!</span>`; }
             else { 
                 run = btM; res = run; 
@@ -543,7 +533,7 @@
 
             if(s.bls % 6 === 0) {
                 s.sum = []; let t = s.sIdx; s.sIdx = s.nsIdx; s.nsIdx = t; 
-                s.prevBw = s.bwIdx; s.needBw = true; 
+                s.prevBw = s.bwIdx; s.needBw = true; // Legit over change trigger
             }
 
             if(s.wic >= m.set.wk || s.bls >= m.set.ov * 6 || (s.inn === 2 && s.scr >= s.trg)) {
@@ -558,7 +548,6 @@
             db.ref(`matches/${mId}/state`).set(s);
         }
 
-        // FIXED MODAL UI (Visible "SELECT" button)
         function showBowlerModal(m) {
             let bwTeam = m.state.bat === 'p1' ? m.p2 : m.p1;
             let html = '';
@@ -572,7 +561,7 @@
                 html += `<button onclick="setBowler(${i})" class="w-full p-4 rounded-xl text-left border-2 font-black text-white mb-3 transition shadow-lg ${disClass}" ${disBtn}>
                             <div class="flex justify-between items-center">
                                 <span>${pName}</span>
-                                ${isPrev ? '' : '<span class="bg-[#ffd700] text-black text-[10px] px-2 py-1 rounded">SELECT</span>'}
+                                ${isPrev ? '' : '<span class="bg-[#ffd700] text-black text-[10px] px-3 py-1 rounded-md">SELECT</span>'}
                             </div>
                             ${subInfo}
                          </button>`;
@@ -583,7 +572,7 @@
 
         window.setBowler = function(idx) { 
             playSound('click'); 
-            document.getElementById('bowler-modal').style.display = 'none'; // Instant UI Feedback
+            document.getElementById('bowler-modal').style.display = 'none';
             db.ref(`matches/${mId}/state`).update({ bwIdx: idx, needBw: false }); 
         }
 
