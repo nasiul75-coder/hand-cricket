@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hand Cricket Pro - Login</title>
+    <title>Hand Cricket Pro - Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
@@ -13,9 +13,6 @@
             color: #f8fafc; 
             margin: 0;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         .glass-panel { 
             background: rgba(255, 255, 255, 0.05); 
@@ -24,85 +21,116 @@
             border: 1px solid rgba(255, 255, 255, 0.1); 
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
-        .google-btn {
-            background: rgba(255, 255, 255, 0.9);
-            color: #000;
-            transition: all 0.3s ease;
-            cursor: pointer;
+        .custom-select {
+            appearance: none;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        .google-btn:hover {
-            background: #fff;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(255,255,255,0.2);
-        }
+        .custom-select:focus { outline: none; border-color: #3b82f6; }
     </style>
 
-    <!-- FIREBASE BULLETPROOF SCRIPTS -->
+    <!-- FIREBASE COMPAT SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
 </head>
-<body>
+<body class="flex flex-col">
 
-    <!-- LOGIN SCREEN -->
-    <div id="login-section" class="glass-panel w-full max-w-md p-10 rounded-[2rem] text-center mx-4">
-        <div class="mb-8">
-            <div class="w-20 h-20 bg-gradient-to-tr from-blue-500 to-emerald-400 rounded-2xl mx-auto flex items-center justify-center shadow-lg mb-6 transform rotate-3">
-                <span class="text-4xl">🏏</span>
+    <!-- TOP NAVIGATION -->
+    <header class="w-full p-6 flex justify-between items-center hidden" id="top-nav">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-gradient-to-tr from-blue-500 to-emerald-400 rounded-xl flex items-center justify-center shadow-lg transform rotate-3">
+                <span class="text-xl">🏏</span>
             </div>
-            <h1 class="text-3xl font-extrabold tracking-tight mb-2">Hand Cricket <span class="text-emerald-400">Pro</span></h1>
-            <p class="text-slate-400 text-sm">Sign in to sync your career stats and trophies.</p>
-        </div>
-
-        <button onclick="loginWithGoogle()" class="google-btn w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3">
-            <svg class="w-6 h-6" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-            </svg>
-            Continue with Google
-        </button>
-    </div>
-
-    <!-- DASHBOARD SCREEN -->
-    <div id="dashboard-section" class="hidden glass-panel w-full max-w-4xl p-10 rounded-[2rem] mx-4">
-        <div class="flex items-center justify-between border-b border-white/10 pb-6 mb-6">
-            <div class="flex items-center gap-4">
-                <img id="user-profile-pic" src="" class="w-16 h-16 rounded-full border-2 border-emerald-400 shadow-lg object-cover" alt="Profile">
-                <div>
-                    <h2 id="user-name" class="text-2xl font-bold">Player Name</h2>
-                    <p class="text-emerald-400 text-sm">Professional Player</p>
-                </div>
-            </div>
-            <button onclick="logout()" class="text-slate-400 hover:text-white text-sm transition">Sign Out</button>
-        </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 text-center">
-            <div class="bg-white/5 p-4 rounded-2xl border border-white/5">
-                <div class="text-slate-400 text-xs uppercase tracking-widest mb-1">Matches</div>
-                <div class="text-2xl font-bold">0</div>
-            </div>
-            <div class="bg-white/5 p-4 rounded-2xl border border-white/5">
-                <div class="text-slate-400 text-xs uppercase tracking-widest mb-1">Runs</div>
-                <div class="text-2xl font-bold">0</div>
-            </div>
-            <div class="bg-white/5 p-4 rounded-2xl border border-white/5">
-                <div class="text-slate-400 text-xs uppercase tracking-widest mb-1">Strike Rate</div>
-                <div class="text-2xl font-bold">0.0</div>
-            </div>
-            <div class="bg-white/5 p-4 rounded-2xl border border-white/5">
-                <div class="text-slate-400 text-xs uppercase tracking-widest mb-1">Trophies</div>
-                <div class="text-2xl font-bold">🏆 0</div>
-            </div>
+            <h1 class="text-xl font-extrabold tracking-tight">HC <span class="text-emerald-400">PRO</span></h1>
         </div>
         
-        <button class="w-full bg-gradient-to-r from-blue-600 to-emerald-500 py-4 rounded-xl font-bold text-lg shadow-lg hover:opacity-90 transition">
-            Enter Matchmaking Lobby ➔
-        </button>
+        <!-- PROFILE TOP RIGHT -->
+        <div class="flex items-center gap-4 bg-black/20 p-2 pr-4 rounded-full border border-white/10">
+            <img id="user-profile-pic" src="" class="w-10 h-10 rounded-full border-2 border-emerald-400 object-cover" alt="Profile">
+            <div class="hidden sm:block text-right">
+                <h2 id="user-name" class="text-sm font-bold leading-tight">Player Name</h2>
+                <button onclick="logout()" class="text-emerald-400 hover:text-white text-xs transition">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- LOGIN SCREEN -->
+    <div id="login-section" class="flex-1 flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-md p-10 rounded-[2rem] text-center">
+            <h1 class="text-4xl font-extrabold tracking-tight mb-8">Hand Cricket <span class="text-emerald-400">Pro</span></h1>
+            <button onclick="loginWithGoogle()" class="w-full bg-white text-black py-4 rounded-xl font-bold text-lg hover:-translate-y-1 transition shadow-lg flex items-center justify-center gap-3">
+                <svg class="w-6 h-6" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                Continue with Google
+            </button>
+        </div>
     </div>
 
+    <!-- DASHBOARD SCREEN (Middle) -->
+    <div id="dashboard-section" class="hidden flex-1 flex flex-col items-center p-4 pb-12 w-full max-w-5xl mx-auto space-y-6">
+        
+        <!-- TEAM CUSTOMIZATION ROW -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+            
+            <!-- International Team -->
+            <div class="glass-panel p-6 rounded-2xl">
+                <h3 class="text-emerald-400 font-bold tracking-widest text-sm mb-4">🌍 CREATE TEAM (INTERNATIONAL)</h3>
+                <select id="int-team" onchange="saveProfileData()" class="custom-select w-full p-4 rounded-xl text-white text-lg font-semibold cursor-pointer">
+                    <option value="None">Select Country</option>
+                    <option value="India">🇮🇳 India</option>
+                    <option value="Australia">🇦🇺 Australia</option>
+                    <option value="West Indies">🌴 West Indies</option>
+                    <option value="England">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</option>
+                    <option value="South Africa">🇿🇦 South Africa</option>
+                    <option value="New Zealand">🇳🇿 New Zealand</option>
+                </select>
+            </div>
+
+            <!-- League Team -->
+            <div class="glass-panel p-6 rounded-2xl">
+                <h3 class="text-blue-400 font-bold tracking-widest text-sm mb-4">🏆 CREATE TEAM (LEAGUE)</h3>
+                <select id="league-team" onchange="saveProfileData()" class="custom-select w-full p-4 rounded-xl text-white text-lg font-semibold cursor-pointer">
+                    <option value="None">Select Franchise League</option>
+                    <option value="HPL">HPL (Hand Cricket Premier League)</option>
+                    <option value="HBBL">HBBL (Hand Cricket Big Bull League)</option>
+                    <option value="HCSL">HCSL (Hand Cricket Super League)</option>
+                    <option value="HCPL">HCPL (Hand Cricket Caribbean League)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- SQUAD BUILDER (PLAYING 11) -->
+        <div class="glass-panel p-6 rounded-2xl w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-yellow-400 font-bold tracking-widest text-sm">⚔️ YOUR PLAYING 11 SQUAD</h3>
+                <button onclick="saveProfileData()" class="bg-yellow-500/20 text-yellow-400 border border-yellow-500/50 px-4 py-1 rounded-lg text-sm hover:bg-yellow-500 hover:text-black transition">Save Squad</button>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3" id="playing-11-container">
+                <!-- Inputs generated via JS -->
+            </div>
+            <p id="save-status" class="text-emerald-400 text-sm mt-3 hidden text-center">Squad and Teams saved to cloud! ☁️</p>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full mt-4">
+            <button class="glass-panel bg-gradient-to-r from-blue-600/80 to-blue-800/80 hover:from-blue-500 hover:to-blue-700 p-8 rounded-2xl border border-blue-400/30 transform hover:-translate-y-2 transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] group">
+                <div class="text-5xl mb-4 group-hover:scale-110 transition">🎮</div>
+                <h2 class="text-2xl font-black tracking-wide text-white">CREATE MATCH</h2>
+                <p class="text-blue-200 text-sm mt-2">Play Head-to-Head Multiplayer</p>
+            </button>
+            
+            <button class="glass-panel bg-gradient-to-r from-purple-600/80 to-pink-800/80 hover:from-purple-500 hover:to-pink-700 p-8 rounded-2xl border border-purple-400/30 transform hover:-translate-y-2 transition-all shadow-[0_0_20px_rgba(147,51,234,0.3)] group">
+                <div class="text-5xl mb-4 group-hover:scale-110 transition">🏆</div>
+                <h2 class="text-2xl font-black tracking-wide text-white">CREATE TOURNAMENT</h2>
+                <p class="text-purple-200 text-sm mt-2">Host League with your Playing 11</p>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- FIREBASE LOGIC -->
     <script>
-        // Exactly your correct config with the 'F' and the popup fix
         const firebaseConfig = {
             apiKey: "AIzaSyAofevQrPWUKWxWAkBLtXl4f_lH5FjjPZE",
             authDomain: "hand-cricket-c2d70.firebaseapp.com",
@@ -114,33 +142,82 @@
             measurementId: "G-DH3RLFQBK5"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-        const provider = new firebase.auth.GoogleAuthProvider();
+        const db = firebase.database();
+        let currentUser = null;
 
-        function loginWithGoogle() {
-            // Popup chalega, page load/redirect nahi hoga!
-            auth.signInWithPopup(provider).catch((error) => {
-                alert("Login Error: " + error.message);
+        // Generate 11 inputs dynamically
+        const squadContainer = document.getElementById('playing-11-container');
+        for (let i = 1; i <= 11; i++) {
+            squadContainer.innerHTML += `
+                <div class="flex items-center bg-black/30 border border-white/10 rounded-xl overflow-hidden">
+                    <div class="bg-white/10 text-white/50 px-3 py-2 font-mono font-bold w-10 text-center border-r border-white/10">${i}</div>
+                    <input type="text" id="player-${i}" placeholder="Player Name" class="w-full bg-transparent text-white p-2 focus:outline-none focus:bg-white/5 transition">
+                </div>
+            `;
+        }
+
+        window.loginWithGoogle = function() {
+            auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(err => alert("Error: " + err.message));
+        }
+        window.logout = function() { auth.signOut(); }
+
+        // Fetch User Data from DB
+        function loadProfileData(uid) {
+            db.ref('users/' + uid).once('value').then((snapshot) => {
+                const data = snapshot.val();
+                if (data && data.customization) {
+                    if(data.customization.intTeam) document.getElementById('int-team').value = data.customization.intTeam;
+                    if(data.customization.leagueTeam) document.getElementById('league-team').value = data.customization.leagueTeam;
+                    
+                    if(data.customization.squad) {
+                        for(let i=1; i<=11; i++) {
+                            document.getElementById(`player-${i}`).value = data.customization.squad[i-1] || "";
+                        }
+                    }
+                }
             });
         }
 
-        function logout() {
-            auth.signOut();
+        // Save User Data to DB
+        window.saveProfileData = function() {
+            if(!currentUser) return;
+            
+            let squadArray = [];
+            for(let i=1; i<=11; i++) {
+                squadArray.push(document.getElementById(`player-${i}`).value);
+            }
+
+            db.ref('users/' + currentUser.uid + '/customization').set({
+                intTeam: document.getElementById('int-team').value,
+                leagueTeam: document.getElementById('league-team').value,
+                squad: squadArray
+            }).then(() => {
+                const status = document.getElementById('save-status');
+                status.classList.remove('hidden');
+                setTimeout(() => status.classList.add('hidden'), 3000);
+            });
         }
 
-        // Real-time Check
+        // Auth State Check
         auth.onAuthStateChanged((user) => {
             if (user) {
+                currentUser = user;
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('dashboard-section').classList.remove('hidden');
+                document.getElementById('top-nav').classList.remove('hidden');
                 
                 document.getElementById('user-name').innerText = user.displayName;
                 document.getElementById('user-profile-pic').src = user.photoURL;
+
+                // Load their saved settings!
+                loadProfileData(user.uid);
             } else {
+                currentUser = null;
                 document.getElementById('login-section').classList.remove('hidden');
                 document.getElementById('dashboard-section').classList.add('hidden');
+                document.getElementById('top-nav').classList.add('hidden');
             }
         });
     </script>
