@@ -3,17 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hand Cricket Pro - Dashboard</title>
+    <title>Hand Cricket Pro - Esports Arena</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Professional Icons (FontAwesome) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap');
         
         body { 
             font-family: 'Inter', sans-serif; 
-            /* Cinematic Dark Stadium Background with Gradient Overlay */
             background-color: #0f172a;
             background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.98)), url('https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=2000&auto=format&fit=crop');
             background-size: cover;
@@ -24,35 +22,35 @@
             min-height: 100vh;
         }
         
-        /* Premium Frosted Glass Panel */
         .glass-panel { 
-            background: rgba(15, 23, 42, 0.4); 
+            background: rgba(15, 23, 42, 0.5); 
             backdrop-filter: blur(20px); 
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1); 
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
         }
         
-        .custom-select {
-            appearance: none;
-            background: rgba(0, 0, 0, 0.5) url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2310B981%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E") no-repeat right 1rem center;
-            background-size: 0.85rem;
+        .custom-select, .custom-input {
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-        .custom-select:focus { 
-            outline: none; 
-            border-color: #10b981; 
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
-        }
-        
-        .custom-input {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid transparent;
             transition: all 0.3s ease;
         }
-        .custom-input:focus {
-            background: rgba(0, 0, 0, 0.6);
-            border-bottom: 1px solid #3b82f6;
+        .custom-select:focus, .custom-input:focus { 
+            outline: none; 
+            border-color: #3b82f6; 
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Format Radio Cards */
+        .format-radio:checked + label {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6;
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);
+            transform: translateY(-2px);
+        }
+        .format-radio:checked + label .format-icon {
+            color: #60a5fa;
+            transform: scale(1.1);
         }
     </style>
 
@@ -64,125 +62,168 @@
 <body class="flex flex-col">
 
     <!-- TOP NAVIGATION -->
-    <header class="w-full p-5 lg:px-10 flex justify-between items-center hidden border-b border-white/5 bg-black/20 backdrop-blur-md z-50" id="top-nav">
-        <div class="flex items-center gap-3">
+    <header class="w-full p-4 lg:px-8 flex justify-between items-center hidden border-b border-white/5 bg-black/30 backdrop-blur-md z-50" id="top-nav">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="showDashboard()">
             <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-emerald-500 rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.4)]">
                 <i class="fa-solid fa-bolt text-white text-lg"></i>
             </div>
-            <h1 class="text-xl font-extrabold tracking-widest">HC <span class="text-emerald-400">PRO</span></h1>
+            <h1 class="text-xl font-black tracking-widest">HC <span class="text-emerald-400">PRO</span></h1>
         </div>
         
-        <!-- PROFILE TOP RIGHT -->
-        <div class="flex items-center gap-4 bg-black/40 p-1.5 pr-4 rounded-full border border-white/10 shadow-lg hover:bg-black/60 transition cursor-pointer">
-            <img id="user-profile-pic" src="" class="w-9 h-9 rounded-full border border-emerald-500 object-cover shadow-[0_0_10px_rgba(16,185,129,0.3)]" alt="Profile">
+        <div class="flex items-center gap-4 bg-black/50 p-1.5 pr-4 rounded-full border border-white/10 shadow-lg">
+            <img id="user-profile-pic" src="" class="w-8 h-8 rounded-full border border-emerald-500 object-cover shadow-[0_0_10px_rgba(16,185,129,0.3)]">
             <div class="hidden sm:block text-right">
-                <h2 id="user-name" class="text-sm font-bold leading-tight tracking-wide">Player</h2>
-                <button onclick="logout()" class="text-slate-400 hover:text-red-400 text-xs font-semibold transition tracking-wide uppercase">Sign Out</button>
+                <h2 id="user-name" class="text-xs font-bold leading-tight tracking-wide">Player</h2>
+                <button onclick="logout()" class="text-slate-400 hover:text-red-400 text-[10px] font-semibold transition tracking-wide uppercase">Sign Out</button>
             </div>
         </div>
     </header>
 
     <!-- LOGIN SCREEN -->
     <div id="login-section" class="flex-1 flex items-center justify-center p-4 relative z-10">
-        <div class="glass-panel w-full max-w-md p-10 rounded-[2rem] text-center border-t border-white/20">
+        <div class="glass-panel w-full max-w-md p-10 rounded-[2rem] text-center">
             <div class="w-24 h-24 bg-gradient-to-tr from-blue-600 to-emerald-500 rounded-2xl mx-auto flex items-center justify-center shadow-[0_0_30px_rgba(16,185,129,0.3)] mb-6">
                 <i class="fa-solid fa-bolt text-4xl text-white"></i>
             </div>
-            <h1 class="text-4xl font-black tracking-tight mb-2 uppercase">Hand Cricket <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500">Pro</span></h1>
+            <h1 class="text-4xl font-black tracking-tight mb-2 uppercase">Hand Cricket <span class="text-emerald-400">Pro</span></h1>
             <p class="text-slate-400 text-sm mb-10 font-medium">Connect your account to sync career stats</p>
             
-            <button onclick="loginWithGoogle()" class="w-full bg-white text-black py-4 rounded-xl font-bold text-lg hover:-translate-y-1 hover:shadow-[0_10px_25px_rgba(255,255,255,0.2)] transition-all flex items-center justify-center gap-3">
-                <i class="fa-brands fa-google text-blue-500 text-xl"></i>
-                Continue with Google
+            <button onclick="loginWithGoogle()" class="w-full bg-white text-black py-4 rounded-xl font-bold text-lg hover:-translate-y-1 transition-all flex items-center justify-center gap-3">
+                <i class="fa-brands fa-google text-blue-500 text-xl"></i> Continue with Google
             </button>
         </div>
     </div>
 
-    <!-- DASHBOARD SCREEN (Middle) -->
+    <!-- MAIN DASHBOARD -->
     <div id="dashboard-section" class="hidden flex-1 flex flex-col items-center p-4 pt-8 pb-12 w-full max-w-6xl mx-auto space-y-6 relative z-10">
         
-        <!-- TEAM CUSTOMIZATION ROW -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-            
-            <!-- International Team -->
-            <div class="glass-panel p-7 rounded-[1.5rem] border-t border-emerald-500/30 hover:border-emerald-500/60 transition duration-300 group">
-                <h3 class="text-emerald-400 font-bold tracking-widest text-xs mb-4 flex items-center uppercase">
-                    <i class="fa-solid fa-earth-americas mr-2 text-lg"></i> International Team
-                </h3>
-                <select id="int-team" onchange="saveProfileData()" class="custom-select w-full p-4 rounded-xl text-white text-lg font-semibold cursor-pointer transition group-hover:bg-black/60">
-                    <option value="None">Select Country</option>
-                    <option value="India">India</option>
-                    <option value="Australia">Australia</option>
-                    <option value="West Indies">West Indies</option>
-                    <option value="England">England</option>
-                    <option value="South Africa">South Africa</option>
-                    <option value="New Zealand">New Zealand</option>
-                </select>
-            </div>
-
-            <!-- League Team -->
-            <div class="glass-panel p-7 rounded-[1.5rem] border-t border-blue-500/30 hover:border-blue-500/60 transition duration-300 group">
-                <h3 class="text-blue-400 font-bold tracking-widest text-xs mb-4 flex items-center uppercase">
-                    <i class="fa-solid fa-medal mr-2 text-lg"></i> Franchise League
-                </h3>
-                <select id="league-team" onchange="saveProfileData()" class="custom-select w-full p-4 rounded-xl text-white text-lg font-semibold cursor-pointer transition group-hover:bg-black/60">
-                    <option value="None">Select Franchise League</option>
-                    <option value="HPL">HPL (Hand Cricket Premier League)</option>
-                    <option value="HBBL">HBBL (Hand Cricket Big Bull League)</option>
-                    <option value="HCSL">HCSL (Hand Cricket Super League)</option>
-                    <option value="HCPL">HCPL (Hand Cricket Caribbean League)</option>
-                </select>
-            </div>
+        <!-- Quick Action Row -->
+        <div class="w-full flex gap-4 bg-black/30 p-4 rounded-2xl border border-white/5 shadow-lg items-center">
+            <input type="text" id="join-room-code" placeholder="Enter Room Code" class="custom-input flex-1 py-3 px-4 rounded-xl text-lg font-mono font-bold text-white tracking-widest uppercase placeholder-white/20">
+            <button onclick="joinRoom()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-8 rounded-xl transition shadow-[0_0_15px_rgba(16,185,129,0.4)] whitespace-nowrap">
+                <i class="fa-solid fa-right-to-bracket mr-2"></i> Join
+            </button>
         </div>
 
-        <!-- SQUAD BUILDER (PLAYING 11) -->
-        <div class="glass-panel p-7 rounded-[1.5rem] w-full border-t border-yellow-500/30">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                <h3 class="text-yellow-400 font-bold tracking-widest text-xs flex items-center uppercase">
-                    <i class="fa-solid fa-users-viewfinder mr-2 text-lg"></i> Your Playing 11 Squad
-                </h3>
-                <button onclick="saveProfileData()" class="bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 px-5 py-2 rounded-lg text-sm font-bold hover:bg-yellow-500 hover:text-black hover:shadow-[0_0_15px_rgba(234,179,8,0.4)] transition-all">
-                    <i class="fa-solid fa-cloud-arrow-up mr-2"></i>Save Roster
-                </button>
-            </div>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="playing-11-container">
-                <!-- Inputs generated via JS -->
-            </div>
-            <p id="save-status" class="text-emerald-400 text-sm mt-4 font-medium hidden text-center bg-emerald-500/10 py-2 rounded-lg border border-emerald-500/20">
-                <i class="fa-solid fa-check-circle mr-1"></i> Squad and Teams synced to cloud successfully!
-            </p>
-        </div>
-
-        <!-- ACTION BUTTONS -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full pt-4">
-            <button class="relative overflow-hidden glass-panel bg-gradient-to-br from-blue-900/80 to-slate-900/90 hover:from-blue-800 hover:to-slate-800 p-8 rounded-[2rem] border-t-2 border-blue-500/50 transform hover:-translate-y-2 transition-all shadow-[0_10px_30px_rgba(37,99,235,0.2)] group">
-                <div class="absolute -right-4 -bottom-4 opacity-10 text-9xl group-hover:scale-110 transition duration-500">
-                    <i class="fa-solid fa-gamepad"></i>
-                </div>
-                <div class="relative z-10 flex flex-col items-start text-left">
-                    <div class="w-16 h-16 bg-blue-500/20 rounded-2xl flex items-center justify-center mb-6 border border-blue-500/30 group-hover:border-blue-400 transition">
-                        <i class="fa-solid fa-gamepad text-3xl text-blue-400 group-hover:text-blue-300 group-hover:scale-110 transition"></i>
-                    </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full pt-2">
+            <!-- CREATE MATCH BUTTON (Triggers Setup) -->
+            <button onclick="openMatchSetup()" class="relative overflow-hidden glass-panel bg-gradient-to-br from-blue-900/80 to-slate-900/90 hover:from-blue-800 hover:to-slate-800 p-8 rounded-[2rem] border-t-2 border-blue-500/50 transform hover:-translate-y-2 transition-all shadow-[0_10px_30px_rgba(37,99,235,0.2)] group text-left">
+                <div class="absolute -right-4 -bottom-4 opacity-10 text-9xl group-hover:scale-110 transition duration-500"><i class="fa-solid fa-gamepad"></i></div>
+                <div class="relative z-10">
+                    <div class="w-16 h-16 bg-blue-500/20 rounded-2xl flex items-center justify-center mb-6 border border-blue-500/30 group-hover:border-blue-400"><i class="fa-solid fa-gamepad text-3xl text-blue-400"></i></div>
                     <h2 class="text-3xl font-black tracking-wide text-white uppercase mb-1">Create Match</h2>
-                    <p class="text-blue-200/60 text-sm font-medium">Host a Head-to-Head Multiplayer Game</p>
+                    <p class="text-blue-200/60 text-sm font-medium">Host a Custom Multiplayer Game</p>
                 </div>
             </button>
             
-            <button class="relative overflow-hidden glass-panel bg-gradient-to-br from-purple-900/80 to-slate-900/90 hover:from-purple-800 hover:to-slate-800 p-8 rounded-[2rem] border-t-2 border-purple-500/50 transform hover:-translate-y-2 transition-all shadow-[0_10px_30px_rgba(147,51,234,0.2)] group">
-                <div class="absolute -right-4 -bottom-4 opacity-10 text-9xl group-hover:scale-110 transition duration-500">
-                    <i class="fa-solid fa-trophy"></i>
-                </div>
-                <div class="relative z-10 flex flex-col items-start text-left">
-                    <div class="w-16 h-16 bg-purple-500/20 rounded-2xl flex items-center justify-center mb-6 border border-purple-500/30 group-hover:border-purple-400 transition">
-                        <i class="fa-solid fa-trophy text-3xl text-purple-400 group-hover:text-purple-300 group-hover:scale-110 transition"></i>
-                    </div>
-                    <h2 class="text-3xl font-black tracking-wide text-white uppercase mb-1">Tournament</h2>
-                    <p class="text-purple-200/60 text-sm font-medium">Host a League with your Custom Squad</p>
+            <button class="relative overflow-hidden glass-panel bg-gradient-to-br from-yellow-900/80 to-slate-900/90 hover:from-yellow-800 p-8 rounded-[2rem] border-t-2 border-yellow-500/50 transform hover:-translate-y-2 transition-all shadow-[0_10px_30px_rgba(234,179,8,0.2)] group text-left">
+                <div class="absolute -right-4 -bottom-4 opacity-10 text-9xl group-hover:scale-110 transition duration-500"><i class="fa-solid fa-users-gear"></i></div>
+                <div class="relative z-10">
+                    <div class="w-16 h-16 bg-yellow-500/20 rounded-2xl flex items-center justify-center mb-6 border border-yellow-500/30"><i class="fa-solid fa-users-gear text-3xl text-yellow-400"></i></div>
+                    <h2 class="text-3xl font-black tracking-wide text-white uppercase mb-1">Manage Squad</h2>
+                    <p class="text-yellow-200/60 text-sm font-medium">Edit your Franchise & Playing 11</p>
                 </div>
             </button>
         </div>
+    </div>
 
+    <!-- CREATE MATCH SETUP SCREEN -->
+    <div id="match-setup-section" class="hidden flex-1 flex flex-col items-center p-4 pt-6 w-full max-w-4xl mx-auto relative z-10">
+        
+        <div class="w-full flex items-center justify-between mb-6">
+            <button onclick="showDashboard()" class="text-slate-400 hover:text-white transition flex items-center font-semibold">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Back
+            </button>
+            <h2 class="text-xl font-black uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">Match Setup</h2>
+            <div class="w-16"></div> <!-- Spacer -->
+        </div>
+
+        <div class="glass-panel p-8 rounded-[2rem] w-full border-t border-blue-500/30 shadow-[0_10px_40px_rgba(0,0,0,0.6)]">
+            
+            <!-- Format Selection -->
+            <h3 class="text-slate-300 font-bold tracking-widest text-xs mb-4 uppercase"><i class="fa-solid fa-trophy mr-2 text-blue-400"></i> Select Format</h3>
+            <div class="grid grid-cols-3 gap-4 mb-8">
+                <!-- T20 -->
+                <div class="relative">
+                    <input type="radio" name="format" id="fmt-t20" value="T20" class="format-radio hidden" checked onchange="updateMatchRules()">
+                    <label for="fmt-t20" class="block w-full text-center p-4 border border-white/10 rounded-xl cursor-pointer bg-black/40 transition duration-300">
+                        <i class="fa-solid fa-bolt format-icon text-2xl text-slate-500 mb-2 transition duration-300"></i>
+                        <div class="font-black text-lg">T20</div>
+                    </label>
+                </div>
+                <!-- ODI -->
+                <div class="relative">
+                    <input type="radio" name="format" id="fmt-odi" value="ODI" class="format-radio hidden" onchange="updateMatchRules()">
+                    <label for="fmt-odi" class="block w-full text-center p-4 border border-white/10 rounded-xl cursor-pointer bg-black/40 transition duration-300">
+                        <i class="fa-solid fa-shield format-icon text-2xl text-slate-500 mb-2 transition duration-300"></i>
+                        <div class="font-black text-lg">ODI</div>
+                    </label>
+                </div>
+                <!-- TEST -->
+                <div class="relative">
+                    <input type="radio" name="format" id="fmt-test" value="TEST" class="format-radio hidden" onchange="updateMatchRules()">
+                    <label for="fmt-test" class="block w-full text-center p-4 border border-white/10 rounded-xl cursor-pointer bg-black/40 transition duration-300">
+                        <i class="fa-solid fa-chess-rook format-icon text-2xl text-slate-500 mb-2 transition duration-300"></i>
+                        <div class="font-black text-lg">TEST</div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Rules Selection -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                <div>
+                    <label class="text-slate-300 font-bold tracking-widest text-xs mb-2 block uppercase"><i class="fa-solid fa-stopwatch mr-2 text-emerald-400"></i> Match Overs</label>
+                    <select id="setup-overs" class="custom-select w-full p-4 rounded-xl text-white font-bold text-lg cursor-pointer">
+                        <option value="2">2 Overs (Quick Match)</option>
+                        <option value="5" selected>5 Overs</option>
+                        <option value="10">10 Overs</option>
+                        <option value="20">20 Overs</option>
+                        <option value="Unlimited">Unlimited (Test Match)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-slate-300 font-bold tracking-widest text-xs mb-2 block uppercase"><i class="fa-solid fa-baseball-bat-ball mr-2 text-yellow-400"></i> Wickets / Players</label>
+                    <select id="setup-wickets" class="custom-select w-full p-4 rounded-xl text-white font-bold text-lg cursor-pointer">
+                        <option value="1">1 Wicket (Survival)</option>
+                        <option value="3">3 Wickets</option>
+                        <option value="5">5 Wickets (Half Squad)</option>
+                        <option value="10" selected>10 Wickets (Full 11)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Team & Squad Preview -->
+            <div class="bg-black/30 p-5 rounded-xl border border-white/5 mb-8 flex items-center justify-between">
+                <div>
+                    <h4 class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Your Selected Team</h4>
+                    <div class="text-xl font-black text-white" id="setup-team-name">Loading...</div>
+                </div>
+                <div class="text-right">
+                    <h4 class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Squad Available</h4>
+                    <div class="text-emerald-400 font-bold text-sm"><i class="fa-solid fa-check-circle mr-1"></i> Synced with Wickets</div>
+                </div>
+            </div>
+
+            <button onclick="createRoom()" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 py-4 rounded-xl font-black tracking-widest text-lg shadow-[0_0_20px_rgba(59,130,246,0.5)] transform hover:-translate-y-1 transition-all uppercase">
+                Host Match & Generate Code <i class="fa-solid fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- WAITING LOBBY (After hosting) -->
+    <div id="waiting-lobby" class="hidden flex-1 flex items-center justify-center p-4 relative z-10">
+        <div class="glass-panel w-full max-w-md p-10 rounded-[2rem] text-center border-t border-emerald-500/30">
+            <h2 class="text-emerald-400 font-bold tracking-widest text-sm mb-4 uppercase">Room Created!</h2>
+            <p class="text-slate-300 text-sm mb-2">Share this code with your opponent:</p>
+            
+            <div class="bg-black/50 border border-white/10 p-6 rounded-xl mb-6">
+                <div id="display-room-code" class="text-6xl font-mono font-black text-white tracking-widest">----</div>
+            </div>
+            
+            <div class="flex items-center justify-center gap-3 text-blue-400 animate-pulse font-medium">
+                <i class="fa-solid fa-circle-notch fa-spin"></i> Waiting for opponent to join...
+            </div>
+        </div>
     </div>
 
     <!-- FIREBASE LOGIC -->
@@ -194,84 +235,153 @@
             projectId: "hand-cricket-c2d70",
             storageBucket: "hand-cricket-c2d70.firebasestorage.app",
             messagingSenderId: "113004537618",
-            appId: "1:113004537618:web:9f23689c5c4c4a62eaf5cb",
-            measurementId: "G-DH3RLFQBK5"
+            appId: "1:113004537618:web:9f23689c5c4c4a62eaf5cb"
         };
 
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
         let currentUser = null;
+        let globalProfileData = null; // Store user customization
+        let currentRoom = null;
 
-        // Generate 11 inputs with sleek design
-        const squadContainer = document.getElementById('playing-11-container');
-        for (let i = 1; i <= 11; i++) {
-            squadContainer.innerHTML += `
-                <div class="flex items-center bg-black/40 border border-white/5 rounded-xl overflow-hidden group focus-within:border-yellow-500/50 focus-within:shadow-[0_0_10px_rgba(234,179,8,0.2)] transition duration-300">
-                    <div class="bg-white/5 text-white/50 px-4 py-3 font-mono font-bold text-sm w-12 text-center border-r border-white/5 group-focus-within:text-yellow-400 transition">${i}</div>
-                    <input type="text" id="player-${i}" placeholder="Player Name" class="custom-input w-full bg-transparent text-white px-4 py-3 font-medium text-sm focus:outline-none placeholder-white/30">
-                </div>
-            `;
-        }
-
+        // AUTHENTICATION
         window.loginWithGoogle = function() {
-            auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(err => alert("Login Error: " + err.message));
+            auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(err => alert("Error: " + err.message));
         }
         window.logout = function() { auth.signOut(); }
-
-        function loadProfileData(uid) {
-            db.ref('users/' + uid).once('value').then((snapshot) => {
-                const data = snapshot.val();
-                if (data && data.customization) {
-                    if(data.customization.intTeam) document.getElementById('int-team').value = data.customization.intTeam;
-                    if(data.customization.leagueTeam) document.getElementById('league-team').value = data.customization.leagueTeam;
-                    
-                    if(data.customization.squad) {
-                        for(let i=1; i<=11; i++) {
-                            document.getElementById(`player-${i}`).value = data.customization.squad[i-1] || "";
-                        }
-                    }
-                }
-            });
-        }
-
-        window.saveProfileData = function() {
-            if(!currentUser) return;
-            
-            let squadArray = [];
-            for(let i=1; i<=11; i++) {
-                squadArray.push(document.getElementById(`player-${i}`).value);
-            }
-
-            db.ref('users/' + currentUser.uid + '/customization').set({
-                intTeam: document.getElementById('int-team').value,
-                leagueTeam: document.getElementById('league-team').value,
-                squad: squadArray
-            }).then(() => {
-                const status = document.getElementById('save-status');
-                status.classList.remove('hidden');
-                setTimeout(() => status.classList.add('hidden'), 3500);
-            });
-        }
 
         auth.onAuthStateChanged((user) => {
             if (user) {
                 currentUser = user;
                 document.getElementById('login-section').classList.add('hidden');
-                document.getElementById('dashboard-section').classList.remove('hidden');
                 document.getElementById('top-nav').classList.remove('hidden');
                 
-                document.getElementById('user-name').innerText = user.displayName.split(" ")[0]; // First name only
+                document.getElementById('user-name').innerText = user.displayName.split(" ")[0];
                 document.getElementById('user-profile-pic').src = user.photoURL;
 
-                loadProfileData(user.uid);
+                // Load customization silently for matchmaking
+                db.ref('users/' + user.uid).once('value').then(snap => {
+                    globalProfileData = snap.val()?.customization || {};
+                });
+
+                showDashboard();
             } else {
                 currentUser = null;
                 document.getElementById('login-section').classList.remove('hidden');
                 document.getElementById('dashboard-section').classList.add('hidden');
+                document.getElementById('match-setup-section').classList.add('hidden');
+                document.getElementById('waiting-lobby').classList.add('hidden');
                 document.getElementById('top-nav').classList.add('hidden');
             }
         });
+
+        // UI NAVIGATION
+        window.showDashboard = function() {
+            document.getElementById('match-setup-section').classList.add('hidden');
+            document.getElementById('waiting-lobby').classList.add('hidden');
+            document.getElementById('dashboard-section').classList.remove('hidden');
+            document.getElementById('dashboard-section').classList.add('flex');
+        }
+
+        window.openMatchSetup = function() {
+            document.getElementById('dashboard-section').classList.add('hidden');
+            document.getElementById('match-setup-section').classList.remove('hidden');
+            document.getElementById('match-setup-section').classList.add('flex');
+            
+            // Set default team name from profile
+            let teamName = "Default Team";
+            if(globalProfileData?.intTeam && globalProfileData.intTeam !== "None") {
+                teamName = globalProfileData.intTeam;
+            } else if (globalProfileData?.leagueTeam && globalProfileData.leagueTeam !== "None") {
+                teamName = globalProfileData.leagueTeam;
+            }
+            document.getElementById('setup-team-name').innerText = teamName;
+        }
+
+        // DYNAMIC RULES (Format change updates Overs/Wickets)
+        window.updateMatchRules = function() {
+            const format = document.querySelector('input[name="format"]:checked').value;
+            const oversDropdown = document.getElementById('setup-overs');
+            const wicketsDropdown = document.getElementById('setup-wickets');
+            
+            if(format === "T20") { oversDropdown.value = "20"; wicketsDropdown.value = "10"; }
+            if(format === "ODI") { oversDropdown.value = "50"; wicketsDropdown.value = "10"; }
+            if(format === "TEST") { oversDropdown.value = "Unlimited"; wicketsDropdown.value = "10"; }
+        }
+
+        // MULTIPLAYER LOGIC
+        window.createRoom = function() {
+            const format = document.querySelector('input[name="format"]:checked').value;
+            const overs = document.getElementById('setup-overs').value;
+            const wickets = parseInt(document.getElementById('setup-wickets').value);
+            const teamName = document.getElementById('setup-team-name').innerText;
+            
+            // Trim squad based on wickets (Wickets = 5 means 6 players)
+            const fullSquad = globalProfileData?.squad || ["Player 1", "Player 2", "Player 3", "Player 4", "Player 5", "Player 6", "Player 7", "Player 8", "Player 9", "Player 10", "Player 11"];
+            const matchSquad = fullSquad.slice(0, wickets + 1);
+
+            // Generate random 5-character Code
+            const code = Math.random().toString(36).substring(2, 7).toUpperCase();
+            currentRoom = code;
+
+            // Push to Firebase Realtime Database
+            db.ref('rooms/' + code).set({
+                settings: { format: format, overs: overs, wickets: wickets },
+                host: {
+                    uid: currentUser.uid,
+                    name: currentUser.displayName,
+                    team: teamName,
+                    squad: matchSquad,
+                    score: 0,
+                    wicketsLost: 0
+                },
+                status: 'waiting'
+            }).then(() => {
+                document.getElementById('match-setup-section').classList.add('hidden');
+                document.getElementById('waiting-lobby').classList.remove('hidden');
+                document.getElementById('waiting-lobby').classList.add('flex');
+                document.getElementById('display-room-code').innerText = code;
+                
+                // Listener to see if opponent joins
+                db.ref('rooms/' + code).on('value', (snapshot) => {
+                    const data = snapshot.val();
+                    if(data && data.guest && data.status === 'playing') {
+                        alert("Opponent Joined: " + data.guest.name + "! Match starting...");
+                        // Next update me yahan Toss screen aayega!
+                    }
+                });
+            });
+        }
+
+        window.joinRoom = function() {
+            const code = document.getElementById('join-room-code').value.toUpperCase().trim();
+            if(!code) return alert("Please enter a Room Code!");
+            
+            let teamName = "Default Team";
+            if(globalProfileData?.intTeam && globalProfileData.intTeam !== "None") teamName = globalProfileData.intTeam;
+
+            db.ref('rooms/' + code).once('value').then((snap) => {
+                if(snap.exists() && snap.val().status === 'waiting') {
+                    // Update room with Guest details
+                    db.ref('rooms/' + code).update({
+                        guest: {
+                            uid: currentUser.uid,
+                            name: currentUser.displayName,
+                            team: teamName,
+                            score: 0,
+                            wicketsLost: 0
+                        },
+                        status: 'playing'
+                    }).then(() => {
+                        alert("Successfully joined room! Match starting...");
+                        // Next update me yahan bhi Toss screen aayega
+                    });
+                } else {
+                    alert("Invalid Code or Room is full.");
+                }
+            });
+        }
     </script>
 </body>
 </html>
