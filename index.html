@@ -6,27 +6,31 @@
     <title>Hand Cricket Pro - Multiplayer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #0f172a; color: #f8fafc; }
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Segoe UI', sans-serif; }
         .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid #334155; }
+        .action-btn { transition: all 0.2s; border-bottom: 4px solid #0f172a; }
+        .action-btn:hover { transform: translateY(-2px); border-bottom-width: 6px; }
+        .action-btn:active { transform: translateY(2px); border-bottom-width: 0px; }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
 
-    <div class="glass-panel w-full max-w-md p-8 rounded-2xl shadow-2xl">
+    <!-- LOBBY & WAITING CONTAINER -->
+    <div id="lobby-container" class="glass-panel w-full max-w-md p-8 rounded-2xl shadow-2xl">
         <h1 class="text-4xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 mb-8 tracking-wider">
             HAND CRICKET
         </h1>
 
-        <!-- LOBBY SECTION -->
+        <!-- LOBBY SCREEN -->
         <div id="lobby-screen" class="space-y-6">
             <div>
                 <label class="block text-sm font-medium text-slate-400 mb-2">Player Name</label>
                 <input type="text" id="playerName" placeholder="Enter your name" 
-                    class="w-full p-4 bg-slate-900 border border-slate-700 rounded-xl focus:outline-none focus:border-blue-500 text-lg transition">
+                    class="w-full p-4 bg-slate-900 border border-slate-700 rounded-xl focus:outline-none focus:border-blue-500 text-lg transition text-white">
             </div>
 
             <button onclick="createRoom()" 
-                class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 p-4 rounded-xl font-bold text-lg shadow-lg shadow-blue-500/30 transition transform hover:-translate-y-1">
+                class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 p-4 rounded-xl font-bold text-lg shadow-lg shadow-blue-500/30 transition transform hover:-translate-y-1 text-white">
                 🏏 Create New Match
             </button>
 
@@ -38,15 +42,15 @@
 
             <div class="flex gap-3">
                 <input type="text" id="roomCode" placeholder="Room Code" 
-                    class="w-2/3 p-4 bg-slate-900 border border-slate-700 rounded-xl focus:outline-none focus:border-emerald-500 text-lg font-mono uppercase transition">
+                    class="w-2/3 p-4 bg-slate-900 border border-slate-700 rounded-xl focus:outline-none focus:border-emerald-500 text-lg font-mono uppercase transition text-white">
                 <button onclick="joinRoom()" 
-                    class="w-1/3 bg-emerald-600 hover:bg-emerald-500 p-4 rounded-xl font-bold shadow-lg shadow-emerald-500/30 transition">
+                    class="w-1/3 bg-emerald-600 hover:bg-emerald-500 p-4 rounded-xl font-bold shadow-lg shadow-emerald-500/30 transition text-white">
                     Join
                 </button>
             </div>
         </div>
 
-        <!-- WAITING ROOM -->
+        <!-- WAITING SCREEN -->
         <div id="waiting-screen" class="hidden text-center space-y-4">
             <h2 class="text-xl text-slate-300">Room Code:</h2>
             <div id="display-room-code" class="text-5xl font-mono font-bold text-blue-400 tracking-widest bg-slate-900 p-4 rounded-xl border border-slate-700">
@@ -56,12 +60,59 @@
         </div>
     </div>
 
-    <!-- FIREBASE MULTIPLAYER LOGIC -->
+    <!-- MAIN GAME ARENA (Hidden until connected) -->
+    <div id="game-arena" class="hidden w-full max-w-3xl flex-col gap-4">
+        
+        <!-- Scoreboard -->
+        <div class="glass-panel p-4 rounded-2xl text-center">
+            <div class="text-slate-400 text-sm font-bold uppercase tracking-widest mb-1">T20 Match • First Innings</div>
+            <div class="text-5xl font-extrabold text-blue-400 my-2" id="scoreboard-score">0 / 0</div>
+            <div class="text-slate-300 text-lg">Overs: <span id="scoreboard-overs">0.0</span></div>
+        </div>
+
+        <!-- Player vs Opponent -->
+        <div class="flex justify-between items-center glass-panel p-6 rounded-2xl">
+            <!-- You -->
+            <div class="text-center w-1/3">
+                <div class="w-20 h-20 mx-auto bg-slate-800 rounded-full border-4 border-blue-500 flex items-center justify-center text-2xl font-bold mb-2 shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+                    👤
+                </div>
+                <div id="my-name" class="font-bold text-lg text-white">You</div>
+                <div class="text-emerald-400 text-sm mt-1">Batter</div>
+            </div>
+
+            <!-- VS Badge -->
+            <div class="text-3xl font-black text-red-500 italic drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]">VS</div>
+
+            <!-- Opponent -->
+            <div class="text-center w-1/3">
+                <div class="w-20 h-20 mx-auto bg-slate-800 rounded-full border-4 border-red-500 flex items-center justify-center text-2xl font-bold mb-2 shadow-[0_0_15px_rgba(239,68,68,0.5)]">
+                    👤
+                </div>
+                <div id="opponent-name" class="font-bold text-lg text-white">Opponent</div>
+                <div class="text-red-400 text-sm mt-1">Bowler</div>
+            </div>
+        </div>
+
+        <!-- 1 to 6 Action Buttons -->
+        <div class="glass-panel p-6 rounded-2xl text-center">
+            <p class="text-slate-400 mb-4 font-medium">Select your move:</p>
+            <div class="grid grid-cols-3 sm:grid-cols-6 gap-3">
+                <button onclick="makeMove(1)" class="action-btn bg-slate-700 text-white rounded-xl py-4 text-2xl font-bold hover:bg-blue-500 focus:outline-none">1</button>
+                <button onclick="makeMove(2)" class="action-btn bg-slate-700 text-white rounded-xl py-4 text-2xl font-bold hover:bg-blue-500 focus:outline-none">2</button>
+                <button onclick="makeMove(3)" class="action-btn bg-slate-700 text-white rounded-xl py-4 text-2xl font-bold hover:bg-blue-500 focus:outline-none">3</button>
+                <button onclick="makeMove(4)" class="action-btn bg-slate-700 text-white rounded-xl py-4 text-2xl font-bold hover:bg-blue-500 focus:outline-none">4</button>
+                <button onclick="makeMove(5)" class="action-btn bg-slate-700 text-white rounded-xl py-4 text-2xl font-bold hover:bg-blue-500 focus:outline-none">5</button>
+                <button onclick="makeMove(6)" class="action-btn bg-slate-700 text-white rounded-xl py-4 text-2xl font-bold hover:bg-blue-500 focus:outline-none">6</button>
+            </div>
+            <p id="move-status" class="text-yellow-400 mt-4 h-6 text-sm"></p>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
         import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js";
 
-        // Maine teri details yahan daal di hain
         const firebaseConfig = {
             apiKey: "AIzaSyAofevQrPWUKWxWAkBLtXl4f_lH5fjjPZE",
             authDomain: "hand-cricket-c2d70.firebaseapp.com",
@@ -69,35 +120,49 @@
             projectId: "hand-cricket-c2d70",
             storageBucket: "hand-cricket-c2d70.firebasestorage.app",
             messagingSenderId: "113004537618",
-            appId: "1:113004537618:web:9f23689c5c4c4a62eaf5cb",
-            measurementId: "G-DH3RLFQBK5"
+            appId: "1:113004537618:web:9f23689c5c4c4a62eaf5cb"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+        
+        let currentRoom = "";
+        let isHost = false;
+
+        // Transition to Game Screen
+        function startGameUI(myName, oppName) {
+            document.getElementById("lobby-container").classList.add("hidden");
+            document.getElementById("game-arena").classList.remove("hidden");
+            document.getElementById("game-arena").classList.add("flex");
+            
+            document.getElementById("my-name").innerText = myName;
+            document.getElementById("opponent-name").innerText = oppName;
+        }
 
         window.createRoom = function() {
             let name = document.getElementById("playerName").value;
             if(!name) return alert("Pehle apna naam daal bhai!");
             
             let code = Math.random().toString(36).substring(2, 6).toUpperCase();
+            currentRoom = code;
+            isHost = true;
             
             set(ref(db, 'rooms/' + code), {
-                player1: { name: name, choice: 0 },
+                player1: { name: name, move: 0 },
                 status: 'waiting'
             }).then(() => {
                 document.getElementById("lobby-screen").classList.add("hidden");
                 document.getElementById("waiting-screen").classList.remove("hidden");
                 document.getElementById("display-room-code").innerText = code;
                 
+                // Watch for Player 2
                 onValue(ref(db, 'rooms/' + code), (snapshot) => {
                     const data = snapshot.val();
-                    if(data && data.player2) {
-                        alert("🔥 Opponent (" + data.player2.name + ") Join Ho Gaya!");
+                    if(data && data.player2 && data.status === 'playing') {
+                        // Game Start!
+                        startGameUI(data.player1.name, data.player2.name);
                     }
                 });
-            }).catch((error) => {
-                alert("Database Error: " + error.message);
             });
         }
 
@@ -105,15 +170,26 @@
             let name = document.getElementById("playerName").value;
             let code = document.getElementById("roomCode").value.toUpperCase();
             if(!name || !code) return alert("Naam aur Room Code dono daal!");
+            
+            currentRoom = code;
 
             update(ref(db, 'rooms/' + code), {
-                'player2': { name: name, choice: 0 },
+                'player2': { name: name, move: 0 },
                 'status': 'playing'
             }).then(() => {
-                alert("🔥 Joined Successfully!");
-            }).catch((error) => {
-                alert("Database Error: " + error.message);
+                // Get Player 1 name to show on screen
+                onValue(ref(db, 'rooms/' + code), (snapshot) => {
+                    const data = snapshot.val();
+                    if(data && data.player1) {
+                        startGameUI(data.player2.name, data.player1.name);
+                    }
+                }, { onlyOnce: true });
             });
+        }
+
+        window.makeMove = function(number) {
+            document.getElementById("move-status").innerText = "You chose " + number + ". Waiting for opponent...";
+            // Asli game logic aagle step me yahan add hoga
         }
     </script>
 </body>
