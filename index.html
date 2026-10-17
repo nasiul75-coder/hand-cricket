@@ -102,7 +102,7 @@
     </div>
 
     <script>
-        // Exact same config you just provided + databaseURL added for multiplayer
+        // Exactly your correct config with the 'F' and the popup fix
         const firebaseConfig = {
             apiKey: "AIzaSyAofevQrPWUKWxWAkBLtXl4f_lH5FjjPZE",
             authDomain: "hand-cricket-c2d70.firebaseapp.com",
@@ -120,7 +120,8 @@
         const provider = new firebase.auth.GoogleAuthProvider();
 
         function loginWithGoogle() {
-            auth.signInWithRedirect(provider).catch((error) => {
+            // Popup chalega, page load/redirect nahi hoga!
+            auth.signInWithPopup(provider).catch((error) => {
                 alert("Login Error: " + error.message);
             });
         }
