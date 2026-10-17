@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hand Cricket Pro - Commentary Edition</title>
+    <title>Hand Cricket Pro - Broadcast Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -21,10 +21,7 @@
         .active-screen { display: flex; }
         .btn-move { transition: transform 0.1s; } .btn-move:active { transform: scale(0.9); }
         .selected-move { border-color: #ffd700 !important; box-shadow: 0 0 20px rgba(255,215,0,0.4); background: rgba(255,215,0,0.15) !important; color: white !important;}
-        #bowler-modal { z-index: 999999; }
         .score-font { font-family: 'Teko', sans-serif; letter-spacing: 1px; line-height: 0.9; }
-        
-        /* Commentary Scrollbar */
         .comm-scroll::-webkit-scrollbar { width: 4px; }
         .comm-scroll::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
     </style>
@@ -34,6 +31,15 @@
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
 </head>
 <body>
+
+    <!-- AUDIO SFX -->
+    <audio id="sfx-click" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" preload="auto"></audio>
+    <audio id="sfx-0" src="https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3" preload="auto"></audio>
+    <audio id="sfx-1" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" preload="auto"></audio>
+    <audio id="sfx-2" src="https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3" preload="auto"></audio>
+    <audio id="sfx-4" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3" preload="auto"></audio>
+    <audio id="sfx-6" src="https://assets.mixkit.co/active_storage/sfx/1995/1995-preview.mp3" preload="auto"></audio>
+    <audio id="sfx-w" src="https://assets.mixkit.co/active_storage/sfx/3180/3180-preview.mp3" preload="auto"></audio>
 
     <!-- NAV -->
     <header class="w-full h-16 px-4 flex justify-between items-center bg-[#050b14] border-b border-[#ffd700]/20 z-50 sticky top-0 shadow-lg">
@@ -71,16 +77,16 @@
 
         <div class="flex flex-col md:flex-row gap-3 bg-black/60 p-4 rounded-2xl border border-white/10 mb-6 shadow-lg">
             <input type="text" id="join-input" placeholder="ENTER ROOM CODE TO JOIN/RESUME" class="input-glass flex-1 p-4 rounded-xl font-mono font-bold uppercase text-center md:text-left text-lg">
-            <button onclick="joinAction()" class="bg-blue-600 hover:bg-blue-500 py-4 px-10 rounded-xl font-black uppercase text-lg text-white">JOIN / RESUME</button>
+            <button onclick="joinAction(); playSound('click')" class="bg-blue-600 hover:bg-blue-500 py-4 px-10 rounded-xl font-black uppercase text-lg text-white">JOIN / RESUME</button>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <button onclick="prepSetup('match')" class="glass p-8 rounded-[2rem] text-left hover:border-blue-500 transition border-t-4 border-blue-600">
+            <button onclick="prepSetup('match'); playSound('click')" class="glass p-8 rounded-[2rem] text-left hover:border-blue-500 transition border-t-4 border-blue-600">
                 <i class="fa-solid fa-gamepad text-5xl text-blue-500 mb-4"></i>
                 <h2 class="font-black text-3xl uppercase">Create Match</h2>
                 <p class="text-sm font-bold text-slate-400 mt-2">1v1 Real Cricket Engine</p>
             </button>
-            <button onclick="prepSetup('tourney')" class="glass p-8 rounded-[2rem] text-left hover:border-[#ffd700] transition border-t-4 border-[#ffd700]">
+            <button onclick="prepSetup('tourney'); playSound('click')" class="glass p-8 rounded-[2rem] text-left hover:border-[#ffd700] transition border-t-4 border-[#ffd700]">
                 <i class="fa-solid fa-trophy text-5xl text-[#ffd700] mb-4"></i>
                 <h2 class="font-black text-3xl uppercase text-[#ffd700]">Tournament</h2>
                 <p class="text-sm font-bold text-slate-300 mt-2">Host League & Points Table</p>
@@ -100,15 +106,13 @@
             <p class="text-xs text-emerald-400 mb-6 font-bold uppercase"><i class="fa-solid fa-check-circle mr-1"></i> Team Auto-Saved to Profile</p>
             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Team Name</label>
             <input type="text" id="team-name" value="India" class="input-glass w-full p-4 rounded-xl font-black text-lg uppercase mb-6 border-[#ffd700]/30 text-[#ffd700]">
-            
             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">11 Players Roster</label>
             <div id="player-inputs" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
-            
-            <button onclick="saveSquadAndProceed()" class="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-xl font-black uppercase text-xl mt-6 shadow-[0_0_20px_rgba(37,99,235,0.4)]">Confirm Squad</button>
+            <button onclick="saveSquadAndProceed(); playSound('click')" class="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-xl font-black uppercase text-xl mt-6 shadow-[0_0_20px_rgba(37,99,235,0.4)]">Confirm Squad</button>
         </div>
     </div>
 
-    <!-- 4. MATCH RULES -->
+    <!-- 4. CONFIG -->
     <div id="match-config" class="screen p-4 max-w-xl mx-auto w-full pt-8">
         <div class="glass p-8 rounded-[2rem] border-t-4 border-blue-600">
             <h2 class="text-3xl font-black uppercase mb-6 text-blue-400 text-center">Match Rules</h2>
@@ -119,11 +123,10 @@
                 </div>
                 <div><label class="text-xs font-black text-slate-400 uppercase">Wickets</label><select id="m-wickets" class="input-glass w-full p-3 rounded-lg font-bold"><option value="1">1 Wicket</option><option value="3">3 Wickets</option><option value="5">5 Wickets</option><option value="10" selected>10 Wickets</option></select></div>
             </div>
-            <button onclick="hostMatch()" class="w-full bg-blue-600 py-4 rounded-xl font-black text-lg mt-6 uppercase">Generate Room</button>
+            <button onclick="hostMatch(); playSound('click')" class="w-full bg-blue-600 py-4 rounded-xl font-black text-lg mt-6 uppercase">Generate Room</button>
         </div>
     </div>
 
-    <!-- TOURNAMENT RULES -->
     <div id="tourney-config" class="screen p-4 max-w-xl mx-auto w-full pt-8">
         <div class="glass p-8 rounded-[2rem] border-t-4 border-[#ffd700]">
             <h2 class="text-3xl font-black uppercase mb-6 text-[#ffd700] text-center">League Rules</h2>
@@ -133,9 +136,9 @@
                 </div>
                 <div><label class="text-xs font-black text-slate-400 uppercase">Wickets</label><select id="t-wickets" class="input-glass w-full p-3 rounded-lg font-bold"><option value="5">5</option><option value="10" selected>10</option></select></div>
                 <div><label class="text-xs font-black text-slate-400 uppercase">Teams Qty</label><select id="t-teams" class="input-glass w-full p-3 rounded-lg font-bold"><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option></select></div>
-                <div><label class="text-xs font-black text-slate-400 uppercase">Matches/Team</label><select id="t-qty" class="input-glass w-full p-3 rounded-lg font-bold"><option value="1">1 (Single)</option><option value="2">2 (Double)</option></select></div>
+                <div class="col-span-2"><label class="text-xs font-black text-slate-400 uppercase">Matches/Team</label><select id="t-qty" class="input-glass w-full p-3 rounded-lg font-bold"><option value="1">1 (Single)</option><option value="2">2 (Double)</option></select></div>
             </div>
-            <button onclick="hostTourney()" class="w-full bg-[#ffd700] text-black py-4 rounded-xl font-black text-lg mt-6 uppercase">Host League</button>
+            <button onclick="hostTourney(); playSound('click')" class="w-full bg-[#ffd700] text-black py-4 rounded-xl font-black text-lg mt-6 uppercase">Host League</button>
         </div>
     </div>
 
@@ -166,15 +169,14 @@
             <h2 class="text-4xl font-black uppercase text-white mb-6 score-font">The Toss</h2>
             <p id="toss-text" class="text-[#ffd700] font-bold text-lg mb-8">Host is tossing...</p>
             <div id="toss-btns" class="hidden justify-center gap-6">
-                <button onclick="submitToss('bat')" class="bg-blue-600 p-8 rounded-3xl w-32 h-32 font-black text-2xl text-white shadow-lg border border-blue-400 hover:-translate-y-2 transition-all"><i class="fa-solid fa-baseball-bat-ball block mb-2"></i> BAT</button>
-                <button onclick="submitToss('bowl')" class="bg-red-600 p-8 rounded-3xl w-32 h-32 font-black text-2xl text-white shadow-lg border border-red-400 hover:-translate-y-2 transition-all"><i class="fa-solid fa-baseball block mb-2"></i> BOWL</button>
+                <button onclick="submitToss('bat'); playSound('click')" class="bg-blue-600 p-8 rounded-3xl w-32 h-32 font-black text-2xl text-white shadow-lg border border-blue-400 hover:-translate-y-2 transition-all"><i class="fa-solid fa-baseball-bat-ball block mb-2"></i> BAT</button>
+                <button onclick="submitToss('bowl'); playSound('click')" class="bg-red-600 p-8 rounded-3xl w-32 h-32 font-black text-2xl text-white shadow-lg border border-red-400 hover:-translate-y-2 transition-all"><i class="fa-solid fa-baseball block mb-2"></i> BOWL</button>
             </div>
         </div>
     </div>
 
-    <!-- 7. PRO BROADCAST ARENA (WITH COMMENTARY) -->
+    <!-- 7. PRO BROADCAST ARENA -->
     <div id="arena" class="screen p-2 max-w-5xl mx-auto w-full pt-4 h-full">
-        <!-- Main Scoreboard -->
         <div class="glass border-b-4 border-[#ffd700] rounded-t-2xl p-4 sm:p-6 mb-3 flex justify-between items-center bg-gradient-to-b from-[#0a1128] to-black">
             <div class="w-1/3 text-left">
                 <div class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-widest mb-1" id="ui-bat-team">BAT TEAM</div>
@@ -211,12 +213,10 @@
                         <div class="flex gap-3 sm:gap-4 font-mono text-sm sm:text-base text-white font-black justify-end w-2/3" id="ui-b-stats"><span>0.0</span><span>0</span><span class="text-red-400">0</span><span class="text-slate-400">0.0</span></div>
                     </div>
                 </div>
-                <!-- Commentary Box (NEW) -->
+                <!-- Live Commentary Box -->
                 <div class="bg-black/80 p-2 rounded border border-white/5 mt-auto">
-                    <div class="text-[10px] text-[#ffd700] font-black uppercase tracking-widest mb-1 flex justify-between border-b border-white/10 pb-1"><span>Live Commentary</span></div>
-                    <div class="h-16 overflow-y-auto comm-scroll font-mono text-[10px] sm:text-xs text-slate-300 space-y-1 pt-1" id="ui-commentary">
-                        <div class="text-emerald-400">Match Started. Play your move!</div>
-                    </div>
+                    <div class="text-[10px] text-[#ffd700] font-black uppercase tracking-widest mb-1 border-b border-white/10 pb-1">Live Commentary</div>
+                    <div class="h-16 overflow-y-auto comm-scroll font-mono text-[10px] sm:text-xs text-slate-300 space-y-1 pt-1" id="ui-commentary"><div class="text-emerald-400">Match Started. Play your move!</div></div>
                 </div>
             </div>
         </div>
@@ -258,8 +258,8 @@
         </div>
     </div>
 
-    <!-- MODAL: BOWLER SELECTION (BUG FREE Z-INDEX) -->
-    <div id="bowler-modal" class="hidden fixed inset-0 bg-black/95 backdrop-blur-lg items-center justify-center p-4 flex-col">
+    <!-- MODAL: BOWLER SELECTION -->
+    <div id="bowler-modal" style="display: none; z-index: 999999;" class="fixed inset-0 bg-black/95 backdrop-blur-lg items-center justify-center p-4 flex-col">
         <div class="glass p-6 rounded-[2rem] w-full max-w-md border-t-4 border-red-500 text-center shadow-[0_0_50px_rgba(220,38,38,0.4)]">
             <h3 class="text-3xl font-black uppercase text-white mb-2 score-font tracking-widest">Select Next Bowler</h3>
             <p class="text-xs text-red-400 mb-6 uppercase font-bold tracking-widest">Previous bowler cannot bowl consecutive overs</p>
@@ -273,11 +273,13 @@
         
         let u=null, mRole=null, mId=null, mType=null; 
         let squadData = { name: "Team", p: [] };
+        let lastBallProcessed = -1; 
+
+        const sfx = { click: document.getElementById('sfx-click'), dot: document.getElementById('sfx-0'), single: document.getElementById('sfx-1'), run: document.getElementById('sfx-2'), four: document.getElementById('sfx-4'), six: document.getElementById('sfx-6'), wicket: document.getElementById('sfx-w') };
+        function playSound(type) { try { if(sfx[type]) { sfx[type].currentTime = 0; sfx[type].play(); } } catch(e) {} }
 
         const pInp = document.getElementById('player-inputs');
-        for(let i=1; i<=11; i++) {
-            pInp.innerHTML += `<div class="flex items-center bg-black/50 border border-white/10 rounded-lg"><div class="bg-white/10 px-3 py-3 font-mono text-xs font-black text-white/50 w-10 text-center border-r border-white/10">${i}</div><input type="text" id="sq-${i}" placeholder="Player Name" class="w-full bg-transparent text-white px-3 py-3 text-sm outline-none font-bold uppercase"></div>`;
-        }
+        for(let i=1; i<=11; i++) { pInp.innerHTML += `<div class="flex items-center bg-black/50 border border-white/10 rounded-lg"><div class="bg-white/10 px-3 py-3 font-mono text-xs font-black text-white/50 w-10 text-center border-r border-white/10">${i}</div><input type="text" id="sq-${i}" placeholder="Player Name" class="w-full bg-transparent text-white px-3 py-3 text-sm outline-none font-bold uppercase"></div>`; }
 
         const screens = ['login', 'dashboard', 'match-config', 'tourney-config', 'lobby', 'toss', 'arena', 'squad-builder', 'summary-screen'];
         function nav(id) { screens.forEach(s => { let el = document.getElementById(s); if(el) el.classList.remove('active-screen'); }); document.getElementById(id).classList.add('active-screen'); }
@@ -294,9 +296,7 @@
 
                 db.ref('users/'+u.uid).on('value', snap => {
                     let d = snap.val() || { stats: {p:0, w:0, l:0}, team: null };
-                    document.getElementById('stat-p').innerText = d.stats?.p || 0;
-                    document.getElementById('stat-w').innerText = d.stats?.w || 0;
-                    document.getElementById('stat-l').innerText = d.stats?.l || 0;
+                    document.getElementById('stat-p').innerText = d.stats?.p || 0; document.getElementById('stat-w').innerText = d.stats?.w || 0; document.getElementById('stat-l').innerText = d.stats?.l || 0;
                     if(d.team) { squadData = d.team; localStorage.setItem('savedSquad', JSON.stringify(squadData)); fillSquadUI(); }
                 });
                 nav('dashboard'); fetchResumes(); 
@@ -315,13 +315,8 @@
             squadData.name = document.getElementById('team-name').value || "Team";
             squadData.p = [];
             for(let i=1; i<=11; i++) squadData.p.push(document.getElementById(`sq-${i}`).value.trim() || `Player ${i}`);
-            
-            localStorage.setItem('savedSquad', JSON.stringify(squadData));
-            db.ref('users/'+u.uid+'/team').set(squadData);
-
-            if(mRole === 'join_prep') finishJoin();
-            else if(mType === 'match') nav('match-config');
-            else nav('tourney-config');
+            localStorage.setItem('savedSquad', JSON.stringify(squadData)); db.ref('users/'+u.uid+'/team').set(squadData);
+            if(mRole === 'join_prep') finishJoin(); else if(mType === 'match') nav('match-config'); else nav('tourney-config');
         }
 
         function hostMatch() {
@@ -377,7 +372,7 @@
                 if(d.status !== 'finished') h += `
                 <div class="w-full bg-[#0a1128] p-4 rounded-xl border border-slate-700 hover:border-emerald-500 transition mb-3 flex flex-col sm:flex-row justify-between sm:items-center gap-3">
                     <div><div class="text-[10px] text-emerald-400 uppercase tracking-widest mb-1">Code: ${c.key}</div><div class="text-white font-black uppercase text-sm">${d.p1.team.name} vs ${d.p2 ? d.p2.team.name : 'Waiting...'}</div></div>
-                    <button onclick="resumeGame('${c.key}')" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-lg font-black text-white text-xs uppercase flex items-center gap-2 w-fit"><i class="fa-solid fa-play"></i> RESUME</button>
+                    <button onclick="resumeGame('${c.key}')" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-lg font-black text-white text-xs uppercase shadow-md flex items-center gap-2 w-fit"><i class="fa-solid fa-play"></i> RESUME</button>
                 </div>`;
             });
             document.getElementById('resume-list').innerHTML = h || '<span class="text-slate-500">No active matches</span>';
@@ -391,12 +386,18 @@
         }
 
         window.resumeGame = function(id) { 
-            mId = id; 
+            playSound('click'); mId = id; 
             db.ref('matches/'+id).once('value', s => { 
                 let d=s.val(); mType=d.type; mRole = (d.p1.uid === u.uid) ? 'p1' : 'p2'; 
-                resumeNavState(d.status);
-                if(d.status !== 'waiting') listenMatch(); 
+                resumeNavState(d.status); if(d.status !== 'waiting') listenMatch(); 
             }); 
+        }
+
+        // TOSS ATOMIC UPDATE FIX
+        window.submitToss = function(ch) {
+            playSound('click');
+            let bat = ch === 'bat' ? mRole : (mRole === 'p1'?'p2':'p1');
+            db.ref('matches/'+mId).update({ 'state/bat': bat, 'state/needBw': true, 'status': 'playing' });
         }
 
         function listenMatch() {
@@ -414,33 +415,35 @@
                 
                 if(m.status === 'playing') {
                     if(document.getElementById('arena').classList.contains('hidden')) nav('arena');
-                    
                     if(mRole === 'p1' && m.state.mov.p1 !== null && m.state.mov.p2 !== null) calcBall(m);
                     
-                    // FIXED BOWLER LOGIC
+                    if(m.state.bls > lastBallProcessed && m.state.sum && m.state.sum.length > 0) {
+                        lastBallProcessed = m.state.bls;
+                        let lastRes = m.state.sum[m.state.sum.length-1];
+                        if(lastRes === 'W') playSound('wicket'); else if(lastRes === 6) playSound('six'); else if(lastRes === 4) playSound('four'); else if(lastRes === 2 || lastRes === 3) playSound('run'); else if(lastRes === 1) playSound('single'); else playSound('dot');
+                    }
+                    
+                    // FIXED MODAL POPUP LOGIC WITH RAW DISPLAY BLOCK
                     if(m.state.needBw && m.state.mov.p1 === null && m.state.mov.p2 === null) {
                         if(mRole !== m.state.bat) { 
                             showBowlerModal(m); 
                         } else { 
-                            document.getElementById('bowler-modal').classList.replace('flex','hidden'); 
+                            document.getElementById('bowler-modal').style.display = 'none'; 
                             disableMoves(true); 
                             document.getElementById('action-msg').innerHTML = "<span class='text-white'>Fielding team selecting bowler...</span>"; 
                         }
                     } else {
-                        document.getElementById('bowler-modal').classList.replace('flex','hidden'); 
+                        document.getElementById('bowler-modal').style.display = 'none'; 
                         disableMoves(false);
                     }
-                    
                     renderScore(m);
                 }
 
                 if(m.status === 'finished') {
-                    nav('summary-screen');
-                    renderSummaryScreen(m);
+                    nav('summary-screen'); renderSummaryScreen(m);
                     if(mRole === 'p1' && !m.statsUpdated) {
                         let p1Win = m.state.scr >= m.state.trg ? (m.state.bat === 'p1') : (m.state.bat === 'p2');
-                        updateUserStats(m.p1.uid, p1Win); updateUserStats(m.p2.uid, !p1Win);
-                        db.ref('matches/'+mId).update({statsUpdated: true});
+                        updateUserStats(m.p1.uid, p1Win); updateUserStats(m.p2.uid, !p1Win); db.ref('matches/'+mId).update({statsUpdated: true});
                     }
                 }
             });
@@ -451,15 +454,25 @@
             ref.once('value', s => { let d = s.val() || {p:0, w:0, l:0}; d.p += 1; if(isWin) d.w += 1; else d.l += 1; ref.set(d); });
         }
 
-        window.submitToss = function(ch) {
-            let bat = ch === 'bat' ? mRole : (mRole === 'p1'?'p2':'p1');
-            db.ref('matches/'+mId+'/state').update({bat: bat, needBw: true}); 
-            db.ref('matches/'+mId+'/status').set('playing');
+        function listenTourney() {
+            document.getElementById('tourney-ui').classList.remove('hidden');
+            db.ref('tournaments/'+mId).on('value', snap => {
+                let t = snap.val(); if(!t) return;
+                let tCount = Object.keys(t.teams).length;
+                document.getElementById('lobby-status').innerHTML = `Waiting... (${tCount}/${t.set.tQty} Joined)`;
+                let ptHtml = '';
+                Object.values(t.teams).sort((a,b)=> b.pts - a.pts || b.nrr - a.nrr).forEach(tm => {
+                    ptHtml += `<tr class="border-b border-white/5"><td class="p-3 text-white truncate">${tm.name}</td><td class="p-3 text-center font-mono">${tm.p}</td><td class="p-3 text-center font-mono text-emerald-400">${tm.w}</td><td class="p-3 text-center font-mono text-red-400">${tm.l}</td><td class="p-3 text-center font-mono text-[#ffd700] font-black">${tm.pts}</td><td class="p-3 text-right font-mono text-slate-400">${tm.nrr.toFixed(3)}</td></tr>`;
+                });
+                document.getElementById('pt-body').innerHTML = ptHtml;
+                if(tCount >= t.set.tQty && mRole === 'tHost') { document.getElementById('start-t-match').classList.remove('hidden'); }
+            });
         }
         
         function disableMoves(d) { document.querySelectorAll('.btn-move').forEach(b => { b.disabled = d; b.style.opacity = d ? 0.5 : 1; }); }
 
         window.sendMove = function(v) {
+            playSound('click');
             document.querySelectorAll('.btn-move').forEach(b => b.classList.remove('selected-move'));
             event.target.classList.add('selected-move');
             document.getElementById('action-msg').innerText = "WAITING FOR OPPONENT...";
@@ -476,7 +489,6 @@
             let bwTeam = s.bat === 'p1' ? m.p2 : m.p1;
             let btName = btTeam.team.p[s.sIdx] || "Batter";
             let bwName = bwTeam.team.p[s.bwIdx] || "Bowler";
-
             let commTxt = "";
 
             if(btM === 0 && bwM === 0) { res = '0'; commTxt = `<span class='text-slate-400'>${bwName} to ${btName}, 0 run. Solid defense.</span>`; } 
@@ -498,16 +510,12 @@
             }
             s.st[s.bat][s.sIdx].b++; s.st[bowlR][s.bwIdx].b++;
             
-            if(!s.sum) s.sum = [];
-            s.sum.push(res);
-
-            if(!s.comm) s.comm = [];
-            s.comm.unshift(`[${Math.floor((s.bls-1)/6)}.${(s.bls-1)%6 + 1}] ` + commTxt);
+            if(!s.sum) s.sum = []; s.sum.push(res);
+            if(!s.comm) s.comm = []; s.comm.unshift(`[${Math.floor((s.bls-1)/6)}.${(s.bls-1)%6 + 1}] ` + commTxt);
             if(s.comm.length > 5) s.comm.pop();
 
             if(s.bls % 6 === 0) {
-                s.sum = []; 
-                let t = s.sIdx; s.sIdx = s.nsIdx; s.nsIdx = t; 
+                s.sum = []; let t = s.sIdx; s.sIdx = s.nsIdx; s.nsIdx = t; 
                 s.prevBw = s.bwIdx; s.needBw = true; 
             }
 
@@ -524,6 +532,7 @@
         }
 
         function showBowlerModal(m) {
+            playSound('click'); 
             let bwTeam = m.state.bat === 'p1' ? m.p2 : m.p1;
             let html = '';
             for(let i=0; i<11; i++) {
@@ -535,9 +544,9 @@
                 html += `<button onclick="setBowler(${i})" class="w-full p-4 rounded-xl text-left border-2 font-black text-white mb-2 transition shadow-lg ${disClass}" ${disBtn}>${pName} ${subInfo}</button>`;
             }
             document.getElementById('bowler-list').innerHTML = html;
-            document.getElementById('bowler-modal').classList.replace('hidden', 'flex');
+            document.getElementById('bowler-modal').style.display = 'flex';
         }
-        window.setBowler = function(idx) { db.ref(`matches/${mId}/state`).update({ bwIdx: idx, needBw: false }); }
+        window.setBowler = function(idx) { playSound('click'); db.ref(`matches/${mId}/state`).update({ bwIdx: idx, needBw: false }); }
 
         function renderScore(m) {
             let s = m.state; let bRole = s.bat; let bwRole = bRole === 'p1' ? 'p2' : 'p1';
@@ -563,13 +572,9 @@
             let eco = bwS.b > 0 ? ((bwS.br/bwS.b)*6).toFixed(1) : "0.0";
             document.getElementById('ui-b-stats').innerHTML = `<span>${Math.floor(bwS.b/6)}.${bwS.b%6}</span><span>${bwS.br}</span><span class="text-red-400">${bwS.w}</span><span class="text-slate-400">${eco}</span>`;
 
-            // Render Text Commentary
             let commH = '';
-            if(s.comm && s.comm.length > 0) {
-                s.comm.forEach(c => { commH += `<div>${c}</div>`; });
-            } else {
-                commH = `<div class="text-emerald-400">Match Started. Play your move!</div>`;
-            }
+            if(s.comm && s.comm.length > 0) { s.comm.forEach(c => { commH += `<div>${c}</div>`; }); } 
+            else { commH = `<div class="text-emerald-400">Match Started. Play your move!</div>`; }
             document.getElementById('ui-commentary').innerHTML = commH;
 
             if(s.mov[mRole] === null && !s.needBw) {
@@ -579,9 +584,7 @@
         }
 
         function renderSummaryScreen(m) {
-            let s = m.state;
-            let inn1Team = s.inn1data.bat === 'p1' ? m.p1 : m.p2;
-            let inn2Team = s.inn1data.bat === 'p1' ? m.p2 : m.p1;
+            let s = m.state; let inn1Team = s.inn1data.bat === 'p1' ? m.p1 : m.p2; let inn2Team = s.inn1data.bat === 'p1' ? m.p2 : m.p1;
             
             document.getElementById('sum-t1-name').innerText = inn1Team.team.name + " (Inn 1)";
             document.getElementById('sum-t1-score').innerText = `${s.inn1data.scr}/${s.inn1data.wic}`;
@@ -599,13 +602,11 @@
                 let batArr = stats.map((v,i)=>({name: teamInfo.team.p[i], r: v.r, b: v.b})).sort((a,b)=>b.r - a.r);
                 let topBat = `Bat: ${batArr[0].name} ${batArr[0].r}(${batArr[0].b})`;
                 if(batArr[1].r > 0) topBat += `<br>Bat: ${batArr[1].name} ${batArr[1].r}(${batArr[1].b})`;
-                
                 let bwlArr = stats.map((v,i)=>({name: teamInfo.team.p[i], w: v.w, br: v.br})).filter(x=>x.w > 0 || x.br > 0).sort((a,b)=>b.w - a.w || a.br - b.br);
                 let topBowl = bwlArr.length > 0 ? `<br>Bowl: ${bwlArr[0].name} ${bwlArr[0].w}-${bwlArr[0].br}` : '';
                 return topBat + topBowl;
             }
-            document.getElementById('sum-t1-top').innerHTML = getTopP(s.inn1data.bat);
-            document.getElementById('sum-t2-top').innerHTML = getTopP(s.inn1data.bat === 'p1' ? 'p2' : 'p1');
+            document.getElementById('sum-t1-top').innerHTML = getTopP(s.inn1data.bat); document.getElementById('sum-t2-top').innerHTML = getTopP(s.inn1data.bat === 'p1' ? 'p2' : 'p1');
         }
     </script>
 </body>
