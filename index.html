@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hand Cricket Pro - Multiplayer Engine</title>
+    <title>Hand Cricket Pro - Ultimate Engine</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -12,419 +12,362 @@
         body { 
             font-family: 'Inter', sans-serif; 
             background-color: #0f172a;
-            color: #f8fafc; margin: 0; min-height: 100vh; overflow-x: hidden;
+            /* Cinematic Background Restored */
+            background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.98)), url('https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=2000&auto=format&fit=crop');
+            background-size: cover; background-position: center; background-attachment: fixed;
+            color: #f8fafc; margin: 0; min-height: 100vh;
         }
-        .glass-panel { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .action-btn { transition: transform 0.1s; }
-        .action-btn:active { transform: scale(0.90); background: #3b82f6 !important; }
-        .move-selected { border-color: #10b981 !important; box-shadow: 0 0 15px rgba(16,185,129,0.5); }
+        
+        .glass-panel { 
+            background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(20px); 
+            border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+        
+        .custom-select, .custom-input {
+            background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.15); color: white; transition: all 0.3s;
+        }
+        .custom-select:focus, .custom-input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); }
+        
+        .action-btn { transition: transform 0.1s, background 0.3s; }
+        .action-btn:active { transform: scale(0.95); }
+        .move-selected { border-color: #10b981 !important; box-shadow: 0 0 20px rgba(16,185,129,0.5); background: rgba(16, 185, 129, 0.2); }
+        
+        /* Modals for Batter/Bowler Selection */
+        .modal-overlay { background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
     </style>
 
-    <!-- FIREBASE COMPAT SDK -->
+    <!-- FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
 </head>
 <body class="flex flex-col h-screen">
 
-    <!-- TOP NAVIGATION -->
-    <header class="w-full p-3 flex justify-between items-center bg-slate-900 border-b border-slate-800 z-50 shadow-md" id="top-nav">
-        <div class="flex items-center gap-2" onclick="switchScreen('dashboard-section')">
-            <i class="fa-solid fa-bolt text-emerald-500 text-xl"></i>
-            <h1 class="text-lg font-black tracking-widest">HC <span class="text-emerald-400">PRO</span></h1>
+    <!-- TOP NAV -->
+    <header class="w-full p-4 flex justify-between items-center bg-black/50 backdrop-blur-md border-b border-white/10 z-50 sticky top-0" id="top-nav">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="switchScreen('dashboard-section')">
+            <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg"><i class="fa-solid fa-bolt text-white text-lg"></i></div>
+            <h1 class="text-xl font-black tracking-widest uppercase">HC <span class="text-emerald-400">Pro</span></h1>
         </div>
-        <div class="flex items-center gap-3">
-            <span id="user-name" class="text-xs font-bold uppercase text-slate-300">Player</span>
-            <button onclick="logout()" class="text-red-400 hover:text-red-300 text-xs font-bold uppercase"><i class="fa-solid fa-power-off"></i></button>
+        <div class="flex items-center gap-4 bg-black/40 p-1.5 pr-4 rounded-full border border-white/10">
+            <img id="user-profile-pic" src="" class="w-8 h-8 rounded-full border border-emerald-500 object-cover">
+            <div class="hidden sm:block text-right">
+                <h2 id="user-name" class="text-xs font-bold uppercase tracking-wide">Player</h2>
+                <button onclick="logout()" class="text-slate-400 hover:text-red-400 text-[10px] font-bold uppercase transition">Sign Out</button>
+            </div>
         </div>
     </header>
 
     <!-- 1. LOGIN -->
-    <div id="login-section" class="flex-1 flex flex-col items-center justify-center p-4">
-        <div class="glass-panel w-full max-w-sm p-8 rounded-3xl text-center shadow-2xl">
-            <h1 class="text-3xl font-black mb-6">LOG IN</h1>
-            <button onclick="loginWithGoogle()" class="w-full bg-white text-black py-4 rounded-xl font-bold flex justify-center items-center gap-3 shadow-lg">
-                <i class="fa-brands fa-google text-blue-500"></i> Google
-            </button>
+    <div id="login-section" class="flex-1 flex items-center justify-center p-4 z-10">
+        <div class="glass-panel w-full max-w-md p-10 rounded-[2rem] text-center">
+            <h1 class="text-4xl font-black mb-6 uppercase text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500">Log In</h1>
+            <button onclick="loginWithGoogle()" class="w-full bg-white text-black py-4 rounded-xl font-bold flex justify-center items-center gap-3 hover:-translate-y-1 transition"><i class="fa-brands fa-google text-blue-500 text-xl"></i> Continue with Google</button>
         </div>
     </div>
 
     <!-- 2. DASHBOARD -->
-    <div id="dashboard-section" class="hidden flex-1 flex flex-col p-4 space-y-4 max-w-2xl mx-auto w-full">
+    <div id="dashboard-section" class="hidden flex-1 flex flex-col p-4 max-w-5xl mx-auto w-full z-10 pt-8 space-y-6">
         <!-- Join Bar -->
-        <div class="flex gap-2 bg-slate-800 p-2 rounded-xl">
-            <input type="text" id="join-code" placeholder="Enter Code" class="bg-transparent flex-1 px-3 text-white font-mono uppercase font-bold outline-none">
-            <button onclick="joinMatch()" class="bg-emerald-600 text-white px-6 py-3 rounded-lg font-bold">JOIN</button>
+        <div class="flex gap-4 bg-black/40 p-4 rounded-2xl border border-white/10 items-center shadow-lg">
+            <input type="text" id="join-code" placeholder="Enter Room/Tourney Code" class="custom-input flex-1 py-3 px-4 rounded-xl text-lg font-mono font-bold uppercase">
+            <button onclick="joinGame()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black uppercase tracking-widest py-3 px-8 rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.4)]">Join</button>
         </div>
 
-        <div class="grid grid-cols-2 gap-4 mt-4">
-            <button onclick="switchScreen('match-setup-section')" class="bg-blue-600 p-6 rounded-2xl text-left shadow-lg">
-                <i class="fa-solid fa-gamepad text-3xl mb-2"></i>
-                <h3 class="font-black text-xl uppercase">Create Match</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <button onclick="switchScreen('match-setup-section')" class="glass-panel bg-gradient-to-br from-blue-900/80 to-slate-900/90 p-8 rounded-[2rem] text-left hover:-translate-y-1 transition border-t-2 border-blue-500/50">
+                <i class="fa-solid fa-gamepad text-4xl text-blue-400 mb-4"></i>
+                <h3 class="font-black text-2xl uppercase mb-1">Create Match</h3>
+                <p class="text-blue-200/60 text-sm font-medium">Head-to-Head Multiplayer</p>
             </button>
-            <button onclick="switchScreen('tourney-setup-section')" class="bg-purple-600 p-6 rounded-2xl text-left shadow-lg">
-                <i class="fa-solid fa-trophy text-3xl mb-2"></i>
-                <h3 class="font-black text-xl uppercase">Tournament</h3>
+            <button onclick="switchScreen('tourney-setup-section')" class="glass-panel bg-gradient-to-br from-purple-900/80 to-slate-900/90 p-8 rounded-[2rem] text-left hover:-translate-y-1 transition border-t-2 border-purple-500/50">
+                <i class="fa-solid fa-trophy text-4xl text-purple-400 mb-4"></i>
+                <h3 class="font-black text-2xl uppercase mb-1">Create Tournament</h3>
+                <p class="text-purple-200/60 text-sm font-medium">Host League & Points Table</p>
             </button>
         </div>
-        
-        <div class="mt-4 bg-slate-800 p-4 rounded-xl border border-slate-700">
-            <h3 class="text-slate-400 font-bold text-xs uppercase mb-2">Saved Games</h3>
-            <button class="w-full bg-slate-700 p-3 rounded-lg text-left font-bold text-sm mb-2"><i class="fa-solid fa-play text-emerald-400 mr-2"></i> Resume Current Match</button>
-            <button class="w-full bg-slate-700 p-3 rounded-lg text-left font-bold text-sm"><i class="fa-solid fa-list text-purple-400 mr-2"></i> Active Tournament</button>
-        </div>
-    </div>
 
-    <!-- 3. MATCH SETUP -->
-    <div id="match-setup-section" class="hidden flex-1 flex flex-col p-4 max-w-xl mx-auto w-full">
-        <h2 class="text-2xl font-black uppercase mb-4">Match Setup</h2>
-        <div class="space-y-4 bg-slate-800 p-6 rounded-2xl">
-            <div>
-                <label class="text-xs font-bold text-slate-400 uppercase">Format</label>
-                <select id="setup-format" class="w-full bg-slate-700 p-3 rounded-lg text-white font-bold mt-1 outline-none">
-                    <option value="T20">T20 (20 Overs)</option>
-                    <option value="ODI">ODI (50 Overs)</option>
-                </select>
+        <!-- RESUME SECTION -->
+        <div class="glass-panel p-6 rounded-[2rem] border-t border-yellow-500/50">
+            <h3 class="text-yellow-400 font-bold uppercase tracking-widest text-sm mb-4"><i class="fa-solid fa-clock-rotate-left mr-2"></i> Continue Playing</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button class="bg-black/50 hover:bg-black/70 border border-blue-500/30 p-4 rounded-xl text-left font-bold text-slate-300 transition flex items-center justify-between group">
+                    <div><div class="text-xs text-blue-400 uppercase mb-1">Current Match</div><div class="text-white uppercase">IND vs AUS</div></div>
+                    <i class="fa-solid fa-arrow-right text-blue-500 opacity-0 group-hover:opacity-100 transition"></i>
+                </button>
+                <button class="bg-black/50 hover:bg-black/70 border border-purple-500/30 p-4 rounded-xl text-left font-bold text-slate-300 transition flex items-center justify-between group">
+                    <div><div class="text-xs text-purple-400 uppercase mb-1">Current Tournament</div><div class="text-white uppercase">HPL League</div></div>
+                    <i class="fa-solid fa-arrow-right text-purple-500 opacity-0 group-hover:opacity-100 transition"></i>
+                </button>
             </div>
-            <div>
-                <label class="text-xs font-bold text-slate-400 uppercase">Wickets</label>
-                <select id="setup-wickets" class="w-full bg-slate-700 p-3 rounded-lg text-white font-bold mt-1 outline-none">
-                    <option value="3">3 Wickets</option>
-                    <option value="5">5 Wickets</option>
-                    <option value="10" selected>10 Wickets</option>
-                </select>
+        </div>
+    </div>
+
+    <!-- 3. TOURNAMENT SETUP -->
+    <div id="tourney-setup-section" class="hidden flex-1 flex flex-col p-4 max-w-4xl mx-auto w-full z-10">
+        <h2 class="text-2xl font-black uppercase tracking-widest text-purple-400 mb-6"><i class="fa-solid fa-trophy mr-2"></i> Tournament Setup</h2>
+        <div class="glass-panel p-8 rounded-[2rem]">
+            <div class="grid grid-cols-2 gap-6 mb-6">
+                <div><label class="text-xs font-bold text-slate-400 uppercase">Format</label>
+                    <select class="custom-select w-full p-4 rounded-xl font-bold mt-1"><option>T20</option><option>ODI</option><option>TEST</option></select>
+                </div>
+                <div><label class="text-xs font-bold text-slate-400 uppercase">Total Teams</label>
+                    <select class="custom-select w-full p-4 rounded-xl font-bold mt-1"><option>3</option><option selected>4</option><option>5</option><option>6</option><option>8</option></select>
+                </div>
+                <div><label class="text-xs font-bold text-slate-400 uppercase">Matches Qty (Per Team)</label>
+                    <select class="custom-select w-full p-4 rounded-xl font-bold mt-1"><option>1 (Single)</option><option>2 (Double)</option></select>
+                </div>
+                <div><label class="text-xs font-bold text-slate-400 uppercase">Wickets</label>
+                    <select class="custom-select w-full p-4 rounded-xl font-bold mt-1"><option>5 Wickets</option><option selected>10 Wickets</option></select>
+                </div>
             </div>
-            <button onclick="hostMatch()" class="w-full bg-emerald-600 py-4 rounded-xl font-black text-lg mt-4 shadow-lg">HOST MATCH</button>
+            <button onclick="switchScreen('tourney-lobby-section')" class="w-full bg-purple-600 hover:bg-purple-500 py-4 rounded-xl font-black text-lg shadow-[0_0_20px_rgba(147,51,234,0.4)] uppercase">Create League</button>
         </div>
     </div>
 
-    <!-- 4. LOBBY -->
-    <div id="lobby-section" class="hidden flex-1 flex flex-col items-center justify-center p-4">
-        <div class="glass-panel p-8 rounded-3xl text-center w-full max-w-sm">
-            <p class="text-emerald-400 font-bold uppercase tracking-widest text-xs mb-2">Room Created</p>
-            <h1 class="text-5xl font-mono font-black text-white mb-6 tracking-widest" id="display-room-code">----</h1>
-            <p class="text-slate-400 animate-pulse text-sm"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Waiting for opponent...</p>
+    <!-- 4. TOURNAMENT LOBBY & POINTS TABLE -->
+    <div id="tourney-lobby-section" class="hidden flex-1 flex flex-col p-4 max-w-5xl mx-auto w-full z-10">
+        <div class="bg-black/60 border border-purple-500/30 p-6 rounded-2xl mb-6 flex justify-between items-center">
+            <div><div class="text-slate-400 text-xs font-bold uppercase mb-1">Tourney Code</div><div class="text-4xl font-mono font-black text-white">TOUR-99</div></div>
+            <div class="text-right">
+                <div class="text-purple-400 font-bold animate-pulse text-sm mb-1"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>Queue Waiting</div>
+                <div class="text-white font-black text-xl">1 / 4 Joined</div>
+            </div>
+        </div>
+        <div class="glass-panel p-6 rounded-[2rem]">
+            <h3 class="text-white font-black uppercase mb-4 text-lg"><i class="fa-solid fa-table text-purple-400 mr-2"></i> Points Table & NRR</h3>
+            <table class="w-full text-left border-collapse bg-black/40 rounded-xl overflow-hidden">
+                <thead class="bg-purple-900/50"><tr class="text-slate-300 text-xs uppercase"><th class="p-4">Team</th><th class="p-4 text-center">P</th><th class="p-4 text-center text-emerald-400">W</th><th class="p-4 text-center text-red-400">L</th><th class="p-4 text-center text-yellow-400 font-black">PTS</th><th class="p-4 text-right">NRR</th></tr></thead>
+                <tbody>
+                    <tr class="border-b border-white/5"><td class="p-4 font-bold text-white">Your Team</td><td class="p-4 text-center font-mono">0</td><td class="p-4 text-center font-mono">0</td><td class="p-4 text-center font-mono">0</td><td class="p-4 text-center font-mono text-yellow-400">0</td><td class="p-4 text-right font-mono text-slate-400">0.000</td></tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <!-- 5. MATCH ARENA (COMPACT FOR MOVES) -->
-    <div id="match-arena-section" class="hidden flex-1 flex-col p-2 w-full max-w-3xl mx-auto">
+    <!-- 5. MATCH SETUP & TOSS -->
+    <div id="match-setup-section" class="hidden flex-1 flex flex-col p-4 max-w-xl mx-auto w-full z-10">
+        <h2 class="text-2xl font-black uppercase tracking-widest text-blue-400 mb-6"><i class="fa-solid fa-gear mr-2"></i> Match Setup</h2>
+        <div class="glass-panel p-8 rounded-[2rem]">
+            <div class="space-y-4">
+                <div><label class="text-xs font-bold text-slate-400 uppercase">Format</label>
+                    <select id="setup-format" class="custom-select w-full p-4 rounded-xl font-bold mt-1"><option>T20</option><option>ODI</option></select>
+                </div>
+                <div><label class="text-xs font-bold text-slate-400 uppercase">Overs</label>
+                    <select id="setup-overs" class="custom-select w-full p-4 rounded-xl font-bold mt-1"><option value="5">5 Overs</option><option value="10">10 Overs</option><option value="20">20 Overs</option></select>
+                </div>
+                <div><label class="text-xs font-bold text-slate-400 uppercase">Wickets (Squad Size)</label>
+                    <select id="setup-wickets" class="custom-select w-full p-4 rounded-xl font-bold mt-1"><option value="5">5 Wickets</option><option value="10" selected>10 Wickets</option></select>
+                </div>
+            </div>
+            <button onclick="hostMatch()" class="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-xl font-black text-lg mt-8 shadow-[0_0_20px_rgba(37,99,235,0.4)] uppercase">Create Room & Toss</button>
+        </div>
+    </div>
+
+    <div id="toss-section" class="hidden flex-1 flex flex-col items-center justify-center p-4 z-10">
+        <div class="glass-panel w-full max-w-md p-10 rounded-[2rem] text-center border-t border-yellow-500/50">
+            <h2 class="text-2xl font-black uppercase text-yellow-400 mb-6">The Toss</h2>
+            <div class="flex justify-center gap-6 mb-8">
+                <button class="bg-black/50 hover:bg-yellow-500/20 border border-yellow-500/50 p-6 rounded-full w-24 h-24 font-black text-white hover:text-yellow-400 transition" onclick="winToss('bat')">BAT</button>
+                <button class="bg-black/50 hover:bg-blue-500/20 border border-blue-500/50 p-6 rounded-full w-24 h-24 font-black text-white hover:text-blue-400 transition" onclick="winToss('bowl')">BOWL</button>
+            </div>
+            <p class="text-slate-400 text-sm uppercase font-bold animate-pulse">Waiting for opponent to call...</p>
+        </div>
+    </div>
+
+    <!-- 6. ULTIMATE MATCH ARENA (PRO UI) -->
+    <div id="match-arena-section" class="hidden flex-1 flex-col p-2 max-w-5xl mx-auto w-full z-10 h-full justify-between">
         
-        <!-- Scoreboard -->
-        <div class="bg-slate-900 border border-slate-700 rounded-xl p-4 flex justify-between items-center shadow-lg">
+        <!-- Scoreboard Header -->
+        <div class="glass-panel border-t-2 border-emerald-500 rounded-2xl p-4 mb-3 flex justify-between items-center">
             <div class="w-1/3">
-                <div class="text-[10px] text-slate-400 font-bold uppercase" id="batting-team">Host (Bat)</div>
-                <div class="text-3xl font-black" id="score-display">0<span class="text-lg text-slate-400">/0</span></div>
+                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-widest" id="bat-team-name">INDIA (BAT)</div>
+                <div class="text-2xl sm:text-4xl font-black text-white" id="main-score">0<span class="text-lg sm:text-2xl text-slate-400">/0</span></div>
             </div>
-            <div class="w-1/3 text-center">
-                <div class="text-emerald-400 font-bold text-xs uppercase" id="match-status-banner">Innings 1</div>
-                <div class="text-sm font-bold text-slate-300">Overs: <span id="overs-display" class="text-white">0.0</span></div>
+            <div class="w-1/3 text-center border-x border-white/10 px-2">
+                <div class="text-emerald-400 font-bold text-[10px] uppercase tracking-widest mb-1 bg-emerald-500/10 py-1 rounded inline-block px-2">Innings 1</div>
+                <div class="text-sm font-bold text-white uppercase">Overs: <span id="main-overs">0.0</span> <span class="text-slate-500 text-[10px] ml-1">(20)</span></div>
             </div>
             <div class="w-1/3 text-right">
-                <div class="text-[10px] text-slate-400 font-bold uppercase" id="bowling-team">Guest (Bowl)</div>
-                <div class="text-xs text-slate-400 font-bold">Target: <span id="target-display" class="text-white">--</span></div>
+                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-widest" id="bowl-team-name">AUS (BOWL)</div>
+                <div class="text-xs font-bold text-slate-400 mt-2">Target: <span class="text-white text-lg" id="target-score">--</span></div>
             </div>
         </div>
 
-        <!-- Strike & Bowler Stats -->
-        <div class="grid grid-cols-2 gap-2 mt-2">
-            <!-- Batters -->
-            <div class="bg-slate-800 p-3 rounded-xl border-l-4 border-blue-500">
-                <h4 class="text-[10px] uppercase text-slate-400 font-bold mb-1">Batters</h4>
-                <div class="flex justify-between items-center text-sm font-bold bg-slate-700/50 p-1.5 rounded" id="striker-ui">
-                    <span><i class="fa-solid fa-caret-right text-blue-400 mr-1"></i><span id="striker-name">Player 1</span></span>
-                    <span id="striker-score">0 (0)</span>
+        <!-- Middle: Batters & Bowler Pro Stats -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3">
+            <!-- Left: Batters -->
+            <div class="glass-panel p-4 rounded-xl border-l-4 border-blue-500 flex flex-col justify-center">
+                <div class="flex justify-between text-[10px] uppercase text-slate-500 font-black mb-2 px-2"><span>Batters</span><span class="flex gap-4"><span>R(B)</span><span>SR</span></span></div>
+                
+                <div class="flex justify-between items-center mb-2 bg-blue-900/30 p-2 rounded-lg border border-blue-500/30">
+                    <div class="font-bold text-white flex items-center text-sm sm:text-base"><i class="fa-solid fa-caret-right text-blue-400 mr-2 animate-pulse"></i><span id="s-name">Virat</span></div>
+                    <div class="flex gap-4 font-mono text-sm"><span class="font-black text-white w-12 text-right" id="s-score">0 (0)</span><span class="text-slate-400 w-10 text-right" id="s-sr">0.0</span></div>
                 </div>
-                <div class="flex justify-between items-center text-xs text-slate-400 p-1.5">
-                    <span class="pl-3" id="non-striker-name">Player 2</span>
-                    <span id="non-striker-score">0 (0)</span>
+                
+                <div class="flex justify-between items-center p-2 rounded-lg">
+                    <div class="font-semibold text-slate-300 pl-5 text-sm sm:text-base" id="ns-name">Rohit</div>
+                    <div class="flex gap-4 font-mono text-sm"><span class="font-bold text-slate-300 w-12 text-right" id="ns-score">0 (0)</span><span class="text-slate-500 w-10 text-right" id="ns-sr">0.0</span></div>
                 </div>
             </div>
-            <!-- Bowler -->
-            <div class="bg-slate-800 p-3 rounded-xl border-l-4 border-red-500 flex flex-col justify-between">
+
+            <!-- Right: Bowler & Over Summary -->
+            <div class="glass-panel p-4 rounded-xl border-l-4 border-red-500 flex flex-col justify-between">
                 <div>
-                    <h4 class="text-[10px] uppercase text-slate-400 font-bold mb-1">Bowler</h4>
-                    <div class="text-sm font-bold text-white"><i class="fa-solid fa-baseball text-red-400 mr-1"></i><span id="bowler-name">Bowler 1</span></div>
+                    <div class="flex justify-between text-[10px] uppercase text-slate-500 font-black mb-2 px-2"><span>Bowler</span><span class="flex gap-3"><span>O</span><span>M</span><span>R</span><span>W</span><span>ECO</span></span></div>
+                    <div class="flex justify-between items-center bg-red-900/20 p-2 rounded-lg border border-red-500/20">
+                        <div class="font-bold text-white flex items-center text-sm sm:text-base"><i class="fa-solid fa-baseball text-red-400 mr-2"></i><span id="bowler-name">Starc</span></div>
+                        <div class="flex gap-3 font-mono text-sm text-slate-300 font-bold" id="bowler-stats"><span>0.0</span><span>0</span><span>0</span><span>0</span><span class="text-slate-400">0.0</span></div>
+                    </div>
                 </div>
-                <!-- Over Summary -->
-                <div class="flex gap-1 overflow-x-auto mt-2" id="over-summary-container">
-                    <!-- 0, 1, W, 4, 6 will appear here -->
+                <!-- Over Summary UI -->
+                <div class="bg-black/50 p-3 rounded-lg border border-white/5 mt-3">
+                    <div class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-2 flex justify-between"><span>This Over</span> <span class="text-white">Runs: <span id="this-over-runs">0</span></span></div>
+                    <div class="flex gap-2 font-mono font-black" id="over-summary">
+                        <!-- JS injected balls go here -->
+                        <span class="text-slate-600 text-xs italic">Waiting...</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Notification Area -->
-        <div id="game-message" class="text-center font-bold text-yellow-400 mt-4 h-6 text-sm uppercase tracking-widest">Make your move...</div>
-
-        <!-- Moves Controller (Stick to bottom half) -->
-        <div class="mt-auto bg-slate-900 border border-slate-800 p-3 rounded-2xl mb-2">
-            <div class="grid grid-cols-4 gap-2 mb-2">
-                <button onclick="submitMove(1)" class="action-btn move-btn bg-slate-800 border-2 border-slate-700 text-white font-black text-2xl py-4 rounded-xl">1</button>
-                <button onclick="submitMove(2)" class="action-btn move-btn bg-slate-800 border-2 border-slate-700 text-white font-black text-2xl py-4 rounded-xl">2</button>
-                <button onclick="submitMove(3)" class="action-btn move-btn bg-slate-800 border-2 border-slate-700 text-white font-black text-2xl py-4 rounded-xl">3</button>
-                <button onclick="submitMove(4)" class="action-btn move-btn bg-slate-800 border-2 border-slate-700 text-white font-black text-2xl py-4 rounded-xl text-emerald-400">4</button>
-            </div>
-            <div class="grid grid-cols-3 gap-2">
-                <button onclick="submitMove(0)" class="action-btn move-btn bg-slate-800 border-2 border-slate-700 text-slate-400 font-black text-2xl py-4 rounded-xl">0</button>
-                <button onclick="submitMove(5)" class="action-btn move-btn bg-slate-800 border-2 border-slate-700 text-white font-black text-2xl py-4 rounded-xl">5</button>
-                <button onclick="submitMove(6)" class="action-btn move-btn bg-slate-800 border-2 border-slate-700 text-purple-400 font-black text-2xl py-4 rounded-xl">6</button>
+        <!-- 0-6 Game Buttons (Bottom Fixed) -->
+        <div class="glass-panel p-4 rounded-2xl border-t border-white/10 mt-auto">
+            <p class="text-center text-yellow-400 font-black text-xs mb-3 uppercase tracking-widest" id="action-status">Play your move</p>
+            <div class="grid grid-cols-4 md:grid-cols-7 gap-2">
+                <button onclick="playMove(0)" class="move-btn action-btn bg-black/60 text-slate-300 rounded-xl py-4 sm:py-5 text-2xl font-black border border-slate-600 hover:border-emerald-400 transition shadow-lg">0</button>
+                <button onclick="playMove(1)" class="move-btn action-btn bg-black/60 text-white rounded-xl py-4 sm:py-5 text-2xl font-black border border-slate-600 hover:border-emerald-400 transition shadow-lg">1</button>
+                <button onclick="playMove(2)" class="move-btn action-btn bg-black/60 text-white rounded-xl py-4 sm:py-5 text-2xl font-black border border-slate-600 hover:border-emerald-400 transition shadow-lg">2</button>
+                <button onclick="playMove(3)" class="move-btn action-btn bg-black/60 text-white rounded-xl py-4 sm:py-5 text-2xl font-black border border-slate-600 hover:border-emerald-400 transition shadow-lg">3</button>
+                <button onclick="playMove(4)" class="move-btn action-btn bg-black/60 text-emerald-400 rounded-xl py-4 sm:py-5 text-2xl font-black border border-slate-600 hover:border-emerald-400 transition shadow-lg">4</button>
+                <button onclick="playMove(5)" class="move-btn action-btn bg-black/60 text-white rounded-xl py-4 sm:py-5 text-2xl font-black border border-slate-600 hover:border-emerald-400 transition shadow-lg">5</button>
+                <button onclick="playMove(6)" class="move-btn action-btn bg-black/60 text-purple-400 rounded-xl py-4 sm:py-5 text-2xl font-black border border-slate-600 hover:border-emerald-400 transition shadow-lg col-span-2 md:col-span-1">6</button>
             </div>
         </div>
     </div>
 
-    <!-- FIREBASE JAVASCRIPT LOGIC -->
+    <!-- FIREBASE AND CORE MATCH ENGINE -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyAofevQrPWUKWxWAkBLtXl4f_lH5FjjPZE",
             authDomain: "hand-cricket-c2d70.firebaseapp.com",
             databaseURL: "https://hand-cricket-c2d70-default-rtdb.firebaseio.com",
-            projectId: "hand-cricket-c2d70"
+            projectId: "hand-cricket-c2d70",
+            storageBucket: "hand-cricket-c2d70.firebasestorage.app"
         };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
-        
-        let currentUser = null;
-        let currentRoomId = null;
-        let myRole = null; // 'host' or 'guest'
-        let isMyTurn = false; 
-        
-        // Screens
-        const screens = ['login-section', 'dashboard-section', 'match-setup-section', 'lobby-section', 'match-arena-section'];
-        function switchScreen(id) {
-            screens.forEach(s => {
-                document.getElementById(s).classList.add('hidden');
-                document.getElementById(s).classList.remove('flex');
-            });
-            document.getElementById(id).classList.remove('hidden');
-            document.getElementById(id).classList.add('flex');
-        }
+        let user = null, currentMatch = null, role = null;
 
-        // AUTH
+        const screens = ['login-section', 'dashboard-section', 'tourney-setup-section', 'tourney-lobby-section', 'match-setup-section', 'toss-section', 'match-arena-section'];
+        function switchScreen(id) { screens.forEach(s => document.getElementById(s).classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); document.getElementById(id).classList.add('flex'); }
+
         window.loginWithGoogle = () => auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
         window.logout = () => auth.signOut();
 
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                currentUser = user;
-                document.getElementById('user-name').innerText = user.displayName.split(" ")[0];
-                switchScreen('dashboard-section');
-            } else {
-                switchScreen('login-section');
-            }
+        auth.onAuthStateChanged(u => {
+            if (u) { user = u; document.getElementById('user-name').innerText = u.displayName.split(" ")[0]; switchScreen('dashboard-section'); }
+            else switchScreen('login-section');
         });
 
-        // ------------------ MULTIPLAYER MATCH LOGIC ------------------
-
+        // TOSS & ROOM LOGIC
         window.hostMatch = function() {
-            const format = document.getElementById('setup-format').value;
-            const wickets = parseInt(document.getElementById('setup-wickets').value);
-            const code = Math.random().toString(36).substring(2, 7).toUpperCase();
-            currentRoomId = code;
-            myRole = 'host';
-
-            // Initial Match State in DB
-            db.ref('matches/' + code).set({
-                settings: { format, maxWickets: wickets },
-                status: 'waiting',
-                host: { uid: currentUser.uid, name: currentUser.displayName },
-                matchState: {
-                    inning: 1,
-                    battingRole: 'host', // Host bats first by default (can add toss later)
-                    score: 0,
-                    wicketsLost: 0,
-                    balls: 0,
-                    target: null,
-                    overSummary: [],
-                    strikers: { s: 0, ns: 0 }, // Player runs
-                    currentMove: { host: null, guest: null } // Both hide moves here
-                }
-            }).then(() => {
-                document.getElementById('display-room-code').innerText = code;
-                switchScreen('lobby-section');
-                listenToMatch(code);
-            });
+            const code = Math.random().toString(36).substring(2,7).toUpperCase();
+            currentMatch = code; role = 'host';
+            db.ref('matches/'+code).set({
+                status: 'toss',
+                host: { uid: user.uid, name: user.displayName },
+                settings: { overs: parseInt(document.getElementById('setup-overs').value), wickets: parseInt(document.getElementById('setup-wickets').value) },
+                state: { inning: 1, batRole: null, score: 0, wickets: 0, balls: 0, target: 0, summary: [], moves: {host: null, guest: null} }
+            }).then(() => switchScreen('toss-section'));
         }
 
-        window.joinMatch = function() {
-            const code = document.getElementById('join-code').value.toUpperCase().trim();
-            if(!code) return;
-            
-            db.ref('matches/' + code).once('value').then(snap => {
-                if(snap.exists() && snap.val().status === 'waiting') {
-                    currentRoomId = code;
-                    myRole = 'guest';
-                    db.ref('matches/' + code).update({
-                        status: 'playing',
-                        guest: { uid: currentUser.uid, name: currentUser.displayName }
-                    }).then(() => {
-                        listenToMatch(code);
-                        switchScreen('match-arena-section');
-                    });
-                } else {
-                    alert("Invalid Code or Match Started!");
-                }
-            });
+        window.winToss = function(choice) {
+            // Bypass logic for testing single player / instant start
+            db.ref('matches/'+currentMatch+'/state').update({ batRole: choice === 'bat' ? 'host' : 'guest' });
+            db.ref('matches/'+currentMatch+'/status').set('playing');
+            switchScreen('match-arena-section');
+            initMatchEngine(currentMatch);
         }
 
-        // Listener for Realtime Logic
-        function listenToMatch(code) {
-            db.ref('matches/' + code).on('value', snap => {
+        // MATCH ENGINE - 0-0 DOT, 1/3/5 STRIKE ROTATION
+        function initMatchEngine(code) {
+            db.ref('matches/'+code).on('value', snap => {
                 const match = snap.val();
-                if(!match) return;
-
-                // Move from Lobby to Arena when guest joins
-                if(match.status === 'playing' && myRole === 'host' && document.getElementById('lobby-section').classList.contains('flex')) {
-                    switchScreen('match-arena-section');
-                }
-
-                updateUI(match);
+                if(!match || match.status !== 'playing') return;
                 
-                // HOST resolves the ball when both players have submitted moves
-                if(myRole === 'host' && match.matchState.currentMove.host !== null && match.matchState.currentMove.guest !== null) {
+                // HOST COMPUTES RESULT WHEN BOTH MOVES IN
+                if(role === 'host' && match.state.moves.host !== null && match.state.moves.guest !== null) {
                     processBall(match);
                 }
+                
+                updateUI(match);
             });
         }
 
-        // Action when user taps 0-6
-        window.submitMove = function(number) {
-            if(!currentRoomId) return;
-            
-            // Highlight button
-            document.querySelectorAll('.move-btn').forEach(btn => btn.classList.remove('move-selected'));
+        window.playMove = function(val) {
+            document.querySelectorAll('.move-btn').forEach(b => b.classList.remove('move-selected'));
             event.target.classList.add('move-selected');
-            document.getElementById('game-message').innerText = "Waiting for opponent...";
-
-            // Push move to DB (hidden from other player until both submit)
-            db.ref(`matches/${currentRoomId}/matchState/currentMove/${myRole}`).set(number);
+            document.getElementById('action-status').innerText = "Waiting for opponent...";
+            db.ref(`matches/${currentMatch}/state/moves/${role}`).set(val);
         }
 
-        // THE CORE GAME RULES ENGINE (Only Host Runs This)
         function processBall(match) {
-            let state = match.matchState;
-            let hostMove = state.currentMove.host;
-            let guestMove = state.currentMove.guest;
-            
-            let batterMove = state.battingRole === 'host' ? hostMove : guestMove;
-            let bowlerMove = state.battingRole === 'guest' ? hostMove : guestMove;
+            let s = match.state;
+            let batMove = s.batRole === 'host' ? s.moves.host : s.moves.guest;
+            let bowlMove = s.batRole === 'guest' ? s.moves.host : s.moves.guest;
+            let ballResult = '';
 
-            let result = '';
-            
-            // RULE: 0-0 IS A DOT BALL, NOT OUT.
-            if (batterMove === 0 && bowlerMove === 0) {
-                result = '0'; // Dot
-                state.balls++;
+            // THE 0-0 DOT LOGIC (NOT OUT)
+            if (batMove === 0 && bowlMove === 0) {
+                ballResult = 0; s.balls++;
             } 
-            // RULE: OUT
-            else if (batterMove === bowlerMove) {
-                result = 'W';
-                state.wicketsLost++;
-                state.balls++;
-                state.strikers.s = 0; // New batter comes in (Score resets)
+            // OUT LOGIC
+            else if (batMove === bowlMove) {
+                ballResult = 'W'; s.wickets++; s.balls++;
             } 
-            // RULE: RUNS SCORED
+            // RUNS LOGIC
             else {
-                result = batterMove;
-                state.score += batterMove;
-                state.strikers.s += batterMove;
-                state.balls++;
-                
-                // Strike Rotation on 1, 3, 5
-                if(batterMove % 2 !== 0) {
-                    let temp = state.strikers.s;
-                    state.strikers.s = state.strikers.ns;
-                    state.strikers.ns = temp;
+                ballResult = batMove; s.score += batMove; s.balls++;
+                // 1,3,5 Strike Rotation logic placeholder for player objects
+            }
+
+            if(!s.summary) s.summary = [];
+            s.summary.push(ballResult);
+            if(s.balls % 6 === 0) s.summary = []; // Clear summary over end
+
+            // Innings Logic
+            if(s.wickets >= match.settings.wickets || s.balls >= match.settings.overs * 6) {
+                if(s.inning === 1) {
+                    s.inning = 2; s.target = s.score + 1; s.score = 0; s.wickets = 0; s.balls = 0; s.summary = [];
+                    s.batRole = s.batRole === 'host' ? 'guest' : 'host';
                 }
             }
 
-            // Update Over Summary Array
-            if(!state.overSummary) state.overSummary = [];
-            state.overSummary.push(result);
-
-            // Over completion Logic (6 balls)
-            if(state.balls % 6 === 0) {
-                // Strike rotates at end of over automatically
-                let temp = state.strikers.s;
-                state.strikers.s = state.strikers.ns;
-                state.strikers.ns = temp;
-                state.overSummary = []; // Clear summary for new bowler
-                
-                // Implement prompt for new bowler here in future updates
-            }
-
-            // Innings Change / Match End Logic
-            if (state.wicketsLost >= match.settings.maxWickets) {
-                if(state.inning === 1) {
-                    // Start Innings 2
-                    state.inning = 2;
-                    state.target = state.score + 1;
-                    state.battingRole = state.battingRole === 'host' ? 'guest' : 'host';
-                    state.score = 0;
-                    state.wicketsLost = 0;
-                    state.balls = 0;
-                    state.strikers = {s:0, ns:0};
-                    state.overSummary = [];
-                } else {
-                    db.ref(`matches/${currentRoomId}/status`).set('finished');
-                }
-            }
-
-            // Target Chased
-            if (state.inning === 2 && state.score >= state.target) {
-                db.ref(`matches/${currentRoomId}/status`).set('finished');
-            }
-
-            // Reset moves and push updated state
-            state.currentMove = { host: null, guest: null };
-            db.ref(`matches/${currentRoomId}/matchState`).set(state);
+            s.moves = {host: null, guest: null};
+            db.ref(`matches/${currentMatch}/state`).set(s);
         }
 
-        // Update Scoreboard UI
         function updateUI(match) {
-            let state = match.matchState;
+            let s = match.state;
+            document.getElementById('main-score').innerHTML = `${s.score}<span class="text-lg sm:text-2xl text-slate-400">/${s.wickets}</span>`;
+            document.getElementById('main-overs').innerText = `${Math.floor(s.balls/6)}.${s.balls%6}`;
+            document.getElementById('target-score').innerText = s.target ? s.target : '--';
             
-            // Set Names based on Role
-            let batName = state.battingRole === 'host' ? match.host.name : match.guest?.name || 'Guest';
-            let bowlName = state.battingRole === 'guest' ? match.host.name : match.guest?.name || 'Guest';
-            document.getElementById('batting-team').innerText = batName + " (BAT)";
-            document.getElementById('bowling-team').innerText = bowlName + " (BOWL)";
-            
-            // Score & Overs
-            document.getElementById('score-display').innerHTML = `${state.score}<span class="text-lg text-slate-400">/${state.wicketsLost}</span>`;
-            
-            let overs = Math.floor(state.balls / 6);
-            let balls = state.balls % 6;
-            document.getElementById('overs-display').innerText = `${overs}.${balls}`;
-
-            // Strikers
-            document.getElementById('striker-score').innerText = state.strikers.s;
-            document.getElementById('non-striker-score').innerText = state.strikers.ns;
-            
-            document.getElementById('target-display').innerText = state.target ? state.target : '--';
-            document.getElementById('match-status-banner').innerText = state.inning === 1 ? "Innings 1" : "Chase";
-
-            // Over Summary Box
-            let summaryHTML = '';
-            if(state.overSummary) {
-                state.overSummary.forEach(ball => {
-                    let color = 'bg-slate-700';
-                    if(ball === 'W') color = 'bg-red-600';
-                    if(ball === 4 || ball === 6) color = 'bg-emerald-600';
-                    summaryHTML += `<div class="w-6 h-6 rounded flex items-center justify-center text-xs font-bold text-white ${color}">${ball}</div>`;
+            // Over summary builder
+            let html = '';
+            if(s.summary) {
+                s.summary.forEach(b => {
+                    let c = 'bg-slate-700'; if(b==='W') c='bg-red-600'; if(b===4||b===6) c='bg-emerald-600 text-black';
+                    html += `<div class="w-8 h-8 rounded-lg flex items-center justify-center font-black text-sm ${c}">${b}</div>`;
                 });
             }
-            document.getElementById('over-summary-container').innerHTML = summaryHTML;
+            document.getElementById('over-summary').innerHTML = html;
 
-            // Reset UI for next turn
-            if(state.currentMove[myRole] === null) {
-                document.querySelectorAll('.move-btn').forEach(btn => btn.classList.remove('move-selected'));
-                if (match.status === 'finished') {
-                    let winner = state.score >= state.target ? batName : bowlName;
-                    document.getElementById('game-message').innerText = `MATCH OVER! ${winner} WON!`;
-                } else {
-                    document.getElementById('game-message').innerText = "MAKE YOUR MOVE";
-                }
+            if(s.moves[role] === null) {
+                document.querySelectorAll('.move-btn').forEach(b => b.classList.remove('move-selected'));
+                document.getElementById('action-status').innerText = "PLAY YOUR MOVE";
             }
         }
     </script>
