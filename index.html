@@ -3,46 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hand Cricket Pro - Ultimate Engine</title>
+    <title>Hand Cricket Pro - Broadcast Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Teko:wght@500;700&family=Inter:wght@400;700;900&display=swap');
         
         body { 
             font-family: 'Inter', sans-serif; 
-            background-color: #0f172a; color: #f8fafc; margin: 0; min-height: 100vh; overflow-x: hidden; 
-            background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.95)), url('https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=2000'); 
+            background-color: #020617; color: #f8fafc; margin: 0; min-height: 100vh; overflow-x: hidden; 
+            background-image: linear-gradient(to bottom, rgba(2, 6, 23, 0.95), rgba(2, 6, 23, 0.98)), url('https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=2000'); 
             background-size: cover; background-position: center; background-attachment: fixed;
         }
         
-        .glass { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        /* Premium Broadcast Glass Panels */
+        .glass { background: rgba(10, 20, 40, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(255, 215, 0, 0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
         .input-glass { background: rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.2); color: white; outline: none; transition: 0.3s; }
-        .input-glass:focus { border-color: #3b82f6; box-shadow: 0 0 15px rgba(59,130,246,0.5); }
+        .input-glass:focus { border-color: #ffd700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
         
         .screen { display: none; width: 100%; min-height: calc(100vh - 64px); flex-direction: column; padding-bottom: 2rem; overflow-y: auto;}
         .active-screen { display: flex; }
         
         .btn-move { transition: transform 0.1s; } 
         .btn-move:active { transform: scale(0.9); }
-        .selected-move { border-color: #10b981 !important; box-shadow: 0 0 20px rgba(16,185,129,0.5); background: rgba(16,185,129,0.3) !important; color: white !important;}
+        .selected-move { border-color: #ffd700 !important; box-shadow: 0 0 20px rgba(255,215,0,0.4); background: rgba(255,215,0,0.15) !important; color: white !important;}
         
-        #bowler-modal { z-index: 99999; }
+        /* High Z-Index for Bowler Modal to never hide */
+        #bowler-modal { z-index: 999999; }
+
+        /* Custom Font for Main Scores like TV Broadcast */
+        .score-font { font-family: 'Teko', sans-serif; letter-spacing: 1px; line-height: 0.9; }
     </style>
     
+    <!-- FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
 </head>
 <body>
 
+    <!-- SOUND EFFECTS -->
+    <audio id="sfx-click" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" preload="auto"></audio>
+    <audio id="sfx-hit" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" preload="auto"></audio>
+    <audio id="sfx-cheer" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3" preload="auto"></audio>
+    <audio id="sfx-wicket" src="https://assets.mixkit.co/active_storage/sfx/3180/3180-preview.mp3" preload="auto"></audio>
+
     <!-- NAV -->
-    <header class="w-full h-16 px-4 flex justify-between items-center bg-black/80 border-b border-white/10 z-50 sticky top-0 backdrop-blur-md">
+    <header class="w-full h-16 px-4 flex justify-between items-center bg-[#050b14] border-b border-[#ffd700]/20 z-50 sticky top-0 shadow-lg">
         <div class="flex items-center gap-2 cursor-pointer" onclick="nav('dashboard')">
-            <i class="fa-solid fa-bolt text-emerald-400 text-2xl"></i><h1 class="text-xl font-black uppercase tracking-widest">HC <span class="text-emerald-400">Pro</span></h1>
+            <i class="fa-solid fa-trophy text-[#ffd700] text-2xl"></i><h1 class="text-xl font-black uppercase tracking-widest text-[#ffd700]">HC <span class="text-white">Pro</span></h1>
         </div>
         <div class="flex items-center gap-3">
-            <img id="user-profile-pic" src="https://via.placeholder.com/150" class="w-8 h-8 rounded-full border border-emerald-500 object-cover" onerror="this.style.display='none'">
+            <img id="user-profile-pic" src="" class="w-8 h-8 rounded-full border border-[#ffd700] object-cover hidden sm:block">
             <span id="nav-user" class="text-sm font-bold uppercase text-slate-300">Player</span>
             <button onclick="auth.signOut()" class="text-red-500 hover:text-red-400 text-lg ml-2"><i class="fa-solid fa-power-off"></i></button>
         </div>
@@ -50,176 +62,198 @@
 
     <!-- 1. LOGIN -->
     <div id="login" class="screen items-center justify-center p-4">
-        <div class="glass w-full max-w-md p-10 rounded-[2rem] text-center">
-            <h1 class="text-4xl font-black mb-8 uppercase text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">Login</h1>
-            <button onclick="login()" class="w-full bg-white text-black py-4 rounded-xl font-black text-lg flex justify-center items-center gap-3 shadow-xl"><i class="fa-brands fa-google text-blue-600 text-2xl"></i> Continue with Google</button>
+        <div class="glass w-full max-w-md p-10 rounded-[2rem] text-center border-t-2 border-[#ffd700]">
+            <h1 class="text-5xl font-black mb-8 uppercase text-transparent bg-clip-text bg-gradient-to-r from-[#ffd700] to-yellow-300 score-font">Log In</h1>
+            <button onclick="login()" class="w-full bg-white text-black py-4 rounded-xl font-black text-lg flex justify-center items-center gap-3 shadow-xl hover:-translate-y-1 transition"><i class="fa-brands fa-google text-blue-600 text-2xl"></i> Continue with Google</button>
         </div>
     </div>
 
-    <!-- 2. DASHBOARD (Matches & Tournaments Resume) -->
+    <!-- 2. DASHBOARD -->
     <div id="dashboard" class="screen p-4 max-w-5xl mx-auto w-full pt-8">
         <div class="flex flex-col md:flex-row gap-3 bg-black/60 p-4 rounded-2xl border border-white/10 mb-6 shadow-lg">
             <input type="text" id="join-input" placeholder="ENTER ROOM/TOURNEY CODE" class="input-glass flex-1 p-4 rounded-xl font-mono font-bold uppercase text-center md:text-left text-lg">
-            <button onclick="joinAction()" class="bg-emerald-600 hover:bg-emerald-500 py-4 px-10 rounded-xl font-black uppercase text-lg">JOIN</button>
+            <button onclick="joinAction(); playSound('click')" class="bg-blue-600 hover:bg-blue-500 py-4 px-10 rounded-xl font-black uppercase text-lg text-white">JOIN GAME</button>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <button onclick="prepSetup('match')" class="glass p-8 rounded-[2rem] text-left hover:border-blue-500 transition border-t-4 border-blue-500">
-                <i class="fa-solid fa-gamepad text-5xl text-blue-400 mb-4"></i>
+            <button onclick="prepSetup('match'); playSound('click')" class="glass p-8 rounded-[2rem] text-left hover:border-blue-500 transition border-t-4 border-blue-600">
+                <i class="fa-solid fa-gamepad text-5xl text-blue-500 mb-4"></i>
                 <h2 class="font-black text-3xl uppercase">Create Match</h2>
-                <p class="text-sm font-bold text-slate-400 mt-2">Play Head-to-Head Multiplayer</p>
+                <p class="text-sm font-bold text-slate-400 mt-2">1v1 Real Cricket Engine</p>
             </button>
-            <button onclick="prepSetup('tourney')" class="glass p-8 rounded-[2rem] text-left hover:border-purple-500 transition border-t-4 border-purple-500">
-                <i class="fa-solid fa-trophy text-5xl text-purple-400 mb-4"></i>
-                <h2 class="font-black text-3xl uppercase">Tournament</h2>
-                <p class="text-sm font-bold text-slate-400 mt-2">Host League, Points Table & NRR</p>
+            <button onclick="prepSetup('tourney'); playSound('click')" class="glass p-8 rounded-[2rem] text-left hover:border-[#ffd700] transition border-t-4 border-[#ffd700]">
+                <i class="fa-solid fa-trophy text-5xl text-[#ffd700] mb-4"></i>
+                <h2 class="font-black text-3xl uppercase text-[#ffd700]">Tournament</h2>
+                <p class="text-sm font-bold text-slate-300 mt-2">Host League & Points Table</p>
             </button>
         </div>
 
-        <div class="glass p-6 rounded-2xl border-t-2 border-yellow-500/50">
-            <h3 class="text-yellow-400 font-black uppercase text-sm mb-4"><i class="fa-solid fa-clock-rotate-left mr-2"></i>Resume Active Games</h3>
-            <div id="resume-list" class="space-y-2 text-sm font-bold"><div class="text-slate-400">Loading saves...</div></div>
+        <div class="glass p-6 rounded-2xl border-t-2 border-emerald-500">
+            <h3 class="text-emerald-400 font-black uppercase text-sm mb-4"><i class="fa-solid fa-clock-rotate-left mr-2"></i>Active Games History</h3>
+            <div id="resume-list" class="space-y-2 text-sm font-bold"><div class="text-slate-400">Loading your saves...</div></div>
         </div>
     </div>
 
     <!-- 3. TEAM SQUAD BUILDER -->
     <div id="squad-builder" class="screen p-4 max-w-3xl mx-auto w-full pt-6">
-        <h2 class="text-2xl font-black uppercase text-blue-400 mb-4">Set Playing 11</h2>
+        <h2 class="text-2xl font-black uppercase text-white mb-4"><i class="fa-solid fa-users-viewfinder mr-2 text-blue-500"></i> Set Playing 11</h2>
         <div class="glass p-6 sm:p-8 rounded-[2rem]">
             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Team Name</label>
-            <input type="text" id="team-name" value="India" class="input-glass w-full p-4 rounded-xl font-black text-lg uppercase mb-6">
+            <input type="text" id="team-name" value="India" class="input-glass w-full p-4 rounded-xl font-black text-lg uppercase mb-6 border-[#ffd700]/30 text-[#ffd700]">
             
-            <label class="text-[10px] font-black text-yellow-400 uppercase tracking-widest block mb-2">11 Players (Top to Bottom)</label>
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">11 Players Roster</label>
             <div id="player-inputs" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
             
-            <button onclick="saveSquadAndProceed()" class="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-xl font-black uppercase text-xl mt-6">Confirm Squad</button>
+            <button onclick="saveSquadAndProceed(); playSound('click')" class="w-full bg-blue-600 py-4 rounded-xl font-black uppercase text-xl mt-6">Confirm Squad</button>
         </div>
     </div>
 
     <!-- 4. TOURNAMENT & MATCH RULES -->
     <div id="tourney-config" class="screen p-4 max-w-xl mx-auto w-full pt-8">
-        <div class="glass p-8 rounded-[2rem] border-t-4 border-purple-500">
-            <h2 class="text-3xl font-black uppercase mb-6 text-purple-400 text-center">League Rules</h2>
+        <div class="glass p-8 rounded-[2rem] border-t-4 border-[#ffd700]">
+            <h2 class="text-3xl font-black uppercase mb-6 text-[#ffd700] text-center">League Rules</h2>
             <div class="grid grid-cols-2 gap-4">
                 <div><label class="text-xs font-black text-slate-400 uppercase">Format</label><select id="t-format" class="input-glass w-full p-3 rounded-lg font-bold"><option>T20</option><option>ODI</option><option>TEST</option></select></div>
-                <div><label class="text-xs font-black text-slate-400 uppercase">Overs</label><select id="t-overs" class="input-glass w-full p-3 rounded-lg font-bold"><option value="5">5</option><option value="20">20</option></select></div>
-                <div><label class="text-xs font-black text-slate-400 uppercase">Wickets</label><select id="t-wickets" class="input-glass w-full p-3 rounded-lg font-bold"><option value="10" selected>10</option></select></div>
+                
+                <!-- CUSTOM OVERS ADDED HERE -->
+                <div><label class="text-xs font-black text-slate-400 uppercase">Overs</label>
+                    <select id="t-overs" class="input-glass w-full p-3 rounded-lg font-bold">
+                        <option value="1">1 Over</option><option value="2">2 Overs</option><option value="3">3 Overs</option><option value="4">4 Overs</option><option value="5" selected>5 Overs</option><option value="10">10 Overs</option><option value="20">20 Overs</option>
+                    </select>
+                </div>
+
+                <div><label class="text-xs font-black text-slate-400 uppercase">Wickets</label><select id="t-wickets" class="input-glass w-full p-3 rounded-lg font-bold"><option value="5">5</option><option value="10" selected>10</option></select></div>
                 <div><label class="text-xs font-black text-slate-400 uppercase">Teams Qty</label><select id="t-teams" class="input-glass w-full p-3 rounded-lg font-bold"><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option></select></div>
                 <div class="col-span-2"><label class="text-xs font-black text-slate-400 uppercase">Matches/Team</label><select id="t-qty" class="input-glass w-full p-3 rounded-lg font-bold"><option value="1">1 (Single)</option><option value="2">2 (Double)</option></select></div>
             </div>
-            <button onclick="hostTourney()" class="w-full bg-purple-600 py-4 rounded-xl font-black text-lg mt-6 uppercase">Host League</button>
+            <button onclick="hostTourney(); playSound('click')" class="w-full bg-[#ffd700] text-black py-4 rounded-xl font-black text-lg mt-6 uppercase">Host League</button>
         </div>
     </div>
 
     <div id="match-config" class="screen p-4 max-w-xl mx-auto w-full pt-8">
-        <div class="glass p-8 rounded-[2rem] border-t-4 border-blue-500">
+        <div class="glass p-8 rounded-[2rem] border-t-4 border-blue-600">
             <h2 class="text-3xl font-black uppercase mb-6 text-blue-400 text-center">Match Rules</h2>
             <div class="space-y-4">
                 <div><label class="text-xs font-black text-slate-400 uppercase">Format</label><select id="m-format" class="input-glass w-full p-3 rounded-lg font-bold"><option>T20</option><option>ODI</option></select></div>
-                <div><label class="text-xs font-black text-slate-400 uppercase">Overs</label><select id="m-overs" class="input-glass w-full p-3 rounded-lg font-bold"><option value="2">2</option><option value="5" selected>5</option><option value="20">20</option></select></div>
-                <div><label class="text-xs font-black text-slate-400 uppercase">Wickets</label><select id="m-wickets" class="input-glass w-full p-3 rounded-lg font-bold"><option value="3">3</option><option value="10" selected>10</option></select></div>
+                
+                <!-- CUSTOM OVERS ADDED HERE -->
+                <div><label class="text-xs font-black text-slate-400 uppercase">Overs</label>
+                    <select id="m-overs" class="input-glass w-full p-3 rounded-lg font-bold">
+                        <option value="1">1 Over</option><option value="2">2 Overs</option><option value="3">3 Overs</option><option value="4">4 Overs</option><option value="5" selected>5 Overs</option><option value="10">10 Overs</option><option value="20">20 Overs</option>
+                    </select>
+                </div>
+                
+                <div><label class="text-xs font-black text-slate-400 uppercase">Wickets</label><select id="m-wickets" class="input-glass w-full p-3 rounded-lg font-bold"><option value="3">3</option><option value="5">5</option><option value="10" selected>10</option></select></div>
             </div>
-            <button onclick="hostMatch()" class="w-full bg-emerald-600 py-4 rounded-xl font-black text-lg mt-6 uppercase">Generate Room</button>
+            <button onclick="hostMatch(); playSound('click')" class="w-full bg-blue-600 py-4 rounded-xl font-black text-lg mt-6 uppercase">Generate Room</button>
         </div>
     </div>
 
     <!-- 5. LOBBY & POINTS TABLE -->
     <div id="lobby" class="screen p-4 max-w-5xl mx-auto w-full pt-8">
-        <div class="glass p-8 rounded-[2rem] text-center border-t-2 border-emerald-500 mb-6">
+        <div class="glass p-8 rounded-[2rem] text-center border-t-2 border-emerald-500 mb-6 bg-black/80">
             <p class="text-emerald-400 font-black uppercase text-sm mb-2">Room Code</p>
-            <div class="text-5xl md:text-7xl font-mono font-black text-white bg-black/60 p-4 rounded-2xl inline-block tracking-widest border border-white/10" id="lobby-code">----</div>
-            <p id="lobby-status" class="text-slate-400 font-bold mt-4 uppercase animate-pulse">Waiting for teams...</p>
+            <div class="text-5xl md:text-7xl font-mono font-black text-white bg-black/60 p-4 rounded-2xl inline-block tracking-widest border border-emerald-500/30 score-font" id="lobby-code">----</div>
+            <p id="lobby-status" class="text-slate-400 font-bold mt-4 uppercase animate-pulse">Waiting for opponent to join...</p>
         </div>
         
-        <div id="tourney-ui" class="hidden w-full glass p-6 rounded-2xl border-t-2 border-purple-500">
-            <h3 class="font-black uppercase text-lg text-purple-400 mb-4"><i class="fa-solid fa-table-list mr-2"></i>Points Table</h3>
+        <div id="tourney-ui" class="hidden w-full glass p-6 rounded-2xl border-t-2 border-[#ffd700]">
+            <h3 class="font-black uppercase text-lg text-[#ffd700] mb-4"><i class="fa-solid fa-table-list mr-2"></i>Points Table</h3>
             <div class="overflow-x-auto rounded-xl border border-white/10 bg-black/50">
                 <table class="w-full text-left text-sm font-bold min-w-max">
-                    <thead class="bg-purple-900/40"><tr class="uppercase text-slate-300 text-[10px] tracking-widest"><th class="p-3">Team</th><th class="p-3 text-center">P</th><th class="p-3 text-center text-emerald-400">W</th><th class="p-3 text-center text-red-400">L</th><th class="p-3 text-center text-yellow-400">PTS</th><th class="p-3 text-right">NRR</th></tr></thead>
+                    <thead class="bg-[#ffd700]/20"><tr class="uppercase text-slate-200 text-[10px] tracking-widest"><th class="p-3">Team</th><th class="p-3 text-center">P</th><th class="p-3 text-center text-emerald-400">W</th><th class="p-3 text-center text-red-400">L</th><th class="p-3 text-center text-yellow-400">PTS</th><th class="p-3 text-right">NRR</th></tr></thead>
                     <tbody id="pt-body"></tbody>
                 </table>
             </div>
-            <button id="start-t-match" class="w-full bg-emerald-600 mt-4 py-3 rounded-lg font-black uppercase hidden">Play Next Scheduled Match</button>
+            <button id="start-t-match" class="w-full bg-[#ffd700] text-black mt-4 py-3 rounded-lg font-black uppercase hidden">Play Scheduled Match</button>
         </div>
     </div>
 
     <!-- 6. TOSS -->
     <div id="toss" class="screen p-4 max-w-lg mx-auto w-full items-center justify-center">
-        <div class="glass p-12 rounded-[3rem] text-center w-full shadow-[0_0_50px_rgba(234,179,8,0.2)] border-t border-yellow-500/50">
-            <h2 class="text-4xl font-black uppercase text-yellow-400 mb-6">The Toss</h2>
-            <p id="toss-text" class="text-white font-bold text-lg mb-8">Host is tossing...</p>
+        <div class="glass p-12 rounded-[3rem] text-center w-full shadow-[0_0_50px_rgba(255,215,0,0.15)] border-t border-[#ffd700]">
+            <i class="fa-solid fa-coins text-6xl text-[#ffd700] mb-6 animate-bounce"></i>
+            <h2 class="text-4xl font-black uppercase text-white mb-6 score-font">The Toss</h2>
+            <p id="toss-text" class="text-[#ffd700] font-bold text-lg mb-8">Host is tossing...</p>
             <div id="toss-btns" class="hidden justify-center gap-6">
-                <button onclick="submitToss('bat')" class="bg-blue-600 p-8 rounded-3xl w-32 h-32 font-black text-2xl text-white shadow-lg"><i class="fa-solid fa-baseball-bat-ball block mb-2"></i> BAT</button>
-                <button onclick="submitToss('bowl')" class="bg-red-600 p-8 rounded-3xl w-32 h-32 font-black text-2xl text-white shadow-lg"><i class="fa-solid fa-baseball block mb-2"></i> BOWL</button>
+                <button onclick="submitToss('bat'); playSound('click')" class="bg-blue-600 p-8 rounded-3xl w-32 h-32 font-black text-2xl text-white shadow-lg border border-blue-400"><i class="fa-solid fa-baseball-bat-ball block mb-2"></i> BAT</button>
+                <button onclick="submitToss('bowl'); playSound('click')" class="bg-red-600 p-8 rounded-3xl w-32 h-32 font-black text-2xl text-white shadow-lg border border-red-400"><i class="fa-solid fa-baseball block mb-2"></i> BOWL</button>
             </div>
         </div>
     </div>
 
-    <!-- 7. PRO ARENA -->
+    <!-- 7. PRO BROADCAST ARENA -->
     <div id="arena" class="screen p-2 max-w-5xl mx-auto w-full pt-4 h-full">
-        <!-- Scoreboard -->
-        <div class="glass border-t-4 border-emerald-500 rounded-2xl p-4 sm:p-6 mb-3 flex justify-between items-center bg-black/90">
+        <!-- Main Scoreboard Banner -->
+        <div class="glass border-b-4 border-[#ffd700] rounded-t-2xl p-4 sm:p-6 mb-3 flex justify-between items-center bg-gradient-to-b from-[#0a1128] to-black">
             <div class="w-1/3 text-left">
-                <div class="text-[10px] sm:text-xs text-slate-400 font-black uppercase mb-1" id="ui-bat-team">BAT TEAM</div>
-                <div class="text-3xl sm:text-5xl font-black text-white truncate" id="ui-score">0<span class="text-lg sm:text-2xl text-slate-400">/0</span></div>
+                <div class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-widest mb-1" id="ui-bat-team">BAT TEAM</div>
+                <div class="text-4xl sm:text-6xl font-black text-white truncate score-font" id="ui-score">0<span class="text-xl sm:text-4xl text-slate-400">/0</span></div>
             </div>
             <div class="w-1/3 text-center px-1">
-                <div class="text-emerald-400 font-black text-[10px] sm:text-xs uppercase bg-emerald-500/10 px-2 py-1 rounded-full mb-1">Innings <span id="ui-inn">1</span></div>
-                <div class="text-sm sm:text-lg font-black text-white uppercase">Overs: <span id="ui-overs">0.0</span><span class="text-slate-500 text-[10px] sm:text-xs ml-1" id="ui-max-overs">(/20)</span></div>
+                <div class="text-black font-black text-[10px] sm:text-xs uppercase bg-[#ffd700] px-3 py-1 rounded mb-2 inline-block">Innings <span id="ui-inn">1</span></div>
+                <div class="text-base sm:text-xl font-black text-white uppercase score-font tracking-widest">OVERS: <span id="ui-overs" class="text-blue-400">0.0</span><span class="text-slate-500 text-[10px] sm:text-xs ml-1" id="ui-max-overs">(/20)</span></div>
             </div>
             <div class="w-1/3 text-right">
-                <div class="text-[10px] sm:text-xs text-slate-400 font-black uppercase mb-1" id="ui-bowl-team">BOWL TEAM</div>
-                <div class="text-[10px] sm:text-xs font-black text-slate-400 uppercase mt-2">Target: <br class="sm:hidden"><span class="text-white text-lg sm:text-xl" id="ui-target">--</span></div>
+                <div class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-widest mb-1" id="ui-bowl-team">BOWL TEAM</div>
+                <div class="text-[10px] sm:text-xs font-black text-slate-400 uppercase mt-2">Target: <br class="sm:hidden"><span class="text-[#ffd700] text-xl sm:text-3xl score-font" id="ui-target">--</span></div>
             </div>
         </div>
 
-        <!-- Players -->
+        <!-- Players Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3">
-            <div class="glass p-4 rounded-xl border-l-4 border-blue-500 bg-black/70">
-                <div class="flex justify-between text-[10px] sm:text-xs uppercase text-slate-500 font-black mb-2 px-1"><span>Batters</span><span class="flex gap-4 sm:gap-6"><span>R(B)</span><span>SR</span></span></div>
-                <div class="flex justify-between items-center mb-2 bg-blue-900/40 p-2 rounded-lg border border-blue-500/40">
+            <!-- Batters Box -->
+            <div class="glass p-4 rounded-xl border-l-4 border-blue-500 bg-[#050b14]/80">
+                <div class="flex justify-between text-[10px] sm:text-xs uppercase text-slate-500 font-black mb-2 px-1 tracking-widest"><span>Batters</span><span class="flex gap-4 sm:gap-6"><span>R(B)</span><span>SR</span></span></div>
+                <div class="flex justify-between items-center mb-2 bg-blue-900/40 p-2 rounded-lg border border-blue-500/40 shadow-inner">
                     <div class="font-black text-white text-sm sm:text-base truncate w-1/2 flex items-center"><i class="fa-solid fa-caret-right text-blue-400 mr-2 animate-pulse"></i><span id="ui-s-name">Striker</span></div>
-                    <div class="flex gap-4 sm:gap-6 font-mono text-sm"><span class="font-black text-white w-12 text-right" id="ui-s-score">0(0)</span><span class="text-blue-200 w-8 text-right font-bold" id="ui-s-sr">0.0</span></div>
+                    <div class="flex gap-4 sm:gap-6 font-mono text-sm sm:text-base"><span class="font-black text-white w-12 text-right" id="ui-s-score">0(0)</span><span class="text-blue-300 w-8 text-right font-bold" id="ui-s-sr">0.0</span></div>
                 </div>
                 <div class="flex justify-between items-center p-2 rounded-lg">
                     <div class="font-bold text-slate-400 text-sm sm:text-base pl-5 truncate w-1/2" id="ui-ns-name">Non-Striker</div>
-                    <div class="flex gap-4 sm:gap-6 font-mono text-sm"><span class="font-bold text-slate-300 w-12 text-right" id="ui-ns-score">0(0)</span><span class="text-slate-500 w-8 text-right font-bold" id="ui-ns-sr">0.0</span></div>
+                    <div class="flex gap-4 sm:gap-6 font-mono text-sm sm:text-base"><span class="font-bold text-slate-300 w-12 text-right" id="ui-ns-score">0(0)</span><span class="text-slate-500 w-8 text-right font-bold" id="ui-ns-sr">0.0</span></div>
                 </div>
             </div>
-            <div class="glass p-4 rounded-xl border-l-4 border-red-500 bg-black/70">
-                <div class="flex justify-between text-[10px] sm:text-xs uppercase text-slate-500 font-black mb-2 px-1"><span>Bowler</span><span class="flex gap-3 sm:gap-4"><span>O</span><span>R</span><span>W</span><span>ECO</span></span></div>
-                <div class="flex justify-between items-center bg-red-900/30 p-2 rounded-lg border border-red-500/30 mb-3">
-                    <div class="font-black text-white text-sm sm:text-base truncate w-1/3 flex items-center"><i class="fa-solid fa-baseball text-red-400 mr-2"></i><span id="ui-b-name">Bowler</span></div>
-                    <div class="flex gap-3 sm:gap-4 font-mono text-sm text-slate-200 font-black justify-end w-2/3" id="ui-b-stats"><span>0.0</span><span>0</span><span class="text-red-400">0</span><span class="text-slate-400">0.0</span></div>
+            
+            <!-- Bowler Box -->
+            <div class="glass p-4 rounded-xl border-l-4 border-red-500 bg-[#050b14]/80 flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between text-[10px] sm:text-xs uppercase text-slate-500 font-black mb-2 px-1 tracking-widest"><span>Bowler</span><span class="flex gap-3 sm:gap-4"><span>O</span><span>R</span><span>W</span><span>ECO</span></span></div>
+                    <div class="flex justify-between items-center bg-red-900/30 p-2 rounded-lg border border-red-500/30 mb-3 shadow-inner">
+                        <div class="font-black text-white text-sm sm:text-base truncate w-1/3 flex items-center"><i class="fa-solid fa-baseball text-red-400 mr-2"></i><span id="ui-b-name">Bowler</span></div>
+                        <div class="flex gap-3 sm:gap-4 font-mono text-sm sm:text-base text-white font-black justify-end w-2/3" id="ui-b-stats"><span>0.0</span><span>0</span><span class="text-red-400">0</span><span class="text-slate-400">0.0</span></div>
+                    </div>
                 </div>
-                <div class="bg-black/60 p-2 rounded-lg border border-white/5">
-                    <div class="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">Over Summary</div>
-                    <div class="flex gap-1 overflow-x-auto" id="ui-summary"><span class="text-slate-600 text-xs italic">Waiting...</span></div>
+                <!-- Over Summary -->
+                <div class="bg-black/80 p-2 rounded border border-white/5 mt-auto">
+                    <div class="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1 flex justify-between"><span>This Over</span></div>
+                    <div class="flex gap-1 overflow-x-auto" id="ui-summary"><span class="text-slate-600 text-xs italic">Waiting for delivery...</span></div>
                 </div>
             </div>
         </div>
 
-        <div id="action-msg" class="w-full text-center py-1 font-black text-yellow-400 uppercase text-xs animate-pulse">Make Your Move</div>
+        <div id="action-msg" class="w-full text-center py-2 font-black text-[#ffd700] uppercase text-xs sm:text-sm tracking-widest bg-black/50 rounded-lg mb-2 shadow-inner border border-[#ffd700]/20">Make Your Move</div>
 
-        <div class="glass p-3 sm:p-5 rounded-[2rem] border-t-2 border-slate-600 mt-2 bg-slate-900/90">
-            <div class="grid grid-cols-4 md:grid-cols-7 gap-2">
-                <button onclick="sendMove(0)" class="btn-move bg-slate-800 text-slate-400 rounded-xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:text-white">0</button>
-                <button onclick="sendMove(1)" class="btn-move bg-slate-800 text-white rounded-xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:bg-slate-700">1</button>
-                <button onclick="sendMove(2)" class="btn-move bg-slate-800 text-white rounded-xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:bg-slate-700">2</button>
-                <button onclick="sendMove(3)" class="btn-move bg-slate-800 text-white rounded-xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:bg-slate-700">3</button>
-                <button onclick="sendMove(4)" class="btn-move bg-slate-800 text-emerald-400 rounded-xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:bg-slate-700">4</button>
-                <button onclick="sendMove(5)" class="btn-move bg-slate-800 text-white rounded-xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:bg-slate-700">5</button>
-                <button onclick="sendMove(6)" class="btn-move bg-slate-800 text-purple-400 rounded-xl py-5 sm:py-6 text-2xl sm:text-3xl font-black border-2 border-slate-700 hover:bg-slate-700 col-span-2 md:col-span-1">6</button>
+        <!-- 0-6 Move Buttons -->
+        <div class="glass p-3 sm:p-5 rounded-b-2xl border-t border-slate-700 mt-auto bg-[#050b14]/90">
+            <div class="grid grid-cols-4 md:grid-cols-7 gap-2 sm:gap-3">
+                <button onclick="sendMove(0)" class="btn-move bg-[#0a1128] text-slate-400 rounded-xl py-5 sm:py-6 text-2xl sm:text-4xl font-black border-2 border-slate-700 hover:border-[#ffd700] hover:text-white shadow-lg score-font">0</button>
+                <button onclick="sendMove(1)" class="btn-move bg-[#0a1128] text-white rounded-xl py-5 sm:py-6 text-2xl sm:text-4xl font-black border-2 border-slate-700 hover:border-blue-400 shadow-lg score-font">1</button>
+                <button onclick="sendMove(2)" class="btn-move bg-[#0a1128] text-white rounded-xl py-5 sm:py-6 text-2xl sm:text-4xl font-black border-2 border-slate-700 hover:border-blue-400 shadow-lg score-font">2</button>
+                <button onclick="sendMove(3)" class="btn-move bg-[#0a1128] text-white rounded-xl py-5 sm:py-6 text-2xl sm:text-4xl font-black border-2 border-slate-700 hover:border-blue-400 shadow-lg score-font">3</button>
+                <button onclick="sendMove(4)" class="btn-move bg-[#0a1128] text-emerald-400 rounded-xl py-5 sm:py-6 text-2xl sm:text-4xl font-black border-2 border-emerald-700 hover:border-emerald-400 shadow-lg score-font">4</button>
+                <button onclick="sendMove(5)" class="btn-move bg-[#0a1128] text-white rounded-xl py-5 sm:py-6 text-2xl sm:text-4xl font-black border-2 border-slate-700 hover:border-blue-400 shadow-lg score-font">5</button>
+                <button onclick="sendMove(6)" class="btn-move bg-[#0a1128] text-purple-400 rounded-xl py-5 sm:py-6 text-2xl sm:text-4xl font-black border-2 border-purple-700 hover:border-purple-400 shadow-lg col-span-2 md:col-span-1 score-font">6</button>
             </div>
         </div>
     </div>
 
-    <!-- MODALS -->
-    <div id="bowler-modal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md items-center justify-center p-4">
-        <div class="glass p-6 rounded-[2rem] w-full max-w-sm border-t-4 border-red-500 text-center">
-            <h3 class="text-xl font-black uppercase text-white mb-2">Select Bowler</h3>
-            <p class="text-[10px] text-red-400 mb-4 uppercase">Can't bowl consecutive overs</p>
-            <div id="bowler-list" class="space-y-2 max-h-64 overflow-y-auto pr-1 text-sm"></div>
+    <!-- MODAL: BOWLER SELECTION (100% Guaranteed to show) -->
+    <div id="bowler-modal" class="hidden fixed inset-0 bg-black/95 backdrop-blur-lg items-center justify-center p-4">
+        <div class="glass p-6 rounded-[2rem] w-full max-w-md border-t-4 border-red-500 text-center shadow-[0_0_50px_rgba(220,38,38,0.4)]">
+            <h3 class="text-3xl font-black uppercase text-white mb-2 score-font tracking-widest">Select Next Bowler</h3>
+            <p class="text-xs text-red-400 mb-6 uppercase font-bold tracking-widest">Previous bowler cannot bowl consecutive overs</p>
+            <div id="bowler-list" class="space-y-3 max-h-72 overflow-y-auto pr-2"></div>
         </div>
     </div>
 
@@ -230,6 +264,22 @@
         
         let u=null, mRole=null, mId=null, mType=null; 
         let squadData = { name: "Team", p: [] };
+        let lastBallProcessed = -1; // For sound effects trigger
+
+        // Audio Objects
+        const sfxClick = document.getElementById('sfx-click');
+        const sfxHit = document.getElementById('sfx-hit');
+        const sfxCheer = document.getElementById('sfx-cheer');
+        const sfxWicket = document.getElementById('sfx-wicket');
+
+        function playSound(type) {
+            try {
+                if(type==='click') { sfxClick.currentTime=0; sfxClick.play(); }
+                if(type==='hit') { sfxHit.currentTime=0; sfxHit.play(); }
+                if(type==='cheer') { sfxHit.currentTime=0; sfxHit.play(); setTimeout(()=>{ sfxCheer.currentTime=0; sfxCheer.play(); }, 400); }
+                if(type==='wicket') { sfxWicket.currentTime=0; sfxWicket.play(); }
+            } catch(e) { console.log("Audio play prevented by browser interaction policy."); }
+        }
 
         // Generate 11 inputs securely
         const pInp = document.getElementById('player-inputs');
@@ -269,7 +319,6 @@
             }).then(() => { document.getElementById('lobby-code').innerText = mId; document.getElementById('tourney-ui').classList.add('hidden'); nav('lobby'); listenMatch(); });
         }
 
-        // Tourney setup logic added
         function hostTourney() {
             mId = Math.random().toString(36).substring(2,7).toUpperCase(); mRole='tHost';
             db.ref('tournaments/'+mId).set({
@@ -281,11 +330,9 @@
         function joinAction() {
             let code = document.getElementById('join-input').value.toUpperCase().trim();
             if(!code) return;
-            // Check match
             db.ref('matches/'+code).once('value', s => {
                 if(s.exists() && s.val().status === 'waiting') { mId = code; mRole = 'join_prep'; mType='match'; nav('squad-builder'); }
                 else {
-                    // Check tourney
                     db.ref('tournaments/'+code).once('value', ts => {
                         if(ts.exists() && ts.val().status === 'waiting') { mId = code; mRole = 'join_prep'; mType='tourney'; nav('squad-builder'); }
                         else alert("Invalid Code or Room Full");
@@ -308,7 +355,7 @@
             let h = document.getElementById('resume-list').innerHTML;
             if(h.includes('Loading')) h = '';
             sn.forEach(c => {
-                if(c.val().status !== 'finished') h += `<button onclick="mId='${c.key}'; mRole=(c.val().p1.uid==='${u.uid}'?'p1':'p2'); listenMatch();" class="w-full bg-black/60 p-4 rounded-xl text-left border border-slate-600 hover:border-emerald-500 font-black uppercase flex justify-between group text-xs mb-2"><span class="text-white">Match: <span class="text-emerald-400">${c.key}</span></span> <i class="fa-solid fa-play text-emerald-500 opacity-0 group-hover:opacity-100"></i></button>`;
+                if(c.val().status !== 'finished') h += `<button onclick="playSound('click'); mId='${c.key}'; mRole=(c.val().p1.uid==='${u.uid}'?'p1':'p2'); listenMatch();" class="w-full bg-[#0a1128] p-4 rounded-xl text-left border border-slate-700 hover:border-emerald-500 font-black uppercase flex justify-between group text-xs sm:text-sm mb-2"><span class="text-white">Match: <span class="text-emerald-400">${c.key}</span></span> <i class="fa-solid fa-play text-emerald-500 opacity-0 group-hover:opacity-100"></i></button>`;
             });
             document.getElementById('resume-list').innerHTML = h || '<span class="text-slate-500">No active matches</span>';
         }
@@ -328,20 +375,40 @@
                 
                 if(m.status === 'playing') {
                     nav('arena');
+                    
+                    // Host Calculation
                     if(mRole === 'p1' && m.state.mov.p1 !== null && m.state.mov.p2 !== null) calcBall(m);
                     
-                    // Bowler Modal Logic
-                    if(m.state.needBw && m.state.mov.p1 === null && m.state.mov.p2 === null) {
-                        if(mRole !== m.state.bat) { showBowlerModal(m); } 
-                        else { document.getElementById('bowler-modal').classList.replace('flex','hidden'); disableMoves(true); document.getElementById('action-msg').innerText = "Fielding team selecting bowler..."; }
-                    } else {
-                        document.getElementById('bowler-modal').classList.replace('flex','hidden'); disableMoves(false);
+                    // Trigger Sound Effects if ball count increased
+                    if(m.state.bls > lastBallProcessed && m.state.sum && m.state.sum.length > 0) {
+                        lastBallProcessed = m.state.bls;
+                        let lastRes = m.state.sum[m.state.sum.length-1];
+                        if(lastRes === 'W') playSound('wicket');
+                        else if(lastRes === 4 || lastRes === 6) playSound('cheer');
+                        else if(lastRes === '0') playSound('click');
+                        else playSound('hit');
                     }
+                    
+                    // BUG FIX: Bowler Change logic
+                    if(m.state.needBw && m.state.mov.p1 === null && m.state.mov.p2 === null) {
+                        if(mRole !== m.state.bat) { 
+                            showBowlerModal(m); 
+                        } else { 
+                            document.getElementById('bowler-modal').classList.replace('flex','hidden'); 
+                            disableMoves(true); 
+                            document.getElementById('action-msg').innerHTML = "<span class='text-white'>Waiting for fielding team to select bowler...</span>"; 
+                        }
+                    } else {
+                        document.getElementById('bowler-modal').classList.replace('flex','hidden'); 
+                        disableMoves(false);
+                    }
+                    
                     renderScore(m);
                 }
             });
         }
-        
+
+        // Dummy tourney listener to hold UI requirements
         function listenTourney() {
             document.getElementById('tourney-ui').classList.remove('hidden');
             db.ref('tournaments/'+mId).on('value', snap => {
@@ -351,7 +418,7 @@
                 
                 let ptHtml = '';
                 Object.values(t.teams).sort((a,b)=> b.pts - a.pts || b.nrr - a.nrr).forEach(tm => {
-                    ptHtml += `<tr class="border-b border-white/5"><td class="p-3 text-white truncate">${tm.name}</td><td class="p-3 text-center font-mono">${tm.p}</td><td class="p-3 text-center font-mono text-emerald-400">${tm.w}</td><td class="p-3 text-center font-mono text-red-400">${tm.l}</td><td class="p-3 text-center font-mono text-yellow-400 font-black">${tm.pts}</td><td class="p-3 text-right font-mono text-slate-400">${tm.nrr.toFixed(3)}</td></tr>`;
+                    ptHtml += `<tr class="border-b border-white/5"><td class="p-3 text-white truncate">${tm.name}</td><td class="p-3 text-center font-mono">${tm.p}</td><td class="p-3 text-center font-mono text-emerald-400">${tm.w}</td><td class="p-3 text-center font-mono text-red-400">${tm.l}</td><td class="p-3 text-center font-mono text-[#ffd700] font-black">${tm.pts}</td><td class="p-3 text-right font-mono text-slate-400">${tm.nrr.toFixed(3)}</td></tr>`;
                 });
                 document.getElementById('pt-body').innerHTML = ptHtml;
                 
@@ -367,39 +434,46 @@
         function disableMoves(d) { document.querySelectorAll('.btn-move').forEach(b => { b.disabled = d; b.style.opacity = d ? 0.5 : 1; }); }
 
         window.sendMove = function(v) {
+            playSound('click');
             document.querySelectorAll('.btn-move').forEach(b => b.classList.remove('selected-move'));
             event.target.classList.add('selected-move');
             document.getElementById('action-msg').innerText = "WAITING FOR OPPONENT...";
             db.ref(`matches/${mId}/state/mov/${mRole}`).set(v);
         }
 
-        // MATCH ENGINE - Core 0-0 Logic, Strike Rotation, Over Rotation
+        // THE MASTER GAME ENGINE
         function calcBall(m) {
             let s = m.state; let r1 = s.mov.p1; let r2 = s.mov.p2;
             let btM = s.bat === 'p1' ? r1 : r2; let bwM = s.bat === 'p2' ? r1 : r2;
             let bowlR = s.bat === 'p1' ? 'p2' : 'p1';
             let res = ''; let out = false; let run = 0;
 
-            if(btM === 0 && bwM === 0) { res = '0'; } // 0-0 Dot Ball
+            // 0-0 Dot Ball Logic
+            if(btM === 0 && bwM === 0) { res = '0'; } 
             else if(btM === bwM) { out = true; res = 'W'; }
             else { run = btM; res = run; }
 
             s.bls++;
             if(out) {
                 s.wic++; s.st[bowlR][s.bwIdx].w++;
-                s.sIdx = Math.max(s.sIdx, s.nsIdx) + 1; // New batter automatically
+                s.sIdx = Math.max(s.sIdx, s.nsIdx) + 1; // New batter auto rotation
             } else {
                 s.scr += run; s.st[s.bat][s.sIdx].r += run; s.st[bowlR][s.bwIdx].br += run;
-                if(run % 2 !== 0) { let t = s.sIdx; s.sIdx = s.nsIdx; s.nsIdx = t; } // Strike change 1,3,5
+                if(run % 2 !== 0) { let t = s.sIdx; s.sIdx = s.nsIdx; s.nsIdx = t; } // 1,3,5 Strike rotate
             }
             s.st[s.bat][s.sIdx].b++; s.st[bowlR][s.bwIdx].b++;
-            if(!s.sum) s.sum = []; s.sum.push(res);
+            
+            // Over summary persistence fix: Clear only when first ball of new over happens
+            if(!s.sum || s.sum.length === 6) s.sum = [];
+            s.sum.push(res);
 
+            // OVER END
             if(s.bls % 6 === 0) {
-                s.sum = []; let t = s.sIdx; s.sIdx = s.nsIdx; s.nsIdx = t; // Strike change over end
+                let t = s.sIdx; s.sIdx = s.nsIdx; s.nsIdx = t; // Strike change over end
                 s.prevBw = s.bwIdx; s.needBw = true; // Trigger Bowler select
             }
 
+            // INNINGS END
             if(s.wic >= m.set.wk || s.bls >= m.set.ov * 6 || (s.inn === 2 && s.scr >= s.trg)) {
                 if(s.inn === 1) {
                     s.inn = 2; s.trg = s.scr + 1; s.scr = 0; s.wic = 0; s.bls = 0; s.sum = [];
@@ -411,21 +485,25 @@
             db.ref(`matches/${mId}/state`).set(s);
         }
 
+        // PRO BOWLER SELECTOR MODAL
         function showBowlerModal(m) {
+            playSound('click'); // Notify user it's their turn to pick
             let bwTeam = m.state.bat === 'p1' ? m.p2 : m.p1;
             let html = '';
             bwTeam.team.p.forEach((pName, i) => {
                 if(i < 11) { 
                     let isPrev = (i === m.state.prevBw);
-                    let disClass = isPrev ? 'opacity-30 cursor-not-allowed bg-slate-900' : 'bg-slate-800 border-slate-600';
+                    let disClass = isPrev ? 'opacity-30 cursor-not-allowed bg-slate-900 border-red-900' : 'bg-slate-800 border-slate-600 hover:border-[#ffd700] hover:-translate-y-1';
                     let disBtn = isPrev ? 'disabled' : '';
-                    html += `<button onclick="setBowler(${i})" class="w-full p-4 rounded-xl text-left border font-black text-white mb-2 transition shadow-lg ${disClass}" ${disBtn}>${pName}</button>`;
+                    let subInfo = isPrev ? '<span class="text-[10px] text-red-500 block float-right">Bowled Last Over</span>' : '';
+                    
+                    html += `<button onclick="setBowler(${i})" class="w-full p-4 rounded-xl text-left border-2 font-black text-white mb-2 transition shadow-lg ${disClass}" ${disBtn}>${pName} ${subInfo}</button>`;
                 }
             });
             document.getElementById('bowler-list').innerHTML = html;
             document.getElementById('bowler-modal').classList.replace('hidden', 'flex');
         }
-        window.setBowler = function(idx) { db.ref(`matches/${mId}/state`).update({ bwIdx: idx, needBw: false }); }
+        window.setBowler = function(idx) { playSound('click'); db.ref(`matches/${mId}/state`).update({ bwIdx: idx, needBw: false }); }
 
         function renderScore(m) {
             let s = m.state; let bRole = s.bat; let bwRole = bRole === 'p1' ? 'p2' : 'p1';
@@ -433,7 +511,7 @@
             
             document.getElementById('ui-bat-team').innerText = tBat.team.name; document.getElementById('ui-bowl-team').innerText = tBw.team.name;
             document.getElementById('ui-inn').innerText = s.inn;
-            document.getElementById('ui-score').innerHTML = `${s.scr}<span class="text-lg sm:text-2xl text-slate-400">/${s.wic}</span>`;
+            document.getElementById('ui-score').innerHTML = `${s.scr}<span class="text-xl sm:text-3xl text-slate-400">/${s.wic}</span>`;
             document.getElementById('ui-overs').innerText = `${Math.floor(s.bls/6)}.${s.bls%6}`;
             document.getElementById('ui-max-overs').innerText = `(/${m.set.ov})`;
             document.getElementById('ui-target').innerText = s.trg ? s.trg : '--';
@@ -450,18 +528,23 @@
             let eco = bwS.b > 0 ? ((bwS.br/bwS.b)*6).toFixed(1) : "0.0";
             document.getElementById('ui-b-stats').innerHTML = `<span>${Math.floor(bwS.b/6)}.${bwS.b%6}</span><span>${bwS.br}</span><span class="text-red-400">${bwS.w}</span><span class="text-slate-400">${eco}</span>`;
 
+            // Broadcast Over Summary Style
             let sumH = '';
             if(s.sum && s.sum.length > 0) {
                 s.sum.forEach(b => { 
-                    let c = b==='W' ? 'bg-red-600' : (b===4||b===6 ? 'bg-emerald-600 text-black' : 'bg-slate-700'); 
-                    sumH += `<div class="w-6 h-6 sm:w-8 sm:h-8 rounded flex justify-center items-center font-black text-xs sm:text-sm flex-shrink-0 ${c}">${b}</div>`; 
+                    let c = b==='W' ? 'bg-red-600 text-white' : (b===4||b===6 ? 'bg-emerald-500 text-black' : 'bg-slate-700 text-white'); 
+                    sumH += `<div class="w-7 h-7 sm:w-8 sm:h-8 rounded flex justify-center items-center font-black text-xs sm:text-sm flex-shrink-0 border border-black/50 shadow-sm ${c}">${b}</div>`; 
                 });
-            } else sumH = '<span class="text-slate-500 text-[10px] italic mt-1">Waiting...</span>';
+            } else sumH = '<span class="text-slate-500 text-[10px] italic mt-1 font-bold">Over Started...</span>';
             document.getElementById('ui-summary').innerHTML = sumH;
 
             if(s.mov[mRole] === null && !s.needBw) {
                 document.querySelectorAll('.btn-move').forEach(b => b.classList.remove('selected-move'));
-                if(m.status === 'finished') { document.getElementById('action-msg').innerText = "MATCH FINISHED"; disableMoves(true); } 
+                if(m.status === 'finished') { 
+                    let winner = s.scr >= s.trg ? tBat.team.name : tBw.team.name;
+                    document.getElementById('action-msg').innerHTML = `<span class="text-emerald-400 text-lg">MATCH FINISHED! ${winner} WON!</span>`; 
+                    disableMoves(true); 
+                } 
                 else document.getElementById('action-msg').innerText = "MAKE YOUR MOVE";
             }
         }
