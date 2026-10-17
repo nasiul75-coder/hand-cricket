@@ -37,7 +37,7 @@
         }
     </style>
 
-    <!-- FIREBASE BULLETPROOF SCRIPTS (No type="module" needed) -->
+    <!-- FIREBASE BULLETPROOF SCRIPTS -->
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
 </head>
@@ -53,7 +53,6 @@
             <p class="text-slate-400 text-sm">Sign in to sync your career stats and trophies.</p>
         </div>
 
-        <!-- Yahan direct function call hai -->
         <button onclick="loginWithGoogle()" class="google-btn w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3">
             <svg class="w-6 h-6" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -103,26 +102,26 @@
     </div>
 
     <script>
-        // Firebase Config
+        // Exact same config you just provided + databaseURL added for multiplayer
         const firebaseConfig = {
-            apiKey: "AIzaSyAofevQrPWUKWxWAkBLtXl4f_lH5fjjPZE",
+            apiKey: "AIzaSyAofevQrPWUKWxWAkBLtXl4f_lH5FjjPZE",
             authDomain: "hand-cricket-c2d70.firebaseapp.com",
             databaseURL: "https://hand-cricket-c2d70-default-rtdb.firebaseio.com",
             projectId: "hand-cricket-c2d70",
             storageBucket: "hand-cricket-c2d70.firebasestorage.app",
             messagingSenderId: "113004537618",
-            appId: "1:113004537618:web:9f23689c5c4c4a62eaf5cb"
+            appId: "1:113004537618:web:9f23689c5c4c4a62eaf5cb",
+            measurementId: "G-DH3RLFQBK5"
         };
 
-        // Initialize Firebase using Compat SDK
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const provider = new firebase.auth.GoogleAuthProvider();
 
         function loginWithGoogle() {
-            alert("Google page khul raha hai... OK press karo.");
             auth.signInWithRedirect(provider).catch((error) => {
-                alert("Error aa gaya bhai: " + error.message);
+                alert("Login Error: " + error.message);
             });
         }
 
@@ -130,7 +129,7 @@
             auth.signOut();
         }
 
-        // Check Login Status
+        // Real-time Check
         auth.onAuthStateChanged((user) => {
             if (user) {
                 document.getElementById('login-section').classList.add('hidden');
