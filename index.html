@@ -132,6 +132,61 @@
         
         .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+        /* ICC BROADCAST PLAYER POSTER STYLES */
+        .icc-poster-card {
+            background: 
+                radial-gradient(circle at 15% 88%, rgba(236, 72, 153, 0.48) 0%, rgba(139, 92, 246, 0.28) 38%, rgba(15, 23, 42, 0.96) 78%),
+                linear-gradient(135deg, #1e1b4b 0%, #090d16 65%, #3b0764 100%);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(236, 72, 153, 0.35);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), inset 0 0 60px rgba(236, 72, 153, 0.15);
+        }
+        .icc-stat-row {
+            display: flex;
+             justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 2px solid rgba(236, 72, 153, 0.55);
+            padding-bottom: 2px;
+            margin-bottom: 8px;
+            position: relative;
+        }
+        .icc-stat-row::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 38%;
+            height: 2px;
+            background: #f472b6;
+            box-shadow: 0 0 8px #f472b6;
+        }
+        .icc-stat-label {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #fce7f3;
+            text-transform: uppercase;
+        }
+        .icc-stat-value {
+            font-family: 'Teko', sans-serif;
+            font-size: 40px;
+            font-weight: 700;
+            line-height: 0.82;
+            color: #ffffff;
+            text-shadow: 0 4px 14px rgba(0, 0, 0, 0.65);
+        }
+        @media (min-width: 640px) {
+            .icc-stat-value { font-size: 48px; }
+            .icc-stat-label { font-size: 12px; }
+        }
+        .player-pill-active {
+            background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%) !important;
+            color: #ffffff !important;
+            border-color: #fbcfe8 !important;
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.5);
+        }
     </style>
     
     <!-- FIREBASE -->
@@ -171,6 +226,49 @@
             <circle cx="12" cy="12" r="9" fill="#ef4444" stroke="currentColor" stroke-width="2"/>
             <path d="M6.5 6.5C9.5 9.5 14.5 14.5 17.5 17.5" stroke="#fff" stroke-width="1.6" stroke-dasharray="2 2"/>
         </symbol>
+
+        <!-- Broadcast Batter Hero Art -->
+        <symbol id="batter-hero" viewBox="0 0 220 300">
+            <defs>
+                <linearGradient id="jerseyGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#2563eb"/>
+                    <stop offset="55%" stop-color="#1d4ed8"/>
+                    <stop offset="100%" stop-color="#1e1b4b"/>
+                </linearGradient>
+                <linearGradient id="batWood" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#fde68a"/>
+                    <stop offset="100%" stop-color="#d97706"/>
+                </linearGradient>
+            </defs>
+            <!-- Stadium Backlight Halo -->
+            <circle cx="125" cy="115" r="78" fill="rgba(236, 72, 153, 0.18)"/>
+            <!-- Raised Cricket Bat -->
+            <path d="M165 8 L202 42 L118 122 L95 100 Z" fill="url(#batWood)" stroke="#fff" stroke-width="1.5"/>
+            <path d="M98 102 L68 130 L76 138 L106 110 Z" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+            <!-- Helmet & Grill -->
+            <circle cx="122" cy="72" r="24" fill="#1e3a8a" stroke="#60a5fa" stroke-width="2"/>
+            <path d="M100 72 Q122 65 144 72 L140 88 Q122 94 104 88 Z" fill="#0f172a" stroke="#94a3b8" stroke-width="1.5"/>
+            <line x1="104" y1="78" x2="140" y2="78" stroke="#e2e8f0" stroke-width="1.2"/>
+            <line x1="106" y1="84" x2="138" y2="84" stroke="#e2e8f0" stroke-width="1.2"/>
+            <circle cx="122" cy="58" r="4" fill="#fbbf24"/>
+            <!-- Torso / Blue India-style Jersey -->
+            <path d="M82 98 C95 92 148 92 160 102 L172 185 L74 185 Z" fill="url(#jerseyGrad)" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+            <!-- Collar & Tri-color Accent -->
+            <path d="M102 96 L122 114 L142 96" fill="none" stroke="#f97316" stroke-width="3.5"/>
+            <!-- Arms & Batting Gloves -->
+            <path d="M82 102 L58 135 L88 152 L102 120" fill="#1d4ed8" stroke="#60a5fa" stroke-width="1.2"/>
+            <circle cx="72" cy="136" r="13" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+            <circle cx="84" cy="126" r="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+            <!-- Lower Trousers & Batting Pads -->
+            <path d="M76 185 L168 185 L160 288 L126 288 L122 225 L118 288 L82 288 Z" fill="#1e3a8a"/>
+            <!-- Leg Guards / Pads -->
+            <rect x="76" y="212" width="38" height="82" rx="12" fill="#1d4ed8" stroke="#60a5fa" stroke-width="2"/>
+            <line x1="78" y1="232" x2="112" y2="232" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+            <line x1="78" y1="252" x2="112" y2="252" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+            <rect x="126" y="218" width="38" height="76" rx="12" fill="#1d4ed8" stroke="#60a5fa" stroke-width="2"/>
+            <line x1="128" y1="238" x2="162" y2="238" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+            <line x1="128" y1="258" x2="162" y2="258" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+        </symbol>
     </svg>
 
     <!-- AUDIO SFX BACKUP -->
@@ -194,8 +292,8 @@
             <button id="btn-sound-toggle" onclick="toggleAudio()" class="bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-400 px-2 py-1.5 rounded-lg text-[10px] font-bold uppercase flex items-center gap-1 transition" title="Toggle Voice Commentary & Crowd SFX">
                 <i id="icon-sound-toggle" class="fa-solid fa-volume-high"></i> <span class="hidden sm:inline">Voice ON</span>
             </button>
-            <button onclick="openPlayerStatsModal(); playSound('click')" class="bg-slate-800/90 hover:bg-slate-700 border border-slate-600/60 text-slate-200 px-2 py-1.5 rounded-lg text-[10px] font-bold uppercase flex items-center gap-1 transition">
-                <i class="fa-solid fa-chart-simple text-amber-400"></i> <span>Stats</span>
+            <button onclick="openPlayerStatsModal(); playSound('click')" class="bg-gradient-to-r from-pink-600/25 to-purple-600/25 hover:from-pink-600/40 hover:to-purple-600/40 border border-pink-500/50 text-pink-200 px-2.5 py-1.5 rounded-lg text-[10px] font-extrabold uppercase flex items-center gap-1 transition shadow">
+                <i class="fa-solid fa-id-badge text-pink-400"></i> <span>Stats</span>
             </button>
             <img id="user-profile-pic" src="" class="w-6 h-6 sm:w-7 sm:h-7 rounded-full border border-amber-400/60 object-cover hidden xs:block">
             <span id="nav-user" class="text-[11px] sm:text-xs font-bold uppercase text-slate-300 max-w-[62px] sm:max-w-[90px] truncate">Player</span>
@@ -226,8 +324,8 @@
                 <div class="min-w-0 flex-1">
                     <div class="text-[9px] text-amber-400 font-extrabold uppercase tracking-widest">Registered Franchise</div>
                     <div class="text-lg sm:text-2xl font-extrabold text-white uppercase tracking-tight truncate" id="stat-team-name">India</div>
-                    <button onclick="openPlayerStatsModal(); playSound('click')" class="text-[10px] sm:text-[11px] text-blue-400 hover:text-blue-300 font-bold flex items-center gap-1">
-                        <span>Squad Career Stats</span> <i class="fa-solid fa-chevron-right text-[8px]"></i>
+                    <button onclick="openPlayerStatsModal(); playSound('click')" class="text-[10px] sm:text-[11px] text-pink-400 hover:text-pink-300 font-bold flex items-center gap-1">
+                        <span>Open ICC Player Cards</span> <i class="fa-solid fa-chevron-right text-[8px]"></i>
                     </button>
                 </div>
             </div>
@@ -627,38 +725,104 @@
         </div>
     </div>
 
-    <!-- MODAL: SQUAD CAREER STATS -->
-    <div id="stats-modal" style="display: none;" class="fixed inset-0 bg-black/90 backdrop-blur-md items-center justify-center p-2.5 sm:p-4 flex-col">
-        <div class="glass p-3.5 sm:p-6 rounded-3xl w-full max-w-3xl border-t-2 border-amber-500">
-            <div class="flex justify-between items-center mb-3 border-b border-white/10 pb-2.5">
-                <div class="flex items-center gap-2 min-w-0">
-                    <svg class="w-7 h-7 sm:w-8 sm:h-8 shrink-0"><use href="#cricket-crest"></use></svg>
-                    <div class="min-w-0">
-                        <h3 class="text-xl sm:text-3xl font-bold uppercase text-amber-400 score-font tracking-wider truncate">Squad Career Database</h3>
-                        <p class="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate">Separate Batting & Bowling Career Records</p>
-                    </div>
-                </div>
-                <button onclick="document.getElementById('stats-modal').style.display='none'; playSound('click')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-xl font-bold text-xs uppercase shrink-0">
-                    <i class="fa-solid fa-xmark mr-1"></i> Close
+    <!-- MODAL: ICC BROADCAST STYLE PLAYER STATS POSTER -->
+    <div id="stats-modal" style="display: none;" class="fixed inset-0 bg-black/90 backdrop-blur-lg items-center justify-center p-2.5 sm:p-4 flex-col">
+        <div class="w-full max-w-md flex flex-col max-h-[94dvh]">
+            
+            <!-- Top Player Selector Bar -->
+            <div class="glass px-3 py-2 rounded-2xl mb-2 flex items-center justify-between gap-2 border border-pink-500/30">
+                <button onclick="cyclePlayerCard(-1)" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center shrink-0 transition">
+                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                </button>
+                <div id="player-selector-pills" class="flex items-center gap-1.5 overflow-x-auto custom-scroll py-1 px-1"></div>
+                <button onclick="cyclePlayerCard(1)" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center shrink-0 transition">
+                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                </button>
+                <button onclick="document.getElementById('stats-modal').style.display='none'; playSound('click')" class="w-8 h-8 rounded-xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-300 flex items-center justify-center shrink-0 ml-1">
+                    <i class="fa-solid fa-xmark text-sm"></i>
                 </button>
             </div>
-            <div class="overflow-x-auto max-h-80 sm:max-h-96 custom-scroll">
-                <table class="w-full text-left text-[11px] sm:text-xs font-mono-num min-w-[480px]">
-                    <thead class="bg-white/5 text-amber-400 uppercase text-[9px] sm:text-[10px]">
-                        <tr>
-                            <th class="p-2">#</th>
-                            <th class="p-2">Player</th>
-                            <th class="p-2 text-center">Mat</th>
-                            <th class="p-2 text-center">Runs(B)</th>
-                            <th class="p-2 text-center">4s/6s</th>
-                            <th class="p-2 text-center">SR</th>
-                            <th class="p-2 text-center text-emerald-400">Overs</th>
-                            <th class="p-2 text-center text-red-400">Wkts</th>
-                            <th class="p-2 text-right">Eco</th>
-                        </tr>
-                    </thead>
-                    <tbody id="career-stats-body" class="divide-y divide-white/5"></tbody>
-                </table>
+
+            <!-- ICC Broadcast Poster Card -->
+            <div class="icc-poster-card rounded-3xl p-5 sm:p-6 flex flex-col justify-between relative flex-1 overflow-y-auto custom-scroll">
+                
+                <!-- Background Giant Faded Text -->
+                <div class="absolute -bottom-6 -left-4 text-[110px] font-black uppercase text-white/[0.04] score-font select-none pointer-events-none tracking-widest leading-none" id="icc-bg-watermark">CRICKET</div>
+
+                <!-- Top Row: Flag + Player Name + ICC Logo -->
+                <div class="relative z-10 flex justify-between items-start gap-2 mb-4">
+                    <div>
+                        <!-- Flag Badge -->
+                        <div class="inline-flex items-center gap-1.5 mb-1.5 bg-black/40 px-2 py-0.5 rounded border border-white/15">
+                            <span class="w-4 h-3 inline-block rounded-[2px]" style="background: linear-gradient(to bottom, #f97316 33%, #ffffff 33%, #ffffff 66%, #16a34a 66%);"></span>
+                            <span id="icc-team-tag" class="text-[9px] font-extrabold uppercase tracking-widest text-white">INDIA</span>
+                        </div>
+                        <!-- Pink/Magenta Stacked Player Name -->
+                        <div id="icc-player-fname" class="text-2xl sm:text-3xl font-black uppercase tracking-tight text-pink-500 leading-none drop-shadow">ROHIT</div>
+                        <div id="icc-player-lname" class="text-3xl sm:text-4xl font-black uppercase tracking-tight text-pink-400 leading-none mt-0.5 drop-shadow">SHARMA</div>
+                        <div id="icc-player-sub" class="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.2em] text-white/90 mt-1.5">CAREER STATS • #1</div>
+                    </div>
+
+                    <!-- ICC Broadcast Watermark -->
+                    <div class="flex items-center gap-1.5 opacity-95 shrink-0">
+                        <svg class="w-6 h-6 text-white"><use href="#icon-ball"></use></svg>
+                        <span class="text-2xl sm:text-3xl font-black tracking-tighter text-white score-font">ICCPRO</span>
+                    </div>
+                </div>
+
+                <!-- Main Poster Body: Left Stats Stack + Right Player Figure -->
+                <div class="relative z-10 grid grid-cols-12 items-end gap-2 my-auto pt-1">
+                    <!-- Left Vertical Stats Stack (Exact Image Layout) -->
+                    <div class="col-span-7 sm:col-span-6 space-y-1.5 pr-2">
+                        <div class="icc-stat-row">
+                            <span class="icc-stat-label">RUNS</span>
+                            <span class="icc-stat-value" id="icc-stat-runs">0</span>
+                        </div>
+                        <div class="icc-stat-row">
+                            <span class="icc-stat-label">BALLS</span>
+                            <span class="icc-stat-value" id="icc-stat-balls">0</span>
+                        </div>
+                        <div class="icc-stat-row">
+                            <span class="icc-stat-label">FOURS</span>
+                            <span class="icc-stat-value" id="icc-stat-fours">0</span>
+                        </div>
+                        <div class="icc-stat-row">
+                            <span class="icc-stat-label">SIXES</span>
+                            <span class="icc-stat-value" id="icc-stat-sixes">0</span>
+                        </div>
+                        <div class="icc-stat-row">
+                            <span class="icc-stat-label">S/R</span>
+                            <span class="icc-stat-value" id="icc-stat-sr">0.0</span>
+                        </div>
+                    </div>
+
+                    <!-- Right Athlete Hero Graphic -->
+                    <div class="col-span-5 sm:col-span-6 flex flex-col items-center justify-end relative">
+                        <div id="icc-jersey-num" class="absolute top-2 right-1 text-6xl sm:text-7xl font-black score-font text-pink-400/20 select-none">#01</div>
+                        <svg class="w-40 h-56 sm:w-48 sm:h-64 drop-shadow-[0_12px_25px_rgba(0,0,0,0.85)] -mr-2"><use href="#batter-hero"></use></svg>
+                    </div>
+                </div>
+
+                <!-- Bottom Bowling & Matches Strip -->
+                <div class="relative z-10 mt-4 pt-3 border-t border-pink-500/30 grid grid-cols-4 gap-2 text-center bg-black/45 p-2.5 rounded-2xl backdrop-blur-sm">
+                    <div>
+                        <div class="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-widest text-pink-300">MATCHES</div>
+                        <div class="text-xl sm:text-2xl font-bold text-white score-font mt-0.5" id="icc-stat-mat">0</div>
+                    </div>
+                    <div class="border-l border-white/10">
+                        <div class="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-widest text-pink-300">WICKETS</div>
+                        <div class="text-xl sm:text-2xl font-bold text-emerald-400 score-font mt-0.5" id="icc-stat-wkts">0</div>
+                    </div>
+                    <div class="border-l border-white/10">
+                        <div class="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-widest text-pink-300">OVERS</div>
+                        <div class="text-xl sm:text-2xl font-bold text-amber-300 score-font mt-0.5" id="icc-stat-overs">0.0</div>
+                    </div>
+                    <div class="border-l border-white/10">
+                        <div class="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-widest text-pink-300">ECON</div>
+                        <div class="text-xl sm:text-2xl font-bold text-white score-font mt-0.5" id="icc-stat-eco">0.0</div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -674,10 +838,10 @@
         let lastBallProcessed = -1; 
         let calcLock = false;
         let soundEnabled = true;
+        let selectedStatsIdx = 0;
 
         // =========================================================================
         // CLEAN STADIUM AUDIO: WOODEN BAT CRACK + SOFT CROWD CHEER + CLEAR VOICE
-        // (NO SIREN / NO HORN TO DROWN OUT VOICE COMMENTARY)
         // =========================================================================
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         let audioCtx = null;
@@ -691,7 +855,6 @@
             wicket: document.getElementById('sfx-w') 
         };
 
-        // Lower background HTML5 audio volumes so voice commentary is 100% loud & clear
         Object.values(sfx).forEach(el => { if(el) el.volume = 0.22; });
 
         function initAudio() {
@@ -713,7 +876,6 @@
             }
         }
 
-        // Synthesize realistic wooden bat hit
         function playBatCrack(power = 1) {
             try {
                 initAudio();
@@ -730,7 +892,6 @@
             } catch(e) {}
         }
 
-        // Soft Stadium Crowd Roar (Ducked volume so voice commentary stands out clearly)
         function playCrowdCheer(duration = 2.0, intensity = 0.09) {
             try {
                 initAudio();
@@ -765,7 +926,6 @@
             } catch(e) {}
         }
 
-        // Wooden Stumps Clatter (No harsh siren!)
         function playWicketStumps() {
             try {
                 initAudio();
@@ -783,7 +943,6 @@
             } catch(e) {}
         }
 
-        // Live Voice Commentator (Hinglish + English Broadcast Phrases)
         const voiceLines = {
             six: [
                 "Chhakka aaya! Chhakka aaya! Massive Sixer!",
@@ -821,7 +980,7 @@
                     if(indVoice) utter.voice = indVoice;
                     utter.pitch = pitch;
                     utter.rate = rate;
-                    utter.volume = 1.0; // Max clear voice volume
+                    utter.volume = 1.0;
                     window.speechSynthesis.speak(utter);
                 }, 90);
             } catch(e) {}
@@ -928,30 +1087,71 @@
             for(let i=1; i<=11; i++) { if(squadData.p[i-1]) document.getElementById(`sq-${i}`).value = squadData.p[i-1]; }
         }
 
-        window.openPlayerStatsModal = function() {
-            let tbody = document.getElementById('career-stats-body');
-            let html = '';
-            let list = squadData.p && squadData.p.length === 11 ? squadData.p : defaultNames;
-            list.forEach((pName, i) => {
-                let key = pName.toUpperCase().replace(/[.#$/[\]]/g, "_");
-                let st = playerCareer[key] || { m:0, r:0, b:0, f4:0, s6:0, w:0, bb:0, br:0 };
-                let sr = st.b > 0 ? ((st.r / st.b)*100).toFixed(1) : '0.0';
-                let ovs = `${Math.floor((st.bb||0)/6)}.${(st.bb||0)%6}`;
-                let eco = st.bb > 0 ? ((st.br / st.bb)*6).toFixed(1) : '0.0';
-                html += `<tr class="hover:bg-white/5">
-                    <td class="p-2 text-slate-500 font-bold">${i+1}</td>
-                    <td class="p-2 font-extrabold text-white font-sans truncate max-w-[120px]">${pName}</td>
-                    <td class="p-2 text-center">${st.m || 0}</td>
-                    <td class="p-2 text-center font-bold text-blue-300">${st.r || 0}(${st.b || 0})</td>
-                    <td class="p-2 text-center text-emerald-400">${st.f4 || 0}/${st.s6 || 0}</td>
-                    <td class="p-2 text-center">${sr}</td>
-                    <td class="p-2 text-center text-emerald-300">${ovs}</td>
-                    <td class="p-2 text-center font-extrabold text-red-400">${st.w || 0}</td>
-                    <td class="p-2 text-right text-slate-300">${eco}</td>
-                </tr>`;
-            });
-            tbody.innerHTML = html;
+        // =========================================================================
+        // ICC BROADCAST POSTER PLAYER STATS VIEWER
+        // =========================================================================
+        window.openPlayerStatsModal = function(startIndex = 0) {
+            selectedStatsIdx = startIndex;
+            renderPlayerPoster(selectedStatsIdx);
             document.getElementById('stats-modal').style.display = 'flex';
+        }
+
+        window.cyclePlayerCard = function(dir) {
+            playSound('click');
+            selectedStatsIdx = (selectedStatsIdx + dir + 11) % 11;
+            renderPlayerPoster(selectedStatsIdx);
+        }
+
+        window.selectPlayerCard = function(idx) {
+            playSound('click');
+            selectedStatsIdx = idx;
+            renderPlayerPoster(selectedStatsIdx);
+        }
+
+        function renderPlayerPoster(idx) {
+            let list = (squadData.p && squadData.p.length === 11) ? squadData.p : defaultNames;
+            
+            // Render top selector pills
+            let pillsHtml = '';
+            list.forEach((pName, i) => {
+                let shortName = pName.trim().split(' ')[0] || `P${i+1}`;
+                let activeCls = (i === idx) ? 'player-pill-active' : 'bg-slate-900/90 text-slate-300 border-white/10 hover:border-pink-400/50';
+                pillsHtml += `<button id="stat-pill-${i}" onclick="selectPlayerCard(${i})" class="px-2.5 py-1 rounded-xl border text-[10px] font-extrabold uppercase tracking-wider shrink-0 transition ${activeCls}">${i+1}. ${shortName}</button>`;
+            });
+            let pillContainer = document.getElementById('player-selector-pills');
+            pillContainer.innerHTML = pillsHtml;
+            let activePill = document.getElementById(`stat-pill-${idx}`);
+            if(activePill) activePill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+
+            // Parse Player Name into First & Last Name for Broadcast Typography
+            let fullName = (list[idx] || `Player ${idx+1}`).trim().toUpperCase();
+            let parts = fullName.split(/\s+/);
+            let fName = parts[0] || fullName;
+            let lName = parts.length > 1 ? parts.slice(1).join(' ') : 'CRICKET PRO';
+
+            let key = fullName.replace(/[.#$/[\]]/g, "_");
+            let st = playerCareer[key] || { m:0, r:0, b:0, f4:0, s6:0, w:0, bb:0, br:0 };
+            let sr = st.b > 0 ? ((st.r / st.b)*100).toFixed(1) : '0.0';
+            let ovs = `${Math.floor((st.bb||0)/6)}.${(st.bb||0)%6}`;
+            let eco = st.bb > 0 ? ((st.br / st.bb)*6).toFixed(1) : '0.0';
+
+            document.getElementById('icc-team-tag').innerText = (squadData.name || 'INDIA').toUpperCase();
+            document.getElementById('icc-player-fname').innerText = fName;
+            document.getElementById('icc-player-lname').innerText = lName;
+            document.getElementById('icc-player-sub').innerText = `V ALL OPPONENTS • BATTING #${idx+1}`;
+            document.getElementById('icc-bg-watermark').innerText = lName;
+            document.getElementById('icc-jersey-num').innerText = `#${idx < 9 ? '0'+(idx+1) : (idx+1)}`;
+
+            document.getElementById('icc-stat-runs').innerText = st.r || 0;
+            document.getElementById('icc-stat-balls').innerText = st.b || 0;
+            document.getElementById('icc-stat-fours').innerText = st.f4 || 0;
+            document.getElementById('icc-stat-sixes').innerText = st.s6 || 0;
+            document.getElementById('icc-stat-sr').innerText = sr;
+
+            document.getElementById('icc-stat-mat').innerText = st.m || 0;
+            document.getElementById('icc-stat-wkts').innerText = st.w || 0;
+            document.getElementById('icc-stat-overs').innerText = ovs;
+            document.getElementById('icc-stat-eco').innerText = eco;
         }
 
         function prepSetup(type) { mType = type; mRole = null; nav('squad-builder'); }
@@ -1128,7 +1328,6 @@
                         return;
                     }
                     
-                    // SHOT-WISE SOUND, CROWD CHEER & VOICE COMMENTARY TRIGGER
                     if(m.state.bls !== lastBallProcessed) {
                         if(lastBallProcessed !== -1 && m.state.bls > 0 && m.state.sum && m.state.sum.length > 0) {
                             let lastRes = String(m.state.sum[m.state.sum.length-1]);
@@ -1144,7 +1343,6 @@
                         lastBallProcessed = m.state.bls;
                     }
                     
-                    // BOWLER SELECTION SYNC
                     if(m.state.needBw) {
                         let bwRole = m.state.bat === 'p1' ? 'p2' : 'p1';
                         disableMoves(true);
@@ -1245,7 +1443,6 @@
             db.ref(`matches/${mId}/state/mov/${mRole}`).set(v);
         }
 
-        // ACCURATE BALL, OVER & PLAYER STATS ENGINE
         function calcBall(m) {
             let s = m.state; 
             let r1 = s.mov.p1; 
@@ -1459,7 +1656,7 @@
             document.getElementById('ui-s-sr').innerText = stS.b > 0 ? ((stS.r/stS.b)*100).toFixed(1) : "0.0";
             document.getElementById('ui-ns-sr').innerText = stNS.b > 0 ? ((stNS.r/stNS.b)*100).toFixed(1) : "0.0";
 
-            // BOWLER (Fluid 8-col inner grid so numbers never get cut off)
+            // BOWLER
             let bwS = (s.st && s.st[bwRole] && s.st[bwRole][s.bwIdx]) ? s.st[bwRole][s.bwIdx] : {bb:0, br:0, w:0};
             let bBowled = bwS.bb || 0;
             document.getElementById('ui-b-name').innerText = tBw?.team?.p[s.bwIdx] || 'Bowler';
