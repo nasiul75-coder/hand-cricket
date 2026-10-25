@@ -1,317 +1,146 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UR STUDIO | Sign In</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Inter', 'sans-serif'],
-                        display: ['Plus Jakarta Sans', 'sans-serif'],
-                    },
-                    colors: {
-                        studioGold: '#f59e0b',
-                    }
-                }
-            }
-        }
-    </script>
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* Custom iOS 18 Glassmorphism & Spring Physics */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
         body {
-            background-color: #050508;
-            color: #ffffff;
-            overflow-x: hidden;
-            user-select: none;
-            -webkit-font-smoothing: antialiased;
+            font-family: 'Inter', sans-serif;
+            background-color: #050505;
+            color: white;
+            overflow: hidden;
         }
 
-        /* Animated Aurora Mesh Background */
-        @keyframes floatSlow {
-            0%, 100% { transform: translate(0px, 0px) scale(1); }
-            33% { transform: translate(30px, -40px) scale(1.08); }
-            66% { transform: translate(-25px, 25px) scale(0.95); }
-        }
-        @keyframes floatReverse {
-            0%, 100% { transform: translate(0px, 0px) scale(1); }
-            50% { transform: translate(-40px, -30px) scale(1.12); }
-        }
-
-        .aurora-1 { animation: floatSlow 14s ease-in-out infinite; }
-        .aurora-2 { animation: floatReverse 18s ease-in-out infinite; }
-        .aurora-3 { animation: floatSlow 22s ease-in-out infinite reverse; }
-
-        /* iOS Frosted Glass Surface */
-        .ios-glass {
-            background: rgba(24, 24, 29, 0.58);
-            backdrop-filter: blur(32px) saturate(190%);
-            -webkit-backdrop-filter: blur(32px) saturate(190%);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: 
-                0 30px 60px -12px rgba(0, 0, 0, 0.75),
-                inset 0 1px 0 0 rgba(255, 255, 255, 0.18);
+        /* Cinematic Aurora Background */
+        .aurora-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at 20% 30%, rgba(220, 38, 38, 0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 80% 70%, rgba(234, 179, 8, 0.1) 0%, transparent 40%),
+                        radial-gradient(circle at 50% 50%, rgba(30, 27, 75, 0.4) 0%, #050505 100%);
+            z-index: -1;
+            animation: pulse 10s infinite alternate;
         }
 
-        .ios-input {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .ios-input:focus {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(245, 158, 11, 0.6);
-            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
         }
 
-        .ios-btn {
-            transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, box-shadow 0.2s ease;
-        }
-        .ios-btn:active {
-            transform: scale(0.96);
+        /* iOS Glassmorphism Card */
+        .glass-card {
+            background: rgba(25, 25, 25, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
-        /* Dynamic Island Expansion */
+        /* Dynamic Island */
         .dynamic-island {
-            transition: all 0.45s cubic-bezier(0.32, 0.72, 0, 1);
-        }
-        .dynamic-island.expanded {
-            width: 280px !important;
-            height: 44px !important;
-            border-radius: 24px !important;
-            background: rgba(15, 15, 18, 0.95);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.12);
+            width: 120px;
+            height: 35px;
+            background: #000;
+            border-radius: 20px;
+            margin: 0 auto 30px auto;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            overflow: hidden;
         }
 
-        .film-grain {
-            background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 0);
-            background-size: 24px 24px;
+        .dynamic-island.active {
+            width: 200px;
+            height: 40px;
         }
+
+        .dynamic-island-content {
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+            font-size: 12px;
+            color: #4ade80;
+            display: none;
+        }
+
+        .dynamic-island.active .dynamic-island-content {
+            opacity: 1;
+            transform: scale(1);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .loading-spinner {
+            border: 2px solid rgba(255,255,255,0.1);
+            border-left-color: #fff;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between items-center relative p-4 sm:p-6 selection:bg-amber-500 selection:text-black">
+<body class="flex items-center justify-center min-h-screen">
 
-    <!-- Ambient Cinematic Mesh Background -->
-    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div class="aurora-1 absolute -top-24 -left-24 w-96 h-96 sm:w-[32rem] sm:h-[32rem] rounded-full bg-rose-600/25 blur-[110px]"></div>
-        <div class="aurora-2 absolute top-1/3 -right-20 w-80 h-80 sm:w-[28rem] sm:h-[28rem] rounded-full bg-amber-500/20 blur-[120px]"></div>
-        <div class="aurora-3 absolute -bottom-28 left-1/4 w-96 h-96 sm:w-[34rem] sm:h-[34rem] rounded-full bg-indigo-600/25 blur-[130px]"></div>
-        <div class="absolute inset-0 film-grain"></div>
+    <div class="aurora-bg"></div>
+
+    <!-- Main Login Card -->
+    <div class="glass-card w-full max-w-sm rounded-[40px] p-8 text-center relative z-10 mx-4">
+        
+        <!-- Dynamic Island -->
+        <div id="dynamicIsland" class="dynamic-island mt-2 shadow-lg">
+            <div id="islandContent" class="dynamic-island-content">
+                <div class="loading-spinner"></div>
+                <span id="islandText">Connecting...</span>
+            </div>
+        </div>
+
+        <h1 class="text-3xl font-bold tracking-widest text-white mb-2" style="font-family: 'Times New Roman', serif;">UR STUDIO</h1>
+        <p class="text-sm text-gray-400 mb-10">Where stories come alive.</p>
+
+        <div id="authContainer">
+            <!-- Google Sign In Button -->
+            <button id="googleLoginBtn" class="w-full bg-white/10 hover:bg-white/20 border border-white/10 text-white font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-4 transition-all duration-300 group">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-6 h-6 group-hover:scale-110 transition-transform">
+                <span>Continue with Google</span>
+            </button>
+        </div>
+
+        <!-- Success Profile Display (Hidden by default, dikhega login ke baad) -->
+        <div id="profileContainer" class="hidden flex-col items-center justify-center gap-4 mt-6">
+            <img id="userAvatar" src="" alt="Profile" class="w-20 h-20 rounded-full border-2 border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.3)] object-cover">
+            <div>
+                <h2 id="userName" class="text-xl font-semibold"></h2>
+                <p id="userEmail" class="text-xs text-gray-400"></p>
+            </div>
+            <button id="dashboardBtn" class="mt-4 w-full bg-[#D4AF37] hover:bg-[#c5a030] text-black font-bold py-3 px-6 rounded-2xl transition-all duration-300">
+                Enter Studio
+            </button>
+        </div>
+
+        <p class="text-[10px] text-gray-500 mt-8">By continuing, you agree to our Terms of Service & Privacy Policy.</p>
     </div>
 
-    <!-- Top iPhone Dynamic Island & Status Bar -->
-    <header class="w-full max-w-md mx-auto pt-1 z-30 flex items-center justify-between px-2">
-        <div id="ios-clock" class="text-xs font-semibold tracking-tight text-white/90 w-16">9:41</div>
-
-        <div id="dynamic-island" onclick="window.pulseDynamicIsland()" class="dynamic-island w-32 h-8 bg-black rounded-full border border-white/10 flex items-center justify-between px-3 cursor-pointer shadow-lg overflow-hidden">
-            <div class="flex items-center space-x-2">
-                <span id="island-dot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-                <span id="island-text" class="text-[11px] font-medium text-white/80 tracking-tight truncate">UR Studio</span>
-            </div>
-            <i id="island-icon" class="fa-solid fa-video text-[10px] text-amber-400/90"></i>
-        </div>
-
-        <div class="flex items-center justify-end space-x-1.5 text-white/90 text-[11px] w-16">
-            <i class="fa-solid fa-signal text-[10px]"></i>
-            <i class="fa-solid fa-wifi text-[10px]"></i>
-            <i class="fa-solid fa-battery-full text-xs text-emerald-400"></i>
-        </div>
-    </header>
-
-    <!-- Main Content Area -->
-    <main class="w-full max-w-[410px] my-auto z-20 py-6">
-        
-        <!-- LOGIN CARD -->
-        <div id="login-card" class="ios-glass rounded-[40px] p-7 sm:p-8 relative overflow-hidden transition-all duration-500">
-            <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-56 h-24 bg-white/15 blur-2xl rounded-full pointer-events-none"></div>
-
-            <div class="flex flex-col items-center text-center">
-                <div class="relative group cursor-pointer" onclick="window.pulseDynamicIsland('Studio Camera Ready')">
-                    <div class="absolute -inset-1 bg-gradient-to-tr from-amber-500 via-rose-500 to-indigo-500 rounded-[24px] blur opacity-50 group-hover:opacity-80 transition duration-500"></div>
-                    <div class="relative w-20 h-20 rounded-[22px] bg-gradient-to-b from-zinc-800 to-black p-[1px] shadow-2xl">
-                        <div class="w-full h-full bg-gradient-to-br from-zinc-900 via-black to-zinc-950 rounded-[21px] flex flex-col items-center justify-center relative overflow-hidden">
-                            <div class="absolute inset-0 bg-gradient-to-tr from-amber-500/15 via-transparent to-rose-500/20"></div>
-                            <i class="fa-solid fa-clapperboard text-2xl bg-gradient-to-r from-amber-300 via-amber-400 to-rose-400 bg-clip-text text-transparent drop-shadow"></i>
-                            <span class="text-[8px] font-bold tracking-[0.25em] text-white/60 mt-1">4K RAW</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-5">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[10px] font-semibold tracking-widest uppercase bg-white/5 border border-white/10 text-amber-300/90 mb-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> Step 01 • Access Portal
-                    </span>
-                    <h1 class="font-display text-3xl font-extrabold tracking-tight text-white">UR STUDIO</h1>
-                    <p class="text-xs text-zinc-400 mt-1 font-normal">Cinematic Production & Director's Suite</p>
-                </div>
-            </div>
-
-            <!-- Tab Switcher -->
-            <div class="mt-6 bg-black/40 p-1 rounded-2xl border border-white/5 flex items-center relative">
-                <button id="tab-quick" onclick="window.switchAuthTab('quick')" class="flex-1 py-2 text-xs font-semibold rounded-xl bg-white/15 text-white shadow-sm transition-all duration-300">Google Auth</button>
-                <button id="tab-pass" onclick="window.switchAuthTab('pass')" class="flex-1 py-2 text-xs font-semibold rounded-xl text-zinc-400 hover:text-white transition-all duration-300">Studio ID</button>
-            </div>
-
-            <!-- Quick / Google Login View -->
-            <div id="view-quick" class="mt-6 space-y-3.5 transition-all duration-300">
-                <!-- REAL GOOGLE LOGIN BUTTON -->
-                <button id="google-login-btn" onclick="window.handleGoogleLogin()" class="ios-btn w-full py-3.5 px-5 rounded-2xl bg-white text-zinc-950 font-semibold text-sm flex items-center justify-center gap-3 shadow-[0_10px_25px_-5px_rgba(255,255,255,0.25)] hover:bg-zinc-100 relative overflow-hidden group">
-                    <svg class="w-5 h-5 shrink-0 transition-transform duration-300 group-hover:scale-110" viewBox="0 0 24 24">
-                        <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
-                        <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
-                        <path fill="#FBBC05" d="M5.3 14.8c-.2-.8-.4-1.6-.4-2.5s.2-1.7.4-2.5L1.6 7C.6 9 0 11.2 0 13.5s.6 4.5 1.6 6.5l3.7-2.9z" transform="translate(0 -1.2)"/>
-                        <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5l-3.7 2.8C3.5 19.9 7.4 23 12 23z"/>
-                    </svg>
-                    <span id="google-btn-text" class="tracking-tight">Continue with Google</span>
-                </button>
-
-                <div class="pt-3 grid grid-cols-3 gap-2 text-center">
-                    <div class="p-2.5 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
-                        <i class="fa-solid fa-shield-halved text-amber-400 text-xs mb-1"></i>
-                        <p class="text-[10px] text-zinc-400 font-medium">Secure Auth</p>
-                    </div>
-                    <div class="p-2.5 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
-                        <i class="fa-solid fa-cloud-arrow-up text-rose-400 text-xs mb-1"></i>
-                        <p class="text-[10px] text-zinc-400 font-medium">Cloud Sync</p>
-                    </div>
-                    <div class="p-2.5 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
-                        <i class="fa-solid fa-wand-magic-sparkles text-indigo-400 text-xs mb-1"></i>
-                        <p class="text-[10px] text-zinc-400 font-medium">Real-time</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Studio ID Passcode View -->
-            <form id="view-pass" onsubmit="event.preventDefault(); window.pulseDynamicIsland('Studio ID Coming Soon')" class="mt-6 space-y-3.5 hidden">
-                <div>
-                    <label class="block text-[11px] font-medium text-zinc-400 mb-1.5 ml-1">STUDIO EMAIL</label>
-                    <div class="relative">
-                        <i class="fa-regular fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 text-xs"></i>
-                        <input type="email" placeholder="director@urstudio.film" class="ios-input w-full pl-10 pr-4 py-3 rounded-2xl text-sm text-white placeholder-zinc-500 focus:outline-none">
-                    </div>
-                </div>
-                <button type="submit" class="ios-btn w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-rose-500 text-black font-bold text-sm shadow-lg shadow-amber-500/20">
-                    Unlock Workspace
-                </button>
-            </form>
-
-            <div class="mt-6 pt-5 border-t border-white/10 flex items-center justify-between text-[11px] text-zinc-400">
-                <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> Live Backend Connected</span>
-            </div>
-        </div>
-
-        <!-- AUTHENTICATED STATE CARD -->
-        <div id="authenticated-card" class="ios-glass rounded-[40px] p-8 text-center hidden transition-all duration-500">
-            <div class="w-24 h-24 mx-auto p-1 bg-gradient-to-tr from-amber-400 via-rose-500 to-indigo-500 rounded-full shadow-[0_0_30px_-5px_rgba(245,158,11,0.5)]">
-                <img id="auth-avatar" src="https://placehold.co/120x120/18181b/f59e0b?text=UR" alt="User Profile" class="w-full h-full rounded-full object-cover border-[3px] border-black">
-            </div>
-            <div class="mt-4">
-                <span class="px-3 py-0.5 rounded-full text-[10px] font-semibold tracking-widest uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                    <i class="fa-solid fa-check mr-1"></i> Authenticated
-                </span>
-                <h2 id="auth-name" class="font-display text-2xl font-bold text-white mt-3">Welcome</h2>
-                <p id="auth-email" class="text-xs text-zinc-400 mt-1">director@gmail.com</p>
-            </div>
-
-            <div class="mt-6 p-4 rounded-2xl bg-white/5 border border-white/10 text-left space-y-2">
-                <div class="flex items-center justify-between text-xs">
-                    <span class="text-zinc-400">Workspace</span>
-                    <span class="text-white font-semibold">UR STUDIO — Main Lot</span>
-                </div>
-                <div class="flex items-center justify-between text-xs">
-                    <span class="text-zinc-400">Firebase UID</span>
-                    <span id="auth-uid" class="text-amber-400 font-mono text-[10px] truncate max-w-[120px]">...</span>
-                </div>
-            </div>
-
-            <div class="mt-6 space-y-3">
-                <button onclick="window.pulseDynamicIsland('Loading Dashboard...')" class="ios-btn w-full py-3.5 px-5 rounded-2xl bg-white text-black font-semibold text-sm shadow-lg shadow-white/20">
-                    Enter Dashboard <i class="fa-solid fa-arrow-right ml-1.5 text-xs"></i>
-                </button>
-                <button onclick="window.handleSignOut()" class="ios-btn w-full py-2.5 rounded-2xl border border-white/10 bg-white/5 text-xs font-medium text-rose-400 hover:bg-rose-500/10 transition-colors">
-                    Sign Out
-                </button>
-            </div>
-        </div>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="w-full flex flex-col items-center pb-1 z-20">
-        <p class="text-[11px] text-zinc-500 mb-3">Secured by Google Firebase Auth</p>
-        <div class="w-36 h-1.5 bg-white/30 rounded-full"></div>
-    </footer>
-
-    <!-- UI Logic Script -->
-    <script>
-        // Clock
-        function updateClock() {
-            const now = new Date();
-            let hours = now.getHours() % 12 || 12;
-            let minutes = now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes();
-            document.getElementById('ios-clock').textContent = `${hours}:${minutes}`;
-        }
-        updateClock();
-        setInterval(updateClock, 30000);
-
-        // Dynamic Island Helper
-        let islandTimeout;
-        window.pulseDynamicIsland = function(customMessage, customIcon = 'fa-sparkles', customColor = 'text-amber-400') {
-            const island = document.getElementById('dynamic-island');
-            const text = document.getElementById('island-text');
-            const icon = document.getElementById('island-icon');
-
-            clearTimeout(islandTimeout);
-            island.classList.add('expanded');
-            text.textContent = customMessage || 'UR Studio System';
-            icon.className = `fa-solid ${customIcon} text-xs ${customColor} animate-spin`;
-
-            islandTimeout = setTimeout(() => {
-                island.classList.remove('expanded');
-                setTimeout(() => {
-                    text.textContent = 'UR Studio';
-                    icon.className = 'fa-solid fa-video text-[10px] text-amber-400/90';
-                }, 400); // Wait for shrink animation before resetting text
-            }, 3000);
-        }
-
-        // Tab Switcher
-        window.switchAuthTab = function(tab) {
-            const quickTab = document.getElementById('tab-quick');
-            const passTab = document.getElementById('tab-pass');
-            if (tab === 'quick') {
-                quickTab.className = 'flex-1 py-2 text-xs font-semibold rounded-xl bg-white/15 text-white shadow-sm transition-all';
-                passTab.className = 'flex-1 py-2 text-xs font-semibold rounded-xl text-zinc-400 hover:text-white transition-all';
-                document.getElementById('view-quick').classList.remove('hidden');
-                document.getElementById('view-pass').classList.add('hidden');
-            } else {
-                passTab.className = 'flex-1 py-2 text-xs font-semibold rounded-xl bg-white/15 text-white shadow-sm transition-all';
-                quickTab.className = 'flex-1 py-2 text-xs font-semibold rounded-xl text-zinc-400 hover:text-white transition-all';
-                document.getElementById('view-pass').classList.remove('hidden');
-                document.getElementById('view-quick').classList.add('hidden');
-            }
-        }
-    </script>
-
-    <!-- FIREBASE INTEGRATION SCRIPT -->
+    <!-- Firebase Integration Logic -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+        // Firebase SDKs import
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // Your Exact Firebase Config
+        // Tumhara exact Firebase config
         const firebaseConfig = {
             apiKey: "AIzaSyClLSLmdoz5PHVVJrxkoqZ02Xmm-nwsNXQ",
             authDomain: "urstudio-f341c.firebaseapp.com",
@@ -321,69 +150,74 @@
             appId: "1:1017863212287:web:2af7564d1aec2f02e310ca"
         };
 
-        // Initialize Firebase
+        // Firebase Initialize
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        const btnText = document.getElementById('google-btn-text');
-        const loginCard = document.getElementById('login-card');
-        const authCard = document.getElementById('authenticated-card');
+        // UI Elements
+        const loginBtn = document.getElementById('googleLoginBtn');
+        const authContainer = document.getElementById('authContainer');
+        const profileContainer = document.getElementById('profileContainer');
+        const dynamicIsland = document.getElementById('dynamicIsland');
+        const islandContent = document.getElementById('islandContent');
+        const islandText = document.getElementById('islandText');
+        const userAvatar = document.getElementById('userAvatar');
+        const userName = document.getElementById('userName');
+        const userEmail = document.getElementById('userEmail');
 
-        // Handle Google Sign In
-        window.handleGoogleLogin = async () => {
-            try {
-                btnText.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Connecting...';
-                window.pulseDynamicIsland('Contacting Google...', 'fa-circle-notch');
-                
-                // Trigger Real OAuth Popup
-                await signInWithPopup(auth, provider);
-                
-                // Note: The UI updates automatically via the onAuthStateChanged listener below
-            } catch (error) {
-                console.error("Firebase Login Error:", error);
-                btnText.textContent = 'Continue with Google';
-                window.pulseDynamicIsland('Auth Cancelled or Failed', 'fa-triangle-exclamation', 'text-rose-500');
-            }
-        };
+        // Handle Login Click
+        loginBtn.addEventListener('click', () => {
+            // Dynamic Island Animation
+            dynamicIsland.classList.add('active');
+            islandContent.style.display = 'flex';
+            islandText.innerText = "Authenticating...";
 
-        // Handle Sign Out
-        window.handleSignOut = async () => {
-            try {
-                await signOut(auth);
-                window.pulseDynamicIsland('Signed Out Successfully', 'fa-check', 'text-emerald-400');
-            } catch (error) {
-                console.error("Sign Out Error:", error);
-            }
-        };
+            // Asli Google Popup Trigger hoga yahan se
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const user = result.user;
+                    
+                    // Success! Island update karo
+                    islandText.innerText = "Access Granted";
+                    islandText.style.color = "#4ade80"; // Green
+                    document.querySelector('.loading-spinner').style.display = 'none';
+                    islandContent.innerHTML = '<i class="fa-solid fa-check"></i> <span style="color:#4ade80;">Welcome back</span>';
+                    
+                    // Login button chhupao, User Profile dikhao
+                    authContainer.classList.add('hidden');
+                    profileContainer.classList.remove('hidden');
+                    profileContainer.classList.add('flex');
 
-        // Listen for Authentication State Changes (Persists login on page refresh)
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // User is signed in
-                console.log("Logged in user:", user);
-                
-                // Update UI with Real Google Data
-                document.getElementById('auth-name').textContent = user.displayName || 'Director';
-                document.getElementById('auth-email').textContent = user.email;
-                document.getElementById('auth-uid').textContent = user.uid;
-                
-                // Use user's Google profile pic, or fallback if none
-                if (user.photoURL) {
-                    document.getElementById('auth-avatar').src = user.photoURL;
-                }
+                    // Photo aur Naam Set karo
+                    userAvatar.src = user.photoURL;
+                    userName.innerText = user.displayName;
+                    userEmail.innerText = user.email;
 
-                // Switch Cards
-                loginCard.classList.add('hidden');
-                authCard.classList.remove('hidden');
-                
-                window.pulseDynamicIsland(`Welcome, ${user.displayName?.split(' ')[0] || 'Director'}`, 'fa-check', 'text-emerald-400');
-            } else {
-                // User is signed out
-                loginCard.classList.remove('hidden');
-                authCard.classList.add('hidden');
-                btnText.textContent = 'Continue with Google';
-            }
+                    setTimeout(() => {
+                        dynamicIsland.classList.remove('active');
+                    }, 3000);
+
+                }).catch((error) => {
+                    console.error("Error:", error);
+                    islandText.innerText = "Failed!";
+                    islandText.style.color = "#ef4444"; // Red
+                    document.querySelector('.loading-spinner').style.display = 'none';
+
+                    alert("Login cancel ho gaya ya error aaya: " + error.message);
+
+                    setTimeout(() => {
+                        dynamicIsland.classList.remove('active');
+                        islandContent.style.display = 'none';
+                        islandContent.innerHTML = '<div class="loading-spinner"></div><span id="islandText">Connecting...</span>';
+                    }, 2000);
+                });
+        });
+
+        // Enter Studio Button (Dashboard par jaane ke liye)
+        document.getElementById('dashboardBtn').addEventListener('click', () => {
+            alert("Ab hum next step mein tumhara Studio Dashboard design karenge!");
+            // Baad mein yahan link lagayenge: window.location.href = "dashboard.html";
         });
     </script>
 </body>
