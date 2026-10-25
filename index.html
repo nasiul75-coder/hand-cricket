@@ -1,1787 +1,390 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HC PRO // Official Cricket Broadcast</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UR STUDIO | Sign In</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        studioGold: '#f59e0b',
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap');
-        
-        :root {
-            --gold: #f59e0b;
-            --gold-bright: #fbbf24;
-            --bg-deep: #020617;
-            --panel-bg: rgba(11, 19, 35, 0.92);
-        }
-
-        * { box-sizing: border-box; }
-
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: var(--bg-deep); 
-            color: #f8fafc; 
-            margin: 0; 
-            min-height: 100dvh; 
-            overflow-x: hidden; 
-            background-image: 
-                radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.14), transparent 55%),
-                radial-gradient(circle at 85% 20%, rgba(37, 99, 235, 0.16), transparent 50%),
-                linear-gradient(to bottom, rgba(2, 6, 23, 0.90), rgba(2, 6, 23, 0.98)), 
-                url('https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=2000'); 
-            background-size: cover; 
-            background-position: center; 
-            background-attachment: fixed;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .font-mono-num { font-family: 'JetBrains Mono', monospace; }
-        .score-font { font-family: 'Teko', sans-serif; letter-spacing: 0.5px; line-height: 0.88; }
-
-        /* Broadcast Glass Panels */
-        .glass { 
-            background: var(--panel-bg); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.09); 
-            box-shadow: 0 10px 28px -4px rgba(0, 0, 0, 0.75); 
-        }
-
-        .input-glass { 
-            background: rgba(2, 6, 23, 0.9); 
-            border: 1px solid rgba(255, 255, 255, 0.15); 
-            color: white; 
-            outline: none; 
-            transition: all 0.2s ease; 
-        }
-        .input-glass:focus { 
-            border-color: var(--gold-bright); 
-            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.15); 
-        }
-        
-        .screen { 
-            display: none; 
-            width: 100%; 
-            min-height: calc(100dvh - 50px); 
-            flex-direction: column; 
-            padding-bottom: 1rem; 
-            overflow-x: hidden;
-        }
-        .active-screen { 
-            display: flex; 
-            animation: screenFade 0.2s ease-out; 
-        }
-        @keyframes screenFade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* Tactile 3D Broadcast Keypad Buttons */
-        .btn-move { 
-            position: relative;
-            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            box-shadow: 0 3px 0 #020617, 0 4px 8px rgba(0,0,0,0.6);
-            transition: all 0.08s ease; 
-            user-select: none;
-        } 
-        .btn-move:hover {
-            border-color: rgba(251, 191, 36, 0.45);
-            background: linear-gradient(180deg, #28374f 0%, #152038 100%);
-        }
-        .btn-move:active { 
-            transform: translateY(2px); 
-            box-shadow: 0 1px 0 #020617, 0 2px 4px rgba(0,0,0,0.4);
-        }
-        .selected-move { 
-            background: linear-gradient(180deg, #fbbf24 0%, #d97706 100%) !important;
-            border-color: #fef08a !important; 
-            color: #020617 !important;
-            box-shadow: 0 2px 0 #78350f, 0 0 18px rgba(245, 158, 11, 0.55) !important;
-        }
-        .selected-move span { color: #020617 !important; opacity: 0.85; }
-
-        /* Action Buttons */
-        .btn-primary {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            border: 1px solid rgba(147, 197, 253, 0.35);
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
-            transition: all 0.15s ease;
-        }
-        .btn-primary:hover { filter: brightness(1.1); }
-        .btn-primary:active { transform: translateY(1px); }
-
-        .btn-gold {
-            background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
-            color: #030712;
-            border: 1px solid rgba(254, 243, 199, 0.5);
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);
-            transition: all 0.15s ease;
-        }
-        .btn-gold:active { transform: translateY(1px); }
-
-        /* Cricket Seam Ball Badge */
-        .cricket-ball-dot {
-            width: 9px; height: 9px;
-            border-radius: 9999px;
-            background: radial-gradient(circle at 30% 30%, #f87171, #dc2626 70%, #7f1d1d);
-            border: 1px solid rgba(255,255,255,0.4);
-            box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
-            display: inline-block;
-        }
-        
-        #bowler-modal, #stats-modal { z-index: 9999999 !important; }
-        
-        .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-
-        /* ICC BROADCAST PLAYER POSTER STYLES */
-        .icc-poster-card {
-            background: 
-                radial-gradient(circle at 15% 88%, rgba(236, 72, 153, 0.48) 0%, rgba(139, 92, 246, 0.28) 38%, rgba(15, 23, 42, 0.96) 78%),
-                linear-gradient(135deg, #1e1b4b 0%, #090d16 65%, #3b0764 100%);
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(236, 72, 153, 0.35);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), inset 0 0 60px rgba(236, 72, 153, 0.15);
-        }
-        .icc-stat-row {
-            display: flex;
-             justify-content: space-between;
-            align-items: baseline;
-            border-bottom: 2px solid rgba(236, 72, 153, 0.55);
-            padding-bottom: 2px;
-            margin-bottom: 8px;
-            position: relative;
-        }
-        .icc-stat-row::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 38%;
-            height: 2px;
-            background: #f472b6;
-            box-shadow: 0 0 8px #f472b6;
-        }
-        .icc-stat-label {
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 1.5px;
-            color: #fce7f3;
-            text-transform: uppercase;
-        }
-        .icc-stat-value {
-            font-family: 'Teko', sans-serif;
-            font-size: 40px;
-            font-weight: 700;
-            line-height: 0.82;
+        /* Custom iOS 18 Glassmorphism & Spring Physics */
+        body {
+            background-color: #050508;
             color: #ffffff;
-            text-shadow: 0 4px 14px rgba(0, 0, 0, 0.65);
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-font-smoothing: antialiased;
         }
-        @media (min-width: 640px) {
-            .icc-stat-value { font-size: 48px; }
-            .icc-stat-label { font-size: 12px; }
+
+        /* Animated Aurora Mesh Background */
+        @keyframes floatSlow {
+            0%, 100% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -40px) scale(1.08); }
+            66% { transform: translate(-25px, 25px) scale(0.95); }
         }
-        .player-pill-active {
-            background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%) !important;
-            color: #ffffff !important;
-            border-color: #fbcfe8 !important;
-            box-shadow: 0 0 15px rgba(236, 72, 153, 0.5);
+        @keyframes floatReverse {
+            0%, 100% { transform: translate(0px, 0px) scale(1); }
+            50% { transform: translate(-40px, -30px) scale(1.12); }
+        }
+
+        .aurora-1 { animation: floatSlow 14s ease-in-out infinite; }
+        .aurora-2 { animation: floatReverse 18s ease-in-out infinite; }
+        .aurora-3 { animation: floatSlow 22s ease-in-out infinite reverse; }
+
+        /* iOS Frosted Glass Surface */
+        .ios-glass {
+            background: rgba(24, 24, 29, 0.58);
+            backdrop-filter: blur(32px) saturate(190%);
+            -webkit-backdrop-filter: blur(32px) saturate(190%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 
+                0 30px 60px -12px rgba(0, 0, 0, 0.75),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.18);
+        }
+
+        .ios-input {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .ios-input:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(245, 158, 11, 0.6);
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
+        }
+
+        .ios-btn {
+            transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .ios-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* Dynamic Island Expansion */
+        .dynamic-island {
+            transition: all 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+        .dynamic-island.expanded {
+            width: 280px !important;
+            height: 44px !important;
+            border-radius: 24px !important;
+            background: rgba(15, 15, 18, 0.95);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.12);
+        }
+
+        .film-grain {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 0);
+            background-size: 24px 24px;
         }
     </style>
-    
-    <!-- FIREBASE -->
-    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-database-compat.js"></script>
 </head>
-<body>
+<body class="min-h-screen flex flex-col justify-between items-center relative p-4 sm:p-6 selection:bg-amber-500 selection:text-black">
 
-    <!-- SVG DEFINITIONS FOR CRICKET LOGOS -->
-    <svg width="0" height="0" class="hidden">
-        <!-- Cricket Crest Logo -->
-        <symbol id="cricket-crest" viewBox="0 0 64 64">
-            <path d="M32 4 L56 14 V32 C56 47 45 57 32 61 C19 57 8 47 8 32 V14 L32 4 Z" fill="url(#shieldGrad)" stroke="#fbbf24" stroke-width="2.5"/>
-            <rect x="25" y="20" width="2.2" height="24" rx="1" fill="#fde68a" opacity="0.85"/>
-            <rect x="30.9" y="20" width="2.2" height="24" rx="1" fill="#fde68a" opacity="0.85"/>
-            <rect x="36.8" y="20" width="2.2" height="24" rx="1" fill="#fde68a" opacity="0.85"/>
-            <rect x="24" y="18" width="16" height="2.2" rx="1" fill="#fbbf24"/>
-            <path d="M18 46 L42 22 L46 26 L22 50 Z" fill="#f59e0b" stroke="#fff" stroke-width="1.2"/>
-            <circle cx="32" cy="34" r="7" fill="#ef4444" stroke="#ffffff" stroke-width="1.5"/>
-            <path d="M27 30 Q32 34 37 38" stroke="#ffffff" stroke-width="1.2" stroke-dasharray="2,1.5" fill="none"/>
-            <defs>
-                <linearGradient id="shieldGrad" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stop-color="#1e3a8a"/>
-                    <stop offset="100%" stop-color="#020617"/>
-                </linearGradient>
-            </defs>
-        </symbol>
+    <!-- Ambient Cinematic Mesh Background -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div class="aurora-1 absolute -top-24 -left-24 w-96 h-96 sm:w-[32rem] sm:h-[32rem] rounded-full bg-rose-600/25 blur-[110px]"></div>
+        <div class="aurora-2 absolute top-1/3 -right-20 w-80 h-80 sm:w-[28rem] sm:h-[28rem] rounded-full bg-amber-500/20 blur-[120px]"></div>
+        <div class="aurora-3 absolute -bottom-28 left-1/4 w-96 h-96 sm:w-[34rem] sm:h-[34rem] rounded-full bg-indigo-600/25 blur-[130px]"></div>
+        <div class="absolute inset-0 film-grain"></div>
+    </div>
 
-        <!-- Bat Icon -->
-        <symbol id="icon-bat" viewBox="0 0 24 24">
-            <path fill="currentColor" d="M21.71 2.29a1 1 0 0 0-1.42 0l-5.5 5.5l-1.58-.39a1 1 0 0 0-.95.27L3.7 16.23a2 2 0 0 0 0 2.83l1.24 1.24a2 2 0 0 0 2.83 0l8.56-8.56a1 1 0 0 0 .27-.95l-.39-1.58l5.5-5.5a1 1 0 0 0 0-1.42Z"/>
-        </symbol>
+    <!-- Top iPhone Dynamic Island & Status Bar -->
+    <header class="w-full max-w-md mx-auto pt-1 z-30 flex items-center justify-between px-2">
+        <div id="ios-clock" class="text-xs font-semibold tracking-tight text-white/90 w-16">9:41</div>
 
-        <!-- Ball Icon -->
-        <symbol id="icon-ball" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="9" fill="#ef4444" stroke="currentColor" stroke-width="2"/>
-            <path d="M6.5 6.5C9.5 9.5 14.5 14.5 17.5 17.5" stroke="#fff" stroke-width="1.6" stroke-dasharray="2 2"/>
-        </symbol>
-
-        <!-- Broadcast Batter Hero Art -->
-        <symbol id="batter-hero" viewBox="0 0 220 300">
-            <defs>
-                <linearGradient id="jerseyGrad" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stop-color="#2563eb"/>
-                    <stop offset="55%" stop-color="#1d4ed8"/>
-                    <stop offset="100%" stop-color="#1e1b4b"/>
-                </linearGradient>
-                <linearGradient id="batWood" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stop-color="#fde68a"/>
-                    <stop offset="100%" stop-color="#d97706"/>
-                </linearGradient>
-            </defs>
-            <!-- Stadium Backlight Halo -->
-            <circle cx="125" cy="115" r="78" fill="rgba(236, 72, 153, 0.18)"/>
-            <!-- Raised Cricket Bat -->
-            <path d="M165 8 L202 42 L118 122 L95 100 Z" fill="url(#batWood)" stroke="#fff" stroke-width="1.5"/>
-            <path d="M98 102 L68 130 L76 138 L106 110 Z" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
-            <!-- Helmet & Grill -->
-            <circle cx="122" cy="72" r="24" fill="#1e3a8a" stroke="#60a5fa" stroke-width="2"/>
-            <path d="M100 72 Q122 65 144 72 L140 88 Q122 94 104 88 Z" fill="#0f172a" stroke="#94a3b8" stroke-width="1.5"/>
-            <line x1="104" y1="78" x2="140" y2="78" stroke="#e2e8f0" stroke-width="1.2"/>
-            <line x1="106" y1="84" x2="138" y2="84" stroke="#e2e8f0" stroke-width="1.2"/>
-            <circle cx="122" cy="58" r="4" fill="#fbbf24"/>
-            <!-- Torso / Blue India-style Jersey -->
-            <path d="M82 98 C95 92 148 92 160 102 L172 185 L74 185 Z" fill="url(#jerseyGrad)" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
-            <!-- Collar & Tri-color Accent -->
-            <path d="M102 96 L122 114 L142 96" fill="none" stroke="#f97316" stroke-width="3.5"/>
-            <!-- Arms & Batting Gloves -->
-            <path d="M82 102 L58 135 L88 152 L102 120" fill="#1d4ed8" stroke="#60a5fa" stroke-width="1.2"/>
-            <circle cx="72" cy="136" r="13" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
-            <circle cx="84" cy="126" r="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
-            <!-- Lower Trousers & Batting Pads -->
-            <path d="M76 185 L168 185 L160 288 L126 288 L122 225 L118 288 L82 288 Z" fill="#1e3a8a"/>
-            <!-- Leg Guards / Pads -->
-            <rect x="76" y="212" width="38" height="82" rx="12" fill="#1d4ed8" stroke="#60a5fa" stroke-width="2"/>
-            <line x1="78" y1="232" x2="112" y2="232" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
-            <line x1="78" y1="252" x2="112" y2="252" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
-            <rect x="126" y="218" width="38" height="76" rx="12" fill="#1d4ed8" stroke="#60a5fa" stroke-width="2"/>
-            <line x1="128" y1="238" x2="162" y2="238" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
-            <line x1="128" y1="258" x2="162" y2="258" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
-        </symbol>
-    </svg>
-
-    <!-- AUDIO SFX BACKUP -->
-    <audio id="sfx-click" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" preload="auto"></audio>
-    <audio id="sfx-0" src="https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3" preload="auto"></audio>
-    <audio id="sfx-1" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" preload="auto"></audio>
-    <audio id="sfx-2" src="https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3" preload="auto"></audio>
-    <audio id="sfx-4" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3" preload="auto"></audio>
-    <audio id="sfx-6" src="https://assets.mixkit.co/active_storage/sfx/1995/1995-preview.mp3" preload="auto"></audio>
-    <audio id="sfx-w" src="https://assets.mixkit.co/active_storage/sfx/3180/3180-preview.mp3" preload="auto"></audio>
-
-    <!-- TOP BROADCAST BAR (COMPACT MOBILE SAFE) -->
-    <header class="w-full h-[50px] px-2.5 sm:px-6 flex justify-between items-center bg-[#020617]/95 border-b border-white/10 z-50 sticky top-0 backdrop-blur-md">
-        <div class="flex items-center gap-1.5 cursor-pointer shrink-0" onclick="nav('dashboard'); playSound('click')">
-            <svg class="w-7 h-7 sm:w-8 sm:h-8 drop-shadow"><use href="#cricket-crest"></use></svg>
-            <h1 class="text-xl sm:text-2xl font-bold uppercase tracking-wider text-white score-font mt-0.5">HC <span class="text-amber-400">PRO</span></h1>
-            <span class="hidden sm:inline-block text-[8px] bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded font-extrabold uppercase tracking-widest ml-1">OFFICIAL</span>
+        <div id="dynamic-island" onclick="window.pulseDynamicIsland()" class="dynamic-island w-32 h-8 bg-black rounded-full border border-white/10 flex items-center justify-between px-3 cursor-pointer shadow-lg overflow-hidden">
+            <div class="flex items-center space-x-2">
+                <span id="island-dot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                <span id="island-text" class="text-[11px] font-medium text-white/80 tracking-tight truncate">UR Studio</span>
+            </div>
+            <i id="island-icon" class="fa-solid fa-video text-[10px] text-amber-400/90"></i>
         </div>
-        <div class="flex items-center gap-1.5 sm:gap-2.5">
-            <!-- Voice Commentary & Sound Toggle -->
-            <button id="btn-sound-toggle" onclick="toggleAudio()" class="bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-400 px-2 py-1.5 rounded-lg text-[10px] font-bold uppercase flex items-center gap-1 transition" title="Toggle Voice Commentary & Crowd SFX">
-                <i id="icon-sound-toggle" class="fa-solid fa-volume-high"></i> <span class="hidden sm:inline">Voice ON</span>
-            </button>
-            <button onclick="openPlayerStatsModal(); playSound('click')" class="bg-gradient-to-r from-pink-600/25 to-purple-600/25 hover:from-pink-600/40 hover:to-purple-600/40 border border-pink-500/50 text-pink-200 px-2.5 py-1.5 rounded-lg text-[10px] font-extrabold uppercase flex items-center gap-1 transition shadow">
-                <i class="fa-solid fa-id-badge text-pink-400"></i> <span>Stats</span>
-            </button>
-            <img id="user-profile-pic" src="" class="w-6 h-6 sm:w-7 sm:h-7 rounded-full border border-amber-400/60 object-cover hidden xs:block">
-            <span id="nav-user" class="text-[11px] sm:text-xs font-bold uppercase text-slate-300 max-w-[62px] sm:max-w-[90px] truncate">Player</span>
-            <button onclick="auth.signOut()" class="w-7 h-7 rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 flex items-center justify-center transition shrink-0" title="Logout">
-                <i class="fa-solid fa-power-off text-[11px]"></i>
-            </button>
+
+        <div class="flex items-center justify-end space-x-1.5 text-white/90 text-[11px] w-16">
+            <i class="fa-solid fa-signal text-[10px]"></i>
+            <i class="fa-solid fa-wifi text-[10px]"></i>
+            <i class="fa-solid fa-battery-full text-xs text-emerald-400"></i>
         </div>
     </header>
 
-    <!-- 1. LOGIN -->
-    <div id="login" class="screen items-center justify-center p-4">
-        <div class="glass w-full max-w-md p-7 sm:p-10 rounded-3xl text-center border-t-2 border-amber-500/60">
-            <svg class="w-20 h-20 mx-auto mb-4 drop-shadow-[0_0_20px_rgba(251,191,36,0.3)]"><use href="#cricket-crest"></use></svg>
-            <h1 class="text-4xl sm:text-5xl font-bold mb-1 uppercase text-white score-font tracking-wide">Hand Cricket <span class="text-amber-400">Pro</span></h1>
-            <p class="text-[10px] sm:text-[11px] text-slate-400 uppercase tracking-widest font-semibold mb-7">Official Multiplayer Broadcast Network</p>
-            <button onclick="login()" class="w-full bg-white hover:bg-slate-100 text-slate-950 py-3.5 px-6 rounded-xl font-extrabold text-xs sm:text-sm uppercase tracking-wider flex justify-center items-center gap-3 shadow-lg transition">
-                <i class="fa-brands fa-google text-blue-600 text-lg"></i> Sign In With Google
-            </button>
-        </div>
-    </div>
-
-    <!-- 2. DASHBOARD & STATS -->
-    <div id="dashboard" class="screen p-2.5 sm:p-5 max-w-5xl mx-auto w-full pt-2.5">
-        <!-- CAREER BANNER -->
-        <div class="glass p-3.5 sm:p-4 rounded-2xl border border-white/10 mb-3 flex flex-col sm:flex-row justify-between items-center gap-3 bg-gradient-to-r from-slate-900/95 via-slate-900/80 to-blue-950/40">
-            <div class="flex items-center gap-3 w-full sm:w-auto min-w-0">
-                <svg class="w-11 h-11 sm:w-12 sm:h-12 shrink-0"><use href="#cricket-crest"></use></svg>
-                <div class="min-w-0 flex-1">
-                    <div class="text-[9px] text-amber-400 font-extrabold uppercase tracking-widest">Registered Franchise</div>
-                    <div class="text-lg sm:text-2xl font-extrabold text-white uppercase tracking-tight truncate" id="stat-team-name">India</div>
-                    <button onclick="openPlayerStatsModal(); playSound('click')" class="text-[10px] sm:text-[11px] text-pink-400 hover:text-pink-300 font-bold flex items-center gap-1">
-                        <span>Open ICC Player Cards</span> <i class="fa-solid fa-chevron-right text-[8px]"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="grid grid-cols-3 gap-1.5 w-full sm:w-auto bg-black/50 p-2 rounded-xl border border-white/5 text-center shrink-0">
-                <div class="px-2.5">
-                    <div class="text-[8px] sm:text-[9px] text-slate-400 uppercase font-bold tracking-wider">Mat</div>
-                    <div class="text-xl sm:text-2xl font-bold text-white score-font mt-0.5" id="stat-p">0</div>
-                </div>
-                <div class="px-2.5 border-x border-white/10">
-                    <div class="text-[8px] sm:text-[9px] text-emerald-400 uppercase font-bold tracking-wider">Won</div>
-                    <div class="text-xl sm:text-2xl font-bold text-emerald-400 score-font mt-0.5" id="stat-w">0</div>
-                </div>
-                <div class="px-2.5">
-                    <div class="text-[8px] sm:text-[9px] text-red-400 uppercase font-bold tracking-wider">Lost</div>
-                    <div class="text-xl sm:text-2xl font-bold text-red-400 score-font mt-0.5" id="stat-l">0</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- JOIN ROOM BAR -->
-        <div class="glass p-2.5 rounded-2xl border border-white/10 mb-3.5 flex flex-col sm:flex-row gap-2">
-            <div class="relative flex-1">
-                <i class="fa-solid fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-amber-400 text-xs"></i>
-                <input type="text" id="join-input" placeholder="ENTER 5-DIGIT MATCH CODE" class="input-glass w-full pl-9 pr-3 py-2.5 sm:py-3 rounded-xl font-mono-num font-bold uppercase text-xs sm:text-sm tracking-widest">
-            </div>
-            <button onclick="joinAction(); playSound('click')" class="btn-primary py-2.5 sm:py-3 px-6 rounded-xl font-extrabold uppercase text-xs sm:text-sm tracking-widest text-white flex items-center justify-center gap-2">
-                <i class="fa-solid fa-bolt"></i> Join Match
-            </button>
-        </div>
-
-        <!-- MODES GRID -->
-        <div class="grid grid-cols-2 gap-2.5 sm:gap-4 mb-3.5">
-            <button onclick="prepSetup('match'); playSound('click')" class="glass p-3.5 sm:p-6 rounded-2xl text-left hover:border-blue-500/50 transition border-t-2 border-t-blue-500 group flex flex-col justify-between min-w-0">
-                <div class="flex justify-between items-start w-full mb-1.5">
-                    <span class="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wider text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded">1v1 Arena</span>
-                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-blue-400 group-hover:scale-110 transition shrink-0"><use href="#icon-bat"></use></svg>
-                </div>
-                <div class="min-w-0">
-                    <h2 class="font-extrabold text-sm sm:text-2xl uppercase text-white truncate">Create Match</h2>
-                    <p class="text-[9px] sm:text-xs text-slate-400 mt-0.5 truncate">T20, ODI & Test Match</p>
-                </div>
-            </button>
-
-            <button onclick="prepSetup('tourney'); playSound('click')" class="glass p-3.5 sm:p-6 rounded-2xl text-left hover:border-amber-500/50 transition border-t-2 border-t-amber-500 group flex flex-col justify-between min-w-0">
-                <div class="flex justify-between items-start w-full mb-1.5">
-                    <span class="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wider text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded">League</span>
-                    <i class="fa-solid fa-trophy text-amber-400 text-base sm:text-lg group-hover:scale-110 transition shrink-0"></i>
-                </div>
-                <div class="min-w-0">
-                    <h2 class="font-extrabold text-sm sm:text-2xl uppercase text-white truncate">Tournament</h2>
-                    <p class="text-[9px] sm:text-xs text-slate-400 mt-0.5 truncate">Points Table & NRR</p>
-                </div>
-            </button>
-        </div>
-
-        <!-- ACTIVE & PAST MATCHES -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
-            <div class="glass p-3.5 sm:p-4 rounded-2xl border-t-2 border-emerald-500/60">
-                <h3 class="text-emerald-400 font-extrabold uppercase text-[10px] mb-2 tracking-widest flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live / Active Rooms
-                </h3>
-                <div id="resume-list" class="space-y-2 text-xs font-bold custom-scroll max-h-40 overflow-y-auto pr-1">
-                    <div class="text-slate-500">Scanning active rooms...</div>
-                </div>
-            </div>
-
-            <div class="glass p-3.5 sm:p-4 rounded-2xl border-t-2 border-purple-500/60">
-                <h3 class="text-purple-400 font-extrabold uppercase text-[10px] mb-2 tracking-widest flex items-center gap-2">
-                    <i class="fa-solid fa-clock-rotate-left"></i> Recent Match Archive
-                </h3>
-                <div id="history-list" class="space-y-2 text-xs font-bold custom-scroll max-h-40 overflow-y-auto pr-1">
-                    <div class="text-slate-500">Loading match history...</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 3. TEAM SQUAD BUILDER -->
-    <div id="squad-builder" class="screen p-2.5 sm:p-5 max-w-3xl mx-auto w-full pt-2.5">
-        <div class="flex justify-between items-center mb-3">
-            <div class="flex items-center gap-2 min-w-0">
-                <svg class="w-7 h-7 sm:w-8 sm:h-8 shrink-0"><use href="#cricket-crest"></use></svg>
-                <div class="min-w-0">
-                    <h2 class="text-base sm:text-xl font-extrabold uppercase text-white truncate">Playing XI Lineup</h2>
-                    <p class="text-[9px] sm:text-[10px] text-slate-400 truncate">Auto-synced with career database</p>
-                </div>
-            </div>
-            <button onclick="nav('dashboard'); playSound('click')" class="bg-slate-800 hover:bg-slate-700 border border-white/10 px-3 py-1.5 rounded-xl text-xs font-bold uppercase text-slate-300 flex items-center gap-1.5 shrink-0">
-                <i class="fa-solid fa-arrow-left"></i> Back
-            </button>
-        </div>
-        <div class="glass p-3.5 sm:p-6 rounded-2xl">
-            <label class="text-[10px] font-extrabold text-amber-400 uppercase tracking-widest block mb-1">Team / Franchise Name</label>
-            <input type="text" id="team-name" value="India" class="input-glass w-full p-2.5 sm:p-3 rounded-xl font-extrabold text-sm sm:text-base uppercase mb-3.5 text-white">
-            
-            <label class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block mb-2">11 Players Batting Order</label>
-            <div id="player-inputs" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
-            
-            <button onclick="saveSquadAndProceed(); playSound('click')" class="btn-primary w-full py-3.5 rounded-xl font-extrabold uppercase text-xs sm:text-sm tracking-widest mt-4 text-white flex items-center justify-center gap-2">
-                <span>Confirm Playing XI</span> <i class="fa-solid fa-arrow-right"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- 4. MATCH RULES -->
-    <div id="match-config" class="screen p-2.5 sm:p-5 max-w-xl mx-auto w-full pt-4">
-        <div class="glass p-4 sm:p-7 rounded-3xl border-t-2 border-blue-500">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg sm:text-xl font-extrabold uppercase text-white flex items-center gap-2">
-                    <svg class="w-6 h-6 text-amber-400 shrink-0"><use href="#cricket-crest"></use></svg> Match Settings
-                </h2>
-                <button onclick="nav('squad-builder'); playSound('click')" class="text-xs text-slate-400 hover:text-white uppercase font-bold"><i class="fa-solid fa-arrow-left mr-1"></i>XI</button>
-            </div>
-
-            <div class="space-y-3">
-                <div>
-                    <label class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Match Format</label>
-                    <select id="m-format" class="input-glass w-full p-3 rounded-xl font-bold text-xs sm:text-sm text-white mt-1">
-                        <option value="T20">T20 International (1 Innings / Side)</option>
-                        <option value="ODI">One Day International (1 Innings / Side)</option>
-                        <option value="TEST">Test Championship (2 Innings / Side)</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label class="text-[10px] font-extrabold text-amber-400 uppercase tracking-widest">Host Opening Action</label>
-                    <select id="m-role" class="input-glass w-full p-3 rounded-xl font-bold text-xs sm:text-sm text-amber-400 border-amber-500/40 mt-1">
-                        <option value="bat">BAT FIRST</option>
-                        <option value="bowl">BOWL FIRST</option>
-                    </select>
-                </div>
-
-                <div class="grid grid-cols-2 gap-2.5">
-                    <div>
-                        <label class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Max Overs / Inn</label>
-                        <select id="m-overs" class="input-glass w-full p-3 rounded-xl font-bold text-xs sm:text-sm mt-1">
-                            <option value="1">1 Over (6b)</option>
-                            <option value="2">2 Overs (12b)</option>
-                            <option value="3">3 Overs (18b)</option>
-                            <option value="4">4 Overs (24b)</option>
-                            <option value="5" selected>5 Overs (30b)</option>
-                            <option value="10">10 Overs (60b)</option>
-                            <option value="20">20 Overs (120b)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Max Wickets / Inn</label>
-                        <select id="m-wickets" class="input-glass w-full p-3 rounded-xl font-bold text-xs sm:text-sm mt-1">
-                            <option value="1">1 Wicket</option>
-                            <option value="2">2 Wickets</option>
-                            <option value="3">3 Wickets</option>
-                            <option value="5">5 Wickets</option>
-                            <option value="10" selected>10 Wickets</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <button onclick="hostMatch(); playSound('click')" class="btn-primary w-full py-3.5 rounded-xl font-extrabold text-xs sm:text-sm mt-5 uppercase tracking-widest text-white">
-                <i class="fa-solid fa-satellite-dish mr-1.5"></i> Create Match Room
-            </button>
-        </div>
-    </div>
-
-    <!-- TOURNAMENT RULES -->
-    <div id="tourney-config" class="screen p-2.5 sm:p-5 max-w-xl mx-auto w-full pt-4">
-        <div class="glass p-4 sm:p-7 rounded-3xl border-t-2 border-amber-500">
-            <h2 class="text-lg sm:text-xl font-extrabold uppercase mb-4 text-amber-400 text-center flex items-center justify-center gap-2">
-                <i class="fa-solid fa-trophy"></i> League Setup
-            </h2>
-            <div class="grid grid-cols-2 gap-2.5">
-                <div><label class="text-[10px] font-extrabold text-slate-400 uppercase">Overs</label>
-                    <select id="t-overs" class="input-glass w-full p-3 rounded-xl font-bold text-xs mt-1"><option value="1">1 Over</option><option value="2">2 Overs</option><option value="5" selected>5 Overs</option><option value="10">10 Overs</option></select>
-                </div>
-                <div><label class="text-[10px] font-extrabold text-slate-400 uppercase">Wickets</label><select id="t-wickets" class="input-glass w-full p-3 rounded-xl font-bold text-xs mt-1"><option value="3">3</option><option value="5">5</option><option value="10" selected>10</option></select></div>
-                <div><label class="text-[10px] font-extrabold text-slate-400 uppercase">Teams Qty</label><select id="t-teams" class="input-glass w-full p-3 rounded-xl font-bold text-xs mt-1"><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option></select></div>
-                <div><label class="text-[10px] font-extrabold text-slate-400 uppercase">Fixtures</label><select id="t-qty" class="input-glass w-full p-3 rounded-xl font-bold text-xs mt-1"><option value="1">Single Round</option><option value="2">Double Round</option></select></div>
-            </div>
-            <button onclick="hostTourney(); playSound('click')" class="btn-gold w-full py-3.5 rounded-xl font-extrabold text-xs sm:text-sm mt-5 uppercase tracking-widest">Create League Lobby</button>
-        </div>
-    </div>
-
-    <!-- 5. LOBBY & POINTS TABLE -->
-    <div id="lobby" class="screen p-2.5 sm:p-5 max-w-4xl mx-auto w-full pt-5">
-        <div class="glass p-5 sm:p-8 rounded-3xl text-center border-t-2 border-emerald-500 mb-4">
-            <svg class="w-12 h-12 sm:w-14 sm:h-14 mx-auto mb-2"><use href="#cricket-crest"></use></svg>
-            <p class="text-xs text-slate-400 font-semibold mb-3">Share this room code with your opponent</p>
-            <div class="text-4xl sm:text-7xl font-mono-num font-extrabold text-amber-400 bg-black/80 px-5 sm:px-7 py-3 rounded-2xl inline-block tracking-widest border border-amber-500/30" id="lobby-code">----</div>
-            <p id="lobby-status" class="text-emerald-400 font-bold mt-4 uppercase animate-pulse text-xs tracking-wider">
-                <i class="fa-solid fa-circle-notch fa-spin mr-1.5"></i> Waiting for opponent to join...
-            </p>
-        </div>
+    <!-- Main Content Area -->
+    <main class="w-full max-w-[410px] my-auto z-20 py-6">
         
-        <div id="tourney-ui" class="hidden w-full glass p-3.5 sm:p-4 rounded-2xl border-t-2 border-amber-500">
-            <h3 class="font-extrabold uppercase text-xs text-amber-400 mb-3 tracking-wider"><i class="fa-solid fa-list-ol mr-2"></i>Standings</h3>
-            <div class="overflow-x-auto rounded-xl border border-white/10 bg-black/50 custom-scroll">
-                <table class="w-full text-left text-xs font-bold min-w-max">
-                    <thead class="bg-white/5"><tr class="uppercase text-slate-300 text-[10px] tracking-wider"><th class="p-2.5">Team</th><th class="p-2.5 text-center">P</th><th class="p-2.5 text-center text-emerald-400">W</th><th class="p-2.5 text-center text-red-400">L</th><th class="p-2.5 text-center text-amber-400">PTS</th><th class="p-2.5 text-right">NRR</th></tr></thead>
-                    <tbody id="pt-body"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+        <!-- LOGIN CARD -->
+        <div id="login-card" class="ios-glass rounded-[40px] p-7 sm:p-8 relative overflow-hidden transition-all duration-500">
+            <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-56 h-24 bg-white/15 blur-2xl rounded-full pointer-events-none"></div>
 
-    <!-- 6. PRO BROADCAST ARENA (ZERO CUT-OFF FLUID MOBILE LAYOUT) -->
-    <div id="arena" class="screen p-1.5 sm:p-4 max-w-5xl mx-auto w-full pt-1.5 justify-between">
-        
-        <!-- Top Score HUD -->
-        <div id="arena-banner" class="glass border-b-2 border-amber-500/80 rounded-2xl px-2.5 py-2 sm:p-4 mb-1.5 flex justify-between items-center bg-gradient-to-b from-slate-900 to-[#020617] gap-1">
-            <!-- Batting Team -->
-            <div class="w-[34%] min-w-0 text-left">
-                <div class="flex items-center gap-1 mb-0.5">
-                    <svg class="w-3 h-3 text-amber-400 shrink-0"><use href="#icon-bat"></use></svg>
-                    <span class="text-[9px] sm:text-xs text-amber-400 font-extrabold uppercase tracking-wider truncate" id="ui-bat-team">BAT</span>
+            <div class="flex flex-col items-center text-center">
+                <div class="relative group cursor-pointer" onclick="window.pulseDynamicIsland('Studio Camera Ready')">
+                    <div class="absolute -inset-1 bg-gradient-to-tr from-amber-500 via-rose-500 to-indigo-500 rounded-[24px] blur opacity-50 group-hover:opacity-80 transition duration-500"></div>
+                    <div class="relative w-20 h-20 rounded-[22px] bg-gradient-to-b from-zinc-800 to-black p-[1px] shadow-2xl">
+                        <div class="w-full h-full bg-gradient-to-br from-zinc-900 via-black to-zinc-950 rounded-[21px] flex flex-col items-center justify-center relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-tr from-amber-500/15 via-transparent to-rose-500/20"></div>
+                            <i class="fa-solid fa-clapperboard text-2xl bg-gradient-to-r from-amber-300 via-amber-400 to-rose-400 bg-clip-text text-transparent drop-shadow"></i>
+                            <span class="text-[8px] font-bold tracking-[0.25em] text-white/60 mt-1">4K RAW</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="text-3xl sm:text-6xl font-bold text-white score-font truncate" id="ui-score">0<span class="text-xl sm:text-4xl text-slate-400">/0</span></div>
-                <div class="text-[8px] sm:text-[10px] text-slate-400 font-semibold truncate">CRR <span id="ui-crr" class="text-emerald-400 font-mono-num font-bold">0.00</span></div>
-            </div>
 
-            <!-- Center Overs & Ball Counter -->
-            <div class="w-[32%] min-w-0 text-center flex flex-col items-center shrink-0">
-                <span id="ui-format-badge" class="text-slate-950 font-extrabold text-[8px] sm:text-[10px] uppercase bg-amber-400 px-1.5 py-0.5 rounded tracking-wider mb-0.5 whitespace-nowrap">T20 • INN 1</span>
-                <div class="text-sm sm:text-2xl font-bold text-white uppercase score-font tracking-wider leading-none whitespace-nowrap">
-                    OV <span id="ui-overs" class="text-blue-400 font-mono-num text-xs sm:text-xl">0.0</span><span class="text-slate-500 text-[10px] sm:text-sm font-mono-num" id="ui-max-overs">/5</span>
+                <div class="mt-5">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[10px] font-semibold tracking-widest uppercase bg-white/5 border border-white/10 text-amber-300/90 mb-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> Step 01 • Access Portal
+                    </span>
+                    <h1 class="font-display text-3xl font-extrabold tracking-tight text-white">UR STUDIO</h1>
+                    <p class="text-xs text-zinc-400 mt-1 font-normal">Cinematic Production & Director's Suite</p>
                 </div>
-                <div id="ui-balls-count" class="text-[8px] sm:text-[9px] font-mono-num text-slate-400 mt-0.5 whitespace-nowrap">Balls: 0/30</div>
             </div>
 
-            <!-- Bowling Team & Target -->
-            <div class="w-[34%] min-w-0 text-right">
-                <div class="flex items-center justify-end gap-1 mb-0.5">
-                    <span class="text-[9px] sm:text-xs text-red-400 font-extrabold uppercase tracking-wider truncate" id="ui-bowl-team">BOWL</span>
-                    <span class="cricket-ball-dot shrink-0"></span>
+            <!-- Tab Switcher -->
+            <div class="mt-6 bg-black/40 p-1 rounded-2xl border border-white/5 flex items-center relative">
+                <button id="tab-quick" onclick="window.switchAuthTab('quick')" class="flex-1 py-2 text-xs font-semibold rounded-xl bg-white/15 text-white shadow-sm transition-all duration-300">Google Auth</button>
+                <button id="tab-pass" onclick="window.switchAuthTab('pass')" class="flex-1 py-2 text-xs font-semibold rounded-xl text-zinc-400 hover:text-white transition-all duration-300">Studio ID</button>
+            </div>
+
+            <!-- Quick / Google Login View -->
+            <div id="view-quick" class="mt-6 space-y-3.5 transition-all duration-300">
+                <!-- REAL GOOGLE LOGIN BUTTON -->
+                <button id="google-login-btn" onclick="window.handleGoogleLogin()" class="ios-btn w-full py-3.5 px-5 rounded-2xl bg-white text-zinc-950 font-semibold text-sm flex items-center justify-center gap-3 shadow-[0_10px_25px_-5px_rgba(255,255,255,0.25)] hover:bg-zinc-100 relative overflow-hidden group">
+                    <svg class="w-5 h-5 shrink-0 transition-transform duration-300 group-hover:scale-110" viewBox="0 0 24 24">
+                        <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
+                        <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
+                        <path fill="#FBBC05" d="M5.3 14.8c-.2-.8-.4-1.6-.4-2.5s.2-1.7.4-2.5L1.6 7C.6 9 0 11.2 0 13.5s.6 4.5 1.6 6.5l3.7-2.9z" transform="translate(0 -1.2)"/>
+                        <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5l-3.7 2.8C3.5 19.9 7.4 23 12 23z"/>
+                    </svg>
+                    <span id="google-btn-text" class="tracking-tight">Continue with Google</span>
+                </button>
+
+                <div class="pt-3 grid grid-cols-3 gap-2 text-center">
+                    <div class="p-2.5 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+                        <i class="fa-solid fa-shield-halved text-amber-400 text-xs mb-1"></i>
+                        <p class="text-[10px] text-zinc-400 font-medium">Secure Auth</p>
+                    </div>
+                    <div class="p-2.5 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+                        <i class="fa-solid fa-cloud-arrow-up text-rose-400 text-xs mb-1"></i>
+                        <p class="text-[10px] text-zinc-400 font-medium">Cloud Sync</p>
+                    </div>
+                    <div class="p-2.5 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+                        <i class="fa-solid fa-wand-magic-sparkles text-indigo-400 text-xs mb-1"></i>
+                        <p class="text-[10px] text-zinc-400 font-medium">Real-time</p>
+                    </div>
                 </div>
-                <div class="text-[8px] sm:text-[10px] font-bold text-slate-400 uppercase whitespace-nowrap">Target: <span class="text-amber-400 text-lg sm:text-3xl font-bold score-font align-middle" id="ui-target">--</span></div>
-                <div id="ui-test-trail" class="text-[8px] sm:text-[10px] font-bold text-blue-300 uppercase tracking-wider truncate">1st Innings</div>
             </div>
-        </div>
 
-        <!-- Middle Info Grid: Batters, Bowler & Live Feed -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-1.5 sm:gap-2 mb-1.5">
-            <!-- Batters & Over Tracker -->
-            <div class="glass p-2 sm:p-3.5 rounded-2xl border-l-2 border-l-blue-500 flex flex-col justify-between min-w-0">
+            <!-- Studio ID Passcode View -->
+            <form id="view-pass" onsubmit="event.preventDefault(); window.pulseDynamicIsland('Studio ID Coming Soon')" class="mt-6 space-y-3.5 hidden">
                 <div>
-                    <!-- Fluid Grid Header for Batters -->
-                    <div class="grid grid-cols-12 items-center text-[8px] sm:text-[9px] uppercase text-slate-400 font-extrabold mb-1 px-1.5 tracking-wider">
-                        <div class="col-span-5 flex items-center gap-1"><svg class="w-2.5 h-2.5 text-blue-400 shrink-0"><use href="#icon-bat"></use></svg> <span>Batters</span></div>
-                        <div class="col-span-3 text-right font-mono-num">R(B)</div>
-                        <div class="col-span-2 text-center font-mono-num">4/6</div>
-                        <div class="col-span-2 text-right font-mono-num">SR</div>
-                    </div>
-                    <!-- Striker -->
-                    <div class="grid grid-cols-12 items-center mb-1 bg-blue-950/45 px-2 py-1.5 rounded-xl border border-blue-500/35">
-                        <div class="col-span-5 font-extrabold text-white text-[10px] sm:text-xs truncate flex items-center gap-1 min-w-0 pr-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"></span>
-                            <span id="ui-s-name" class="truncate">Striker</span>*
-                        </div>
-                        <div class="col-span-3 font-mono-num text-[10px] sm:text-xs font-extrabold text-white text-right" id="ui-s-score">0(0)</div>
-                        <div class="col-span-2 font-mono-num text-[10px] sm:text-xs text-emerald-400 text-center font-bold" id="ui-s-bounds">0/0</div>
-                        <div class="col-span-2 font-mono-num text-[10px] sm:text-xs text-blue-300 text-right font-semibold" id="ui-s-sr">0.0</div>
-                    </div>
-                    <!-- Non-Striker -->
-                    <div class="grid grid-cols-12 items-center px-2 py-1 rounded-xl bg-black/35">
-                        <div class="col-span-5 font-semibold text-slate-400 text-[10px] sm:text-xs pl-2.5 truncate min-w-0 pr-1" id="ui-ns-name">Non-Striker</div>
-                        <div class="col-span-3 font-mono-num text-[10px] sm:text-xs font-bold text-slate-300 text-right" id="ui-ns-score">0(0)</div>
-                        <div class="col-span-2 font-mono-num text-[10px] sm:text-xs text-slate-500 text-center font-bold" id="ui-ns-bounds">0/0</div>
-                        <div class="col-span-2 font-mono-num text-[10px] sm:text-xs text-slate-500 text-right font-semibold" id="ui-ns-sr">0.0</div>
+                    <label class="block text-[11px] font-medium text-zinc-400 mb-1.5 ml-1">STUDIO EMAIL</label>
+                    <div class="relative">
+                        <i class="fa-regular fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 text-xs"></i>
+                        <input type="email" placeholder="director@urstudio.film" class="ios-input w-full pl-10 pr-4 py-3 rounded-2xl text-sm text-white placeholder-zinc-500 focus:outline-none">
                     </div>
                 </div>
+                <button type="submit" class="ios-btn w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-rose-500 text-black font-bold text-sm shadow-lg shadow-amber-500/20">
+                    Unlock Workspace
+                </button>
+            </form>
 
-                <!-- This Over Pills -->
-                <div class="mt-1.5 pt-1.5 border-t border-white/10 flex items-center justify-between gap-1.5 min-w-0">
-                    <span class="text-[8px] sm:text-[9px] font-extrabold uppercase text-slate-400 tracking-wider shrink-0" id="ui-over-label">OVER 1</span>
-                    <div id="ui-over-balls" class="flex items-center gap-1 overflow-x-auto py-0.5 custom-scroll"></div>
-                </div>
-            </div>
-            
-            <!-- Bowler & Broadcast Ticker -->
-            <div class="glass p-2 sm:p-3.5 rounded-2xl border-l-2 border-l-red-500 flex flex-col justify-between min-w-0">
-                <div>
-                    <!-- Fluid Grid Header for Bowler -->
-                    <div class="grid grid-cols-12 items-center text-[8px] sm:text-[9px] uppercase text-slate-400 font-extrabold mb-1 px-1.5 tracking-wider">
-                        <div class="col-span-4 flex items-center gap-1"><span class="cricket-ball-dot" style="width:7px;height:7px;"></span> <span>Bowler</span></div>
-                        <div class="col-span-2 text-right font-mono-num">OV</div>
-                        <div class="col-span-2 text-right font-mono-num">B</div>
-                        <div class="col-span-1 text-right font-mono-num">R</div>
-                        <div class="col-span-1 text-right font-mono-num">W</div>
-                        <div class="col-span-2 text-right font-mono-num">ECO</div>
-                    </div>
-                    <div class="grid grid-cols-12 items-center bg-red-950/35 px-2 py-1.5 rounded-xl border border-red-500/30 mb-1.5">
-                        <div class="col-span-4 font-extrabold text-white text-[10px] sm:text-xs truncate pr-1" id="ui-b-name">Bowler</div>
-                        <div class="col-span-8 grid grid-cols-8 items-center font-mono-num text-[10px] sm:text-xs text-white font-bold" id="ui-b-stats">
-                            <span class="col-span-2 text-right text-amber-300">0.0</span>
-                            <span class="col-span-2 text-right text-slate-400">0</span>
-                            <span class="col-span-1 text-right">0</span>
-                            <span class="col-span-1 text-right text-red-400">0</span>
-                            <span class="col-span-2 text-right text-slate-300">0.0</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Live Commentary Box -->
-                <div class="bg-black/80 px-2.5 py-1.5 rounded-xl border border-white/5 mt-auto">
-                    <div class="text-[8px] sm:text-[9px] text-amber-400 font-extrabold uppercase tracking-widest mb-0.5 border-b border-white/10 pb-0.5 flex justify-between items-center gap-2">
-                        <span class="truncate"><i class="fa-solid fa-microphone-lines mr-1"></i> Live Voice & Feed</span>
-                        <span id="ui-last-clash" class="text-emerald-400 font-mono-num text-[8px] sm:text-[9px] shrink-0"></span>
-                    </div>
-                    <div class="h-10 sm:h-12 overflow-y-auto custom-scroll font-mono-num text-[10px] sm:text-[11px] text-slate-300 space-y-0.5 pt-0.5 leading-snug" id="ui-commentary">
-                        <div class="text-emerald-400">Match ready. Select your delivery!</div>
-                    </div>
-                </div>
+            <div class="mt-6 pt-5 border-t border-white/10 flex items-center justify-between text-[11px] text-zinc-400">
+                <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> Live Backend Connected</span>
             </div>
         </div>
 
-        <!-- Status Bar -->
-        <div id="action-msg" class="w-full text-center py-1.5 font-extrabold text-amber-400 uppercase text-[10px] sm:text-xs tracking-wider bg-slate-900/95 rounded-xl mb-1.5 border border-amber-500/30 px-2 truncate">
-            Select Your Move
-        </div>
-
-        <!-- 3D TACTILE MOBILE KEYPAD (0-6) -->
-        <div class="glass p-1.5 sm:p-3.5 rounded-2xl border-t border-white/15 bg-[#020617]/95">
-            <!-- Mobile: 4 top (0,1,2,3) + 3 bottom (4,5,6) | Desktop: 7 columns -->
-            <div class="grid grid-cols-12 sm:grid-cols-7 gap-1.5 sm:gap-2.5">
-                <button onclick="sendMove(0, this)" class="col-span-3 sm:col-span-1 btn-move text-slate-200 rounded-xl py-2 sm:py-3.5 flex flex-col items-center justify-center">
-                    <span class="text-2xl sm:text-4xl font-bold score-font">0</span>
-                    <span class="text-[7px] sm:text-[8px] font-extrabold uppercase tracking-wider text-slate-400">DEFEND</span>
-                </button>
-                <button onclick="sendMove(1, this)" class="col-span-3 sm:col-span-1 btn-move text-white rounded-xl py-2 sm:py-3.5 flex flex-col items-center justify-center">
-                    <span class="text-2xl sm:text-4xl font-bold score-font">1</span>
-                    <span class="text-[7px] sm:text-[8px] font-extrabold uppercase tracking-wider text-slate-400">SINGLE</span>
-                </button>
-                <button onclick="sendMove(2, this)" class="col-span-3 sm:col-span-1 btn-move text-white rounded-xl py-2 sm:py-3.5 flex flex-col items-center justify-center">
-                    <span class="text-2xl sm:text-4xl font-bold score-font">2</span>
-                    <span class="text-[7px] sm:text-[8px] font-extrabold uppercase tracking-wider text-slate-400">DOUBLE</span>
-                </button>
-                <button onclick="sendMove(3, this)" class="col-span-3 sm:col-span-1 btn-move text-white rounded-xl py-2 sm:py-3.5 flex flex-col items-center justify-center">
-                    <span class="text-2xl sm:text-4xl font-bold score-font">3</span>
-                    <span class="text-[7px] sm:text-[8px] font-extrabold uppercase tracking-wider text-slate-400">TRIPLE</span>
-                </button>
-                <button onclick="sendMove(4, this)" class="col-span-4 sm:col-span-1 btn-move text-emerald-400 rounded-xl py-2 sm:py-3.5 flex flex-col items-center justify-center border-emerald-500/30">
-                    <span class="text-2xl sm:text-4xl font-bold score-font">4</span>
-                    <span class="text-[7px] sm:text-[8px] font-extrabold uppercase tracking-wider text-emerald-400">FOUR</span>
-                </button>
-                <button onclick="sendMove(5, this)" class="col-span-4 sm:col-span-1 btn-move text-white rounded-xl py-2 sm:py-3.5 flex flex-col items-center justify-center">
-                    <span class="text-2xl sm:text-4xl font-bold score-font">5</span>
-                    <span class="text-[7px] sm:text-[8px] font-extrabold uppercase tracking-wider text-slate-400">FIVER</span>
-                </button>
-                <button onclick="sendMove(6, this)" class="col-span-4 sm:col-span-1 btn-move text-purple-400 rounded-xl py-2 sm:py-3.5 flex flex-col items-center justify-center border-purple-500/30">
-                    <span class="text-2xl sm:text-4xl font-bold score-font">6</span>
-                    <span class="text-[7px] sm:text-[8px] font-extrabold uppercase tracking-wider text-purple-400">SIXER</span>
-                </button>
+        <!-- AUTHENTICATED STATE CARD -->
+        <div id="authenticated-card" class="ios-glass rounded-[40px] p-8 text-center hidden transition-all duration-500">
+            <div class="w-24 h-24 mx-auto p-1 bg-gradient-to-tr from-amber-400 via-rose-500 to-indigo-500 rounded-full shadow-[0_0_30px_-5px_rgba(245,158,11,0.5)]">
+                <img id="auth-avatar" src="https://placehold.co/120x120/18181b/f59e0b?text=UR" alt="User Profile" class="w-full h-full rounded-full object-cover border-[3px] border-black">
             </div>
-        </div>
-    </div>
-
-    <!-- 7. DETAILED POST-MATCH SUMMARY & SCORECARD -->
-    <div id="summary-screen" class="screen p-2.5 sm:p-5 max-w-5xl mx-auto w-full pt-3">
-        <div class="glass p-4 sm:p-8 rounded-3xl border-t-2 border-amber-500">
-            <div class="text-center mb-4">
-                <svg class="w-12 h-12 sm:w-14 sm:h-14 mx-auto mb-2"><use href="#cricket-crest"></use></svg>
-                <h2 class="text-3xl sm:text-5xl font-bold uppercase text-white score-font tracking-wider">Official Match Report</h2>
-                <div class="text-xs sm:text-lg font-extrabold text-amber-400 uppercase tracking-wider mt-1 bg-amber-500/10 inline-block px-4 py-1.5 rounded-full border border-amber-500/30" id="summary-result">Match Completed</div>
-                <div id="summary-mom" class="text-[11px] sm:text-xs font-bold text-emerald-400 uppercase tracking-widest mt-2">Player of the Match: --</div>
+            <div class="mt-4">
+                <span class="px-3 py-0.5 rounded-full text-[10px] font-semibold tracking-widest uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    <i class="fa-solid fa-check mr-1"></i> Authenticated
+                </span>
+                <h2 id="auth-name" class="font-display text-2xl font-bold text-white mt-3">Welcome</h2>
+                <p id="auth-email" class="text-xs text-zinc-400 mt-1">director@gmail.com</p>
             </div>
 
-            <!-- Innings Score Pills -->
-            <div id="summary-innings-pills" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-4"></div>
-            
-            <!-- Detailed Full Team Scorecards -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-3.5 mb-5 text-left">
-                <div class="bg-black/60 p-3.5 rounded-2xl border border-white/10">
-                    <h3 class="text-blue-400 font-extrabold uppercase mb-2.5 border-b border-white/10 pb-1.5 text-xs flex justify-between"><span id="sum-t1-name">Team 1</span><span>Scorecard</span></h3>
-                    <div id="sum-t1-full" class="space-y-1.5 text-[11px] sm:text-xs font-mono-num text-slate-200 max-h-64 overflow-y-auto custom-scroll pr-1"></div>
+            <div class="mt-6 p-4 rounded-2xl bg-white/5 border border-white/10 text-left space-y-2">
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-zinc-400">Workspace</span>
+                    <span class="text-white font-semibold">UR STUDIO — Main Lot</span>
                 </div>
-                <div class="bg-black/60 p-3.5 rounded-2xl border border-white/10">
-                    <h3 class="text-red-400 font-extrabold uppercase mb-2.5 border-b border-white/10 pb-1.5 text-xs flex justify-between"><span id="sum-t2-name">Team 2</span><span>Scorecard</span></h3>
-                    <div id="sum-t2-full" class="space-y-1.5 text-[11px] sm:text-xs font-mono-num text-slate-200 max-h-64 overflow-y-auto custom-scroll pr-1"></div>
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-zinc-400">Firebase UID</span>
+                    <span id="auth-uid" class="text-amber-400 font-mono text-[10px] truncate max-w-[120px]">...</span>
                 </div>
             </div>
 
-            <div class="text-center">
-                <button onclick="nav('dashboard'); fetchResumes(); playSound('click')" class="btn-primary px-7 py-3.5 rounded-xl font-extrabold text-xs sm:text-sm text-white uppercase tracking-widest">
-                    <i class="fa-solid fa-house mr-1.5"></i> Return to Stadium Hub
+            <div class="mt-6 space-y-3">
+                <button onclick="window.pulseDynamicIsland('Loading Dashboard...')" class="ios-btn w-full py-3.5 px-5 rounded-2xl bg-white text-black font-semibold text-sm shadow-lg shadow-white/20">
+                    Enter Dashboard <i class="fa-solid fa-arrow-right ml-1.5 text-xs"></i>
+                </button>
+                <button onclick="window.handleSignOut()" class="ios-btn w-full py-2.5 rounded-2xl border border-white/10 bg-white/5 text-xs font-medium text-rose-400 hover:bg-rose-500/10 transition-colors">
+                    Sign Out
                 </button>
             </div>
         </div>
-    </div>
 
-    <!-- MODAL: BOWLER SELECTION -->
-    <div id="bowler-modal" style="display: none;" class="fixed inset-0 bg-black/90 backdrop-blur-md items-center justify-center p-3 sm:p-4 flex-col">
-        <div class="glass p-4 sm:p-6 rounded-3xl w-full max-w-md border-t-2 border-red-500 text-center">
-            <div class="flex items-center justify-center gap-2 mb-1">
-                <span class="cricket-ball-dot"></span>
-                <h3 class="text-2xl sm:text-3xl font-bold uppercase text-white score-font tracking-wider">Assign Next Bowler</h3>
-            </div>
-            <p class="text-[10px] text-slate-400 mb-3.5 uppercase font-bold tracking-wider">Consecutive overs by the same bowler are restricted</p>
-            <div id="bowler-list" class="space-y-2 max-h-72 overflow-y-auto pr-1 custom-scroll"></div>
-        </div>
-    </div>
+    </main>
 
-    <!-- MODAL: ICC BROADCAST STYLE PLAYER STATS POSTER -->
-    <div id="stats-modal" style="display: none;" class="fixed inset-0 bg-black/90 backdrop-blur-lg items-center justify-center p-2.5 sm:p-4 flex-col">
-        <div class="w-full max-w-md flex flex-col max-h-[94dvh]">
-            
-            <!-- Top Player Selector Bar -->
-            <div class="glass px-3 py-2 rounded-2xl mb-2 flex items-center justify-between gap-2 border border-pink-500/30">
-                <button onclick="cyclePlayerCard(-1)" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center shrink-0 transition">
-                    <i class="fa-solid fa-chevron-left text-xs"></i>
-                </button>
-                <div id="player-selector-pills" class="flex items-center gap-1.5 overflow-x-auto custom-scroll py-1 px-1"></div>
-                <button onclick="cyclePlayerCard(1)" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center shrink-0 transition">
-                    <i class="fa-solid fa-chevron-right text-xs"></i>
-                </button>
-                <button onclick="document.getElementById('stats-modal').style.display='none'; playSound('click')" class="w-8 h-8 rounded-xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-300 flex items-center justify-center shrink-0 ml-1">
-                    <i class="fa-solid fa-xmark text-sm"></i>
-                </button>
-            </div>
+    <!-- Footer -->
+    <footer class="w-full flex flex-col items-center pb-1 z-20">
+        <p class="text-[11px] text-zinc-500 mb-3">Secured by Google Firebase Auth</p>
+        <div class="w-36 h-1.5 bg-white/30 rounded-full"></div>
+    </footer>
 
-            <!-- ICC Broadcast Poster Card -->
-            <div class="icc-poster-card rounded-3xl p-5 sm:p-6 flex flex-col justify-between relative flex-1 overflow-y-auto custom-scroll">
-                
-                <!-- Background Giant Faded Text -->
-                <div class="absolute -bottom-6 -left-4 text-[110px] font-black uppercase text-white/[0.04] score-font select-none pointer-events-none tracking-widest leading-none" id="icc-bg-watermark">CRICKET</div>
-
-                <!-- Top Row: Flag + Player Name + ICC Logo -->
-                <div class="relative z-10 flex justify-between items-start gap-2 mb-4">
-                    <div>
-                        <!-- Flag Badge -->
-                        <div class="inline-flex items-center gap-1.5 mb-1.5 bg-black/40 px-2 py-0.5 rounded border border-white/15">
-                            <span class="w-4 h-3 inline-block rounded-[2px]" style="background: linear-gradient(to bottom, #f97316 33%, #ffffff 33%, #ffffff 66%, #16a34a 66%);"></span>
-                            <span id="icc-team-tag" class="text-[9px] font-extrabold uppercase tracking-widest text-white">INDIA</span>
-                        </div>
-                        <!-- Pink/Magenta Stacked Player Name -->
-                        <div id="icc-player-fname" class="text-2xl sm:text-3xl font-black uppercase tracking-tight text-pink-500 leading-none drop-shadow">ROHIT</div>
-                        <div id="icc-player-lname" class="text-3xl sm:text-4xl font-black uppercase tracking-tight text-pink-400 leading-none mt-0.5 drop-shadow">SHARMA</div>
-                        <div id="icc-player-sub" class="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.2em] text-white/90 mt-1.5">CAREER STATS • #1</div>
-                    </div>
-
-                    <!-- ICC Broadcast Watermark -->
-                    <div class="flex items-center gap-1.5 opacity-95 shrink-0">
-                        <svg class="w-6 h-6 text-white"><use href="#icon-ball"></use></svg>
-                        <span class="text-2xl sm:text-3xl font-black tracking-tighter text-white score-font">ICCPRO</span>
-                    </div>
-                </div>
-
-                <!-- Main Poster Body: Left Stats Stack + Right Player Figure -->
-                <div class="relative z-10 grid grid-cols-12 items-end gap-2 my-auto pt-1">
-                    <!-- Left Vertical Stats Stack (Exact Image Layout) -->
-                    <div class="col-span-7 sm:col-span-6 space-y-1.5 pr-2">
-                        <div class="icc-stat-row">
-                            <span class="icc-stat-label">RUNS</span>
-                            <span class="icc-stat-value" id="icc-stat-runs">0</span>
-                        </div>
-                        <div class="icc-stat-row">
-                            <span class="icc-stat-label">BALLS</span>
-                            <span class="icc-stat-value" id="icc-stat-balls">0</span>
-                        </div>
-                        <div class="icc-stat-row">
-                            <span class="icc-stat-label">FOURS</span>
-                            <span class="icc-stat-value" id="icc-stat-fours">0</span>
-                        </div>
-                        <div class="icc-stat-row">
-                            <span class="icc-stat-label">SIXES</span>
-                            <span class="icc-stat-value" id="icc-stat-sixes">0</span>
-                        </div>
-                        <div class="icc-stat-row">
-                            <span class="icc-stat-label">S/R</span>
-                            <span class="icc-stat-value" id="icc-stat-sr">0.0</span>
-                        </div>
-                    </div>
-
-                    <!-- Right Athlete Hero Graphic -->
-                    <div class="col-span-5 sm:col-span-6 flex flex-col items-center justify-end relative">
-                        <div id="icc-jersey-num" class="absolute top-2 right-1 text-6xl sm:text-7xl font-black score-font text-pink-400/20 select-none">#01</div>
-                        <svg class="w-40 h-56 sm:w-48 sm:h-64 drop-shadow-[0_12px_25px_rgba(0,0,0,0.85)] -mr-2"><use href="#batter-hero"></use></svg>
-                    </div>
-                </div>
-
-                <!-- Bottom Bowling & Matches Strip -->
-                <div class="relative z-10 mt-4 pt-3 border-t border-pink-500/30 grid grid-cols-4 gap-2 text-center bg-black/45 p-2.5 rounded-2xl backdrop-blur-sm">
-                    <div>
-                        <div class="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-widest text-pink-300">MATCHES</div>
-                        <div class="text-xl sm:text-2xl font-bold text-white score-font mt-0.5" id="icc-stat-mat">0</div>
-                    </div>
-                    <div class="border-l border-white/10">
-                        <div class="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-widest text-pink-300">WICKETS</div>
-                        <div class="text-xl sm:text-2xl font-bold text-emerald-400 score-font mt-0.5" id="icc-stat-wkts">0</div>
-                    </div>
-                    <div class="border-l border-white/10">
-                        <div class="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-widest text-pink-300">OVERS</div>
-                        <div class="text-xl sm:text-2xl font-bold text-amber-300 score-font mt-0.5" id="icc-stat-overs">0.0</div>
-                    </div>
-                    <div class="border-l border-white/10">
-                        <div class="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-widest text-pink-300">ECON</div>
-                        <div class="text-xl sm:text-2xl font-bold text-white score-font mt-0.5" id="icc-stat-eco">0.0</div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- FIREBASE AND JS LOGIC -->
+    <!-- UI Logic Script -->
     <script>
-        const fc = { apiKey: "AIzaSyAofevQrPWUKWxWAkBLtXl4f_lH5FjjPZE", authDomain: "hand-cricket-c2d70.firebaseapp.com", databaseURL: "https://hand-cricket-c2d70-default-rtdb.firebaseio.com", projectId: "hand-cricket-c2d70" };
-        firebase.initializeApp(fc); const auth = firebase.auth(); const db = firebase.database();
-        
-        let u=null, mRole=null, mId=null, mType=null; 
-        let squadData = { name: "India", p: [] };
-        let playerCareer = {};
-        let lastBallProcessed = -1; 
-        let calcLock = false;
-        let soundEnabled = true;
-        let selectedStatsIdx = 0;
-
-        // =========================================================================
-        // CLEAN STADIUM AUDIO: WOODEN BAT CRACK + SOFT CROWD CHEER + CLEAR VOICE
-        // =========================================================================
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        let audioCtx = null;
-        const sfx = { 
-            click: document.getElementById('sfx-click'), 
-            dot: document.getElementById('sfx-0'), 
-            single: document.getElementById('sfx-1'), 
-            run: document.getElementById('sfx-2'), 
-            four: document.getElementById('sfx-4'), 
-            six: document.getElementById('sfx-6'), 
-            wicket: document.getElementById('sfx-w') 
-        };
-
-        Object.values(sfx).forEach(el => { if(el) el.volume = 0.22; });
-
-        function initAudio() {
-            if(!audioCtx) audioCtx = new AudioCtx();
-            if(audioCtx.state === 'suspended') audioCtx.resume();
+        // Clock
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours() % 12 || 12;
+            let minutes = now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes();
+            document.getElementById('ios-clock').textContent = `${hours}:${minutes}`;
         }
+        updateClock();
+        setInterval(updateClock, 30000);
 
-        window.toggleAudio = function() {
-            soundEnabled = !soundEnabled;
-            let btn = document.getElementById('btn-sound-toggle');
-            if(soundEnabled) {
-                btn.className = "bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-400 px-2 py-1.5 rounded-lg text-[10px] font-bold uppercase flex items-center gap-1 transition";
-                btn.innerHTML = `<i class="fa-solid fa-volume-high"></i> <span class="hidden sm:inline">Voice ON</span>`;
-                speakCommentary("Commentary Box Live!");
-            } else {
-                if('speechSynthesis' in window) window.speechSynthesis.cancel();
-                btn.className = "bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-400 px-2 py-1.5 rounded-lg text-[10px] font-bold uppercase flex items-center gap-1 transition";
-                btn.innerHTML = `<i class="fa-solid fa-volume-xmark"></i> <span class="hidden sm:inline">Muted</span>`;
-            }
-        }
+        // Dynamic Island Helper
+        let islandTimeout;
+        window.pulseDynamicIsland = function(customMessage, customIcon = 'fa-sparkles', customColor = 'text-amber-400') {
+            const island = document.getElementById('dynamic-island');
+            const text = document.getElementById('island-text');
+            const icon = document.getElementById('island-icon');
 
-        function playBatCrack(power = 1) {
-            try {
-                initAudio();
-                let now = audioCtx.currentTime;
-                let osc = audioCtx.createOscillator();
-                let gain = audioCtx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(195 * power, now);
-                osc.frequency.exponentialRampToValueAtTime(48, now + 0.08);
-                gain.gain.setValueAtTime(0.28 * Math.min(power, 1.4), now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                osc.start(now); osc.stop(now + 0.08);
-            } catch(e) {}
-        }
+            clearTimeout(islandTimeout);
+            island.classList.add('expanded');
+            text.textContent = customMessage || 'UR Studio System';
+            icon.className = `fa-solid ${customIcon} text-xs ${customColor} animate-spin`;
 
-        function playCrowdCheer(duration = 2.0, intensity = 0.09) {
-            try {
-                initAudio();
-                let now = audioCtx.currentTime;
-                let bufferSize = audioCtx.sampleRate * duration;
-                let buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-                let data = buffer.getChannelData(0);
-                for (let i = 0; i < bufferSize; i++) {
-                    data[i] = Math.random() * 2 - 1;
-                }
-                let noise = audioCtx.createBufferSource();
-                noise.buffer = buffer;
-
-                let filter = audioCtx.createBiquadFilter();
-                filter.type = 'bandpass';
-                filter.frequency.setValueAtTime(700, now);
-                filter.frequency.linearRampToValueAtTime(1100, now + duration * 0.4);
-                filter.frequency.linearRampToValueAtTime(650, now + duration);
-                filter.Q.setValueAtTime(0.8, now);
-
-                let gain = audioCtx.createGain();
-                gain.gain.setValueAtTime(0.01, now);
-                gain.gain.linearRampToValueAtTime(intensity, now + 0.2);
-                gain.gain.setValueAtTime(intensity * 0.75, now + duration * 0.6);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
-
-                noise.connect(filter);
-                filter.connect(gain);
-                gain.connect(audioCtx.destination);
-                noise.start(now);
-                noise.stop(now + duration);
-            } catch(e) {}
-        }
-
-        function playWicketStumps() {
-            try {
-                initAudio();
-                let now = audioCtx.currentTime;
-                [310, 460, 240].forEach((f, idx) => {
-                    let osc = audioCtx.createOscillator();
-                    let gain = audioCtx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(f, now + idx * 0.045);
-                    gain.gain.setValueAtTime(0.22, now + idx * 0.045);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.045 + 0.07);
-                    osc.connect(gain); gain.connect(audioCtx.destination);
-                    osc.start(now + idx * 0.045); osc.stop(now + idx * 0.045 + 0.07);
-                });
-            } catch(e) {}
-        }
-
-        const voiceLines = {
-            six: [
-                "Chhakka aaya! Chhakka aaya! Massive Sixer!",
-                "6 aaya! Huuuuge Six! Gend seedha stands me!",
-                "Bada shot! Chhakka aaya! Maximum 6 runs!",
-                "Boom! 6 runs! Out of the park!"
-            ],
-            four: [
-                "Chauka aaya! Cracking Four runs!",
-                "4 aaya! Goli ki raftaar se gend boundary ke paar!",
-                "Shandaar Chauka! Super shot for 4!",
-                "Four runs! Straight down the ground!"
-            ],
-            wicket: [
-                "Out! Clean Bowled! Wicket gir gaya!",
-                "Wicket aaya! Dande udd gaye! Big blow!",
-                "Gone! Out ho gaya! What a delivery!",
-                "Howzzat! Wicket down!"
-            ],
-            five: ["5 runs! Shandaar running aur 5 run mile!"],
-            three: ["3 runs! Tezi se bhaage dono batters, 3 run poore!"],
-            two: ["2 runs! Good running between the wickets, double aaya!"],
-            single: ["1 run! Halka sa push kiya aur single liya."],
-            dot: ["Dot ball! Koi run nahi, solid defense."]
-        };
-
-        function speakCommentary(text, pitch = 1.05, rate = 1.05) {
-            if(!soundEnabled || !('speechSynthesis' in window)) return;
-            try {
-                window.speechSynthesis.cancel();
+            islandTimeout = setTimeout(() => {
+                island.classList.remove('expanded');
                 setTimeout(() => {
-                    let utter = new SpeechSynthesisUtterance(text);
-                    let voices = window.speechSynthesis.getVoices();
-                    let indVoice = voices.find(v => v.lang.includes('en-IN') || v.lang.includes('hi-IN')) || voices.find(v => v.lang.includes('en'));
-                    if(indVoice) utter.voice = indVoice;
-                    utter.pitch = pitch;
-                    utter.rate = rate;
-                    utter.volume = 1.0;
-                    window.speechSynthesis.speak(utter);
-                }, 90);
-            } catch(e) {}
+                    text.textContent = 'UR Studio';
+                    icon.className = 'fa-solid fa-video text-[10px] text-amber-400/90';
+                }, 400); // Wait for shrink animation before resetting text
+            }, 3000);
         }
 
-        function pickRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-
-        function playSound(type) { 
-            if(!soundEnabled) return;
-            try { 
-                initAudio();
-                if(type === 'click') {
-                    let osc = audioCtx.createOscillator();
-                    let g = audioCtx.createGain();
-                    osc.type = 'sine'; osc.frequency.setValueAtTime(540, audioCtx.currentTime);
-                    g.gain.setValueAtTime(0.06, audioCtx.currentTime);
-                    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
-                    osc.connect(g); g.connect(audioCtx.destination);
-                    osc.start(); osc.stop(audioCtx.currentTime + 0.04);
-                } 
-                else if(type === 'six') {
-                    playBatCrack(1.4);
-                    playCrowdCheer(2.6, 0.11);
-                    if(sfx.six) { sfx.six.currentTime = 0; sfx.six.play().catch(()=>{}); }
-                    speakCommentary(pickRandom(voiceLines.six), 1.15, 1.04);
-                }
-                else if(type === 'four') {
-                    playBatCrack(1.25);
-                    playCrowdCheer(2.0, 0.09);
-                    if(sfx.four) { sfx.four.currentTime = 0; sfx.four.play().catch(()=>{}); }
-                    speakCommentary(pickRandom(voiceLines.four), 1.12, 1.06);
-                }
-                else if(type === 'wicket') {
-                    playWicketStumps();
-                    playCrowdCheer(2.2, 0.10);
-                    speakCommentary(pickRandom(voiceLines.wicket), 0.95, 1.04);
-                }
-                else if(type === 'five') {
-                    playBatCrack(1.1);
-                    playCrowdCheer(1.4, 0.07);
-                    speakCommentary(pickRandom(voiceLines.five), 1.08, 1.08);
-                }
-                else if(type === 'three') {
-                    playBatCrack(1.05);
-                    playCrowdCheer(1.2, 0.06);
-                    speakCommentary(pickRandom(voiceLines.three), 1.06, 1.08);
-                }
-                else if(type === 'two') {
-                    playBatCrack(1.0);
-                    playCrowdCheer(1.0, 0.05);
-                    speakCommentary(pickRandom(voiceLines.two), 1.04, 1.08);
-                }
-                else if(type === 'single') {
-                    playBatCrack(0.85);
-                    speakCommentary(pickRandom(voiceLines.single), 1.0, 1.1);
-                }
-                else if(type === 'dot') {
-                    playBatCrack(0.55);
-                    speakCommentary(pickRandom(voiceLines.dot), 0.96, 1.1);
-                }
-            } catch(e) {} 
+        // Tab Switcher
+        window.switchAuthTab = function(tab) {
+            const quickTab = document.getElementById('tab-quick');
+            const passTab = document.getElementById('tab-pass');
+            if (tab === 'quick') {
+                quickTab.className = 'flex-1 py-2 text-xs font-semibold rounded-xl bg-white/15 text-white shadow-sm transition-all';
+                passTab.className = 'flex-1 py-2 text-xs font-semibold rounded-xl text-zinc-400 hover:text-white transition-all';
+                document.getElementById('view-quick').classList.remove('hidden');
+                document.getElementById('view-pass').classList.add('hidden');
+            } else {
+                passTab.className = 'flex-1 py-2 text-xs font-semibold rounded-xl bg-white/15 text-white shadow-sm transition-all';
+                quickTab.className = 'flex-1 py-2 text-xs font-semibold rounded-xl text-zinc-400 hover:text-white transition-all';
+                document.getElementById('view-pass').classList.remove('hidden');
+                document.getElementById('view-quick').classList.add('hidden');
+            }
         }
+    </script>
 
-        // SQUAD INPUTS
-        const pInp = document.getElementById('player-inputs');
-        const defaultNames = ["Rohit Sharma", "Virat Kohli", "Shubman Gill", "Suryakumar Yadav", "Rishabh Pant", "Hardik Pandya", "Ravindra Jadeja", "R. Ashwin", "Jasprit Bumrah", "Mohammed Shami", "Arshdeep Singh"];
-        for(let i=1; i<=11; i++) {
-            pInp.innerHTML += `<div class="flex items-center bg-black/60 border border-white/10 rounded-xl overflow-hidden"><div class="bg-white/5 px-3 py-2.5 font-mono-num text-xs font-extrabold text-amber-400 w-9 text-center border-r border-white/10">${i}</div><input type="text" id="sq-${i}" value="${defaultNames[i-1]}" placeholder="Player ${i}" class="w-full bg-transparent text-white px-3 py-2.5 text-xs outline-none font-bold uppercase"></div>`;
-        }
+    <!-- FIREBASE INTEGRATION SCRIPT -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-        const screens = ['login', 'dashboard', 'match-config', 'tourney-config', 'lobby', 'arena', 'squad-builder', 'summary-screen'];
-        function nav(id) { 
-            screens.forEach(s => { let el = document.getElementById(s); if(el) el.classList.remove('active-screen'); }); 
-            let target = document.getElementById(id);
-            if(target) target.classList.add('active-screen'); 
-        }
-        
-        function login() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
-        
-        auth.onAuthStateChanged(user => { 
-            if(user) { 
-                u = user; document.getElementById('nav-user').innerText = u.displayName.split(" ")[0]; 
-                let pic = document.getElementById('user-profile-pic'); if(pic){ pic.src = u.photoURL; pic.style.display = 'block'; }
+        // Your Exact Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyClLSLmdoz5PHVVJrxkoqZ02Xmm-nwsNXQ",
+            authDomain: "urstudio-f341c.firebaseapp.com",
+            projectId: "urstudio-f341c",
+            storageBucket: "urstudio-f341c.firebasestorage.app",
+            messagingSenderId: "1017863212287",
+            appId: "1:1017863212287:web:2af7564d1aec2f02e310ca"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        const btnText = document.getElementById('google-btn-text');
+        const loginCard = document.getElementById('login-card');
+        const authCard = document.getElementById('authenticated-card');
+
+        // Handle Google Sign In
+        window.handleGoogleLogin = async () => {
+            try {
+                btnText.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Connecting...';
+                window.pulseDynamicIsland('Contacting Google...', 'fa-circle-notch');
                 
-                let localSquad = localStorage.getItem('savedSquad');
-                if(localSquad) { squadData = JSON.parse(localSquad); fillSquadUI(); }
+                // Trigger Real OAuth Popup
+                await signInWithPopup(auth, provider);
+                
+                // Note: The UI updates automatically via the onAuthStateChanged listener below
+            } catch (error) {
+                console.error("Firebase Login Error:", error);
+                btnText.textContent = 'Continue with Google';
+                window.pulseDynamicIsland('Auth Cancelled or Failed', 'fa-triangle-exclamation', 'text-rose-500');
+            }
+        };
 
-                db.ref('users/'+u.uid).on('value', snap => {
-                    let d = snap.val() || { stats: {p:0, w:0, l:0}, team: null, career: {} };
-                    document.getElementById('stat-p').innerText = d.stats?.p || 0; 
-                    document.getElementById('stat-w').innerText = d.stats?.w || 0; 
-                    document.getElementById('stat-l').innerText = d.stats?.l || 0;
-                    playerCareer = d.career || {};
-                    if(d.team) { squadData = d.team; localStorage.setItem('savedSquad', JSON.stringify(squadData)); fillSquadUI(); }
-                });
+        // Handle Sign Out
+        window.handleSignOut = async () => {
+            try {
+                await signOut(auth);
+                window.pulseDynamicIsland('Signed Out Successfully', 'fa-check', 'text-emerald-400');
+            } catch (error) {
+                console.error("Sign Out Error:", error);
+            }
+        };
 
-                nav('dashboard'); fetchResumes(); 
-            } else { nav('login'); } 
+        // Listen for Authentication State Changes (Persists login on page refresh)
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in
+                console.log("Logged in user:", user);
+                
+                // Update UI with Real Google Data
+                document.getElementById('auth-name').textContent = user.displayName || 'Director';
+                document.getElementById('auth-email').textContent = user.email;
+                document.getElementById('auth-uid').textContent = user.uid;
+                
+                // Use user's Google profile pic, or fallback if none
+                if (user.photoURL) {
+                    document.getElementById('auth-avatar').src = user.photoURL;
+                }
+
+                // Switch Cards
+                loginCard.classList.add('hidden');
+                authCard.classList.remove('hidden');
+                
+                window.pulseDynamicIsland(`Welcome, ${user.displayName?.split(' ')[0] || 'Director'}`, 'fa-check', 'text-emerald-400');
+            } else {
+                // User is signed out
+                loginCard.classList.remove('hidden');
+                authCard.classList.add('hidden');
+                btnText.textContent = 'Continue with Google';
+            }
         });
-
-        function fillSquadUI() {
-            document.getElementById('stat-team-name').innerText = squadData.name;
-            document.getElementById('team-name').value = squadData.name;
-            for(let i=1; i<=11; i++) { if(squadData.p[i-1]) document.getElementById(`sq-${i}`).value = squadData.p[i-1]; }
-        }
-
-        // =========================================================================
-        // ICC BROADCAST POSTER PLAYER STATS VIEWER
-        // =========================================================================
-        window.openPlayerStatsModal = function(startIndex = 0) {
-            selectedStatsIdx = startIndex;
-            renderPlayerPoster(selectedStatsIdx);
-            document.getElementById('stats-modal').style.display = 'flex';
-        }
-
-        window.cyclePlayerCard = function(dir) {
-            playSound('click');
-            selectedStatsIdx = (selectedStatsIdx + dir + 11) % 11;
-            renderPlayerPoster(selectedStatsIdx);
-        }
-
-        window.selectPlayerCard = function(idx) {
-            playSound('click');
-            selectedStatsIdx = idx;
-            renderPlayerPoster(selectedStatsIdx);
-        }
-
-        function renderPlayerPoster(idx) {
-            let list = (squadData.p && squadData.p.length === 11) ? squadData.p : defaultNames;
-            
-            // Render top selector pills
-            let pillsHtml = '';
-            list.forEach((pName, i) => {
-                let shortName = pName.trim().split(' ')[0] || `P${i+1}`;
-                let activeCls = (i === idx) ? 'player-pill-active' : 'bg-slate-900/90 text-slate-300 border-white/10 hover:border-pink-400/50';
-                pillsHtml += `<button id="stat-pill-${i}" onclick="selectPlayerCard(${i})" class="px-2.5 py-1 rounded-xl border text-[10px] font-extrabold uppercase tracking-wider shrink-0 transition ${activeCls}">${i+1}. ${shortName}</button>`;
-            });
-            let pillContainer = document.getElementById('player-selector-pills');
-            pillContainer.innerHTML = pillsHtml;
-            let activePill = document.getElementById(`stat-pill-${idx}`);
-            if(activePill) activePill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-
-            // Parse Player Name into First & Last Name for Broadcast Typography
-            let fullName = (list[idx] || `Player ${idx+1}`).trim().toUpperCase();
-            let parts = fullName.split(/\s+/);
-            let fName = parts[0] || fullName;
-            let lName = parts.length > 1 ? parts.slice(1).join(' ') : 'CRICKET PRO';
-
-            let key = fullName.replace(/[.#$/[\]]/g, "_");
-            let st = playerCareer[key] || { m:0, r:0, b:0, f4:0, s6:0, w:0, bb:0, br:0 };
-            let sr = st.b > 0 ? ((st.r / st.b)*100).toFixed(1) : '0.0';
-            let ovs = `${Math.floor((st.bb||0)/6)}.${(st.bb||0)%6}`;
-            let eco = st.bb > 0 ? ((st.br / st.bb)*6).toFixed(1) : '0.0';
-
-            document.getElementById('icc-team-tag').innerText = (squadData.name || 'INDIA').toUpperCase();
-            document.getElementById('icc-player-fname').innerText = fName;
-            document.getElementById('icc-player-lname').innerText = lName;
-            document.getElementById('icc-player-sub').innerText = `V ALL OPPONENTS • BATTING #${idx+1}`;
-            document.getElementById('icc-bg-watermark').innerText = lName;
-            document.getElementById('icc-jersey-num').innerText = `#${idx < 9 ? '0'+(idx+1) : (idx+1)}`;
-
-            document.getElementById('icc-stat-runs').innerText = st.r || 0;
-            document.getElementById('icc-stat-balls').innerText = st.b || 0;
-            document.getElementById('icc-stat-fours').innerText = st.f4 || 0;
-            document.getElementById('icc-stat-sixes').innerText = st.s6 || 0;
-            document.getElementById('icc-stat-sr').innerText = sr;
-
-            document.getElementById('icc-stat-mat').innerText = st.m || 0;
-            document.getElementById('icc-stat-wkts').innerText = st.w || 0;
-            document.getElementById('icc-stat-overs').innerText = ovs;
-            document.getElementById('icc-stat-eco').innerText = eco;
-        }
-
-        function prepSetup(type) { mType = type; mRole = null; nav('squad-builder'); }
-        
-        function saveSquadAndProceed() {
-            squadData.name = document.getElementById('team-name').value.trim() || "India";
-            squadData.p = [];
-            for(let i=1; i<=11; i++) squadData.p.push(document.getElementById(`sq-${i}`).value.trim() || `Player ${i}`);
-            
-            localStorage.setItem('savedSquad', JSON.stringify(squadData));
-            if(u) db.ref('users/'+u.uid+'/team').set(squadData);
-
-            if(mRole === 'join_prep') finishJoin();
-            else if(mType === 'match') nav('match-config');
-            else nav('tourney-config');
-        }
-
-        function hostMatch() {
-            mId = Math.random().toString(36).substring(2,7).toUpperCase(); mRole = 'p1';
-            let fmt = document.getElementById('m-format').value;
-            let ov = parseInt(document.getElementById('m-overs').value); 
-            let wk = parseInt(document.getElementById('m-wickets').value);
-            let hostRole = document.getElementById('m-role').value; 
-            let batRole = hostRole === 'bat' ? 'p1' : 'p2';
-            let totalInns = fmt === 'TEST' ? 4 : 2;
-            
-            let initSt = { r:0, b:0, f4:0, s6:0, bb:0, br:0, w:0 };
-            
-            db.ref('matches/'+mId).set({
-                type: 'match', status: 'waiting', 
-                set: { fmt: fmt, ov: ov, wk: wk, totalInns: totalInns }, 
-                p1: { uid: u.uid, name: u.displayName, team: squadData },
-                state: { 
-                    inn: 1, bat: batRole, scr: 0, wic: 0, bls: 0, trg: 0,
-                    innScores: { p1: 0, p2: 0 },
-                    innHistory: [{ inn: 1, bat: batRole, scr: 0, wic: 0, bls: 0 }],
-                    inn1data: { bat: batRole, scr: 0, wic: 0 }, 
-                    sIdx: 0, nsIdx: 1, bwIdx: 10, prevBw: -1, needBw: true, 
-                    st: { p1: Array(11).fill().map(()=>({...initSt})), p2: Array(11).fill().map(()=>({...initSt})) }, 
-                    sum: ['Start'], comm: [`${fmt} Match initialized. Waiting for opening bowler...`], 
-                    mov: { p1: -1, p2: -1 } 
-                }
-            }).then(() => { 
-                document.getElementById('lobby-code').innerText = mId; 
-                document.getElementById('tourney-ui').classList.add('hidden'); 
-                nav('lobby'); 
-                listenMatch(); 
-            });
-        }
-
-        function hostTourney() {
-            mId = Math.random().toString(36).substring(2,7).toUpperCase(); mRole='tHost';
-            db.ref('tournaments/'+mId).set({
-                status: 'waiting', set: { tQty: parseInt(document.getElementById('t-teams').value) },
-                teams: { [u.uid]: { name: squadData.name, p:0, w:0, l:0, pts:0, nrr:0, squad: squadData.p } }
-            }).then(()=> { document.getElementById('lobby-code').innerText = mId; document.getElementById('tourney-ui').classList.remove('hidden'); nav('lobby'); listenTourney(); });
-        }
-
-        function joinAction() {
-            let code = document.getElementById('join-input').value.toUpperCase().trim();
-            if(!code) return alert("Please enter a room code!");
-            db.ref('matches/'+code).once('value', s => {
-                if(s.exists()) {
-                    let d = s.val();
-                    if(d.status === 'waiting' && (!d.p2 || d.p2.uid === u.uid)) { 
-                        mId = code; mRole = 'join_prep'; mType = 'match'; nav('squad-builder'); 
-                    } else if(d.p1.uid === u.uid || (d.p2 && d.p2.uid === u.uid)) { 
-                        mId = code; mRole = (d.p1.uid === u.uid) ? 'p1' : 'p2'; mType = 'match'; 
-                        listenMatch(); 
-                    } else {
-                        alert("Room is already full!");
-                    }
-                } else {
-                    db.ref('tournaments/'+code).once('value', ts => {
-                        if(ts.exists() && ts.val().status === 'waiting') { mId = code; mRole = 'join_prep'; mType='tourney'; nav('squad-builder'); }
-                        else alert("Invalid Code or Room Full");
-                    });
-                }
-            });
-        }
-
-        function finishJoin() {
-            if(mType === 'match') { 
-                mRole = 'p2'; 
-                db.ref('matches/'+mId).update({ 
-                    status: 'playing', 
-                    p2: { uid: u.uid, name: u.displayName, team: squadData } 
-                }).then(() => {
-                    listenMatch(); 
-                }); 
-            } else { 
-                db.ref(`tournaments/${mId}/teams/${u.uid}`).set({ name: squadData.name, p:0, w:0, l:0, pts:0, nrr:0, squad: squadData.p }).then(()=> { listenTourney(); nav('lobby'); }); 
-            }
-        }
-
-        function fetchResumes() {
-            if(!u) return;
-            document.getElementById('resume-list').innerHTML = '<div class="text-slate-500">Scanning active rooms...</div>';
-            document.getElementById('history-list').innerHTML = '<div class="text-slate-500">Loading match history...</div>';
-            let p1Prom = db.ref('matches').orderByChild('p1/uid').equalTo(u.uid).once('value');
-            let p2Prom = db.ref('matches').orderByChild('p2/uid').equalTo(u.uid).once('value');
-            
-            Promise.all([p1Prom, p2Prom]).then(snaps => {
-                let activeH = '', pastH = '';
-                snaps.forEach(sn => {
-                    if(sn.exists()) {
-                        sn.forEach(c => {
-                            let d = c.val();
-                            let fmtBadge = d.set?.fmt || 'T20';
-                            if(d.status !== 'finished') {
-                                activeH += `<div class="w-full bg-slate-900/90 p-2.5 rounded-xl border border-white/10 hover:border-emerald-500/50 transition flex justify-between items-center gap-2">
-                                    <div class="min-w-0">
-                                        <div class="text-[9px] text-emerald-400 uppercase font-extrabold tracking-wider">${fmtBadge} • ROOM #${c.key}</div>
-                                        <div class="text-white font-bold uppercase text-xs mt-0.5 truncate">${d.p1.team.name} vs ${d.p2 ? d.p2.team.name : 'Waiting...'}</div>
-                                    </div>
-                                    <button onclick="resumeGame('${c.key}')" class="bg-emerald-600 hover:bg-emerald-500 px-3 py-1.5 rounded-lg font-extrabold text-white text-[10px] uppercase tracking-wider shrink-0">Resume</button>
-                                </div>`;
-                            } else {
-                                pastH += `<div class="w-full bg-slate-900/60 p-2.5 rounded-xl border border-white/5 hover:border-purple-500/40 transition flex justify-between items-center gap-2">
-                                    <div class="min-w-0">
-                                        <div class="text-[9px] text-purple-400 uppercase font-extrabold tracking-wider">${fmtBadge} • COMPLETED</div>
-                                        <div class="text-slate-200 font-bold uppercase text-xs mt-0.5 truncate">${d.p1.team.name} vs ${d.p2 ? d.p2.team.name : 'Team 2'}</div>
-                                    </div>
-                                    <button onclick="resumeGame('${c.key}')" class="bg-purple-500/15 border border-purple-500/40 text-purple-300 px-3 py-1.5 rounded-lg font-extrabold text-[10px] uppercase tracking-wider shrink-0">Report</button>
-                                </div>`;
-                            }
-                        });
-                    }
-                });
-                document.getElementById('resume-list').innerHTML = activeH || '<span class="text-slate-500 text-xs">No active matches found.</span>';
-                document.getElementById('history-list').innerHTML = pastH || '<span class="text-slate-500 text-xs">No completed matches yet.</span>';
-            });
-        }
-
-        window.resumeGame = function(id) { 
-            playSound('click'); mId = id; 
-            db.ref('matches/'+id).once('value', s => { 
-                if(!s.exists()) return;
-                let d = s.val(); mType = d.type; mRole = (d.p1.uid === u.uid) ? 'p1' : 'p2'; 
-                if(d.status === 'waiting') {
-                    document.getElementById('lobby-code').innerText = mId;
-                    nav('lobby');
-                }
-                listenMatch(); 
-            }); 
-        }
-
-        function listenMatch() {
-            lastBallProcessed = -1;
-            db.ref('matches/'+mId).off(); 
-            db.ref('matches/'+mId).on('value', snap => {
-                let m = snap.val(); 
-                if(!m) return;
-                
-                if(!m.state.mov) m.state.mov = { p1: -1, p2: -1 };
-                if(m.state.mov.p1 === undefined) m.state.mov.p1 = -1;
-                if(m.state.mov.p2 === undefined) m.state.mov.p2 = -1;
-
-                if(m.status === 'waiting' && m.p1 && m.p2) {
-                    db.ref('matches/'+mId).update({ status: 'playing' });
-                    return;
-                }
-
-                if(m.status === 'playing') {
-                    if(!document.getElementById('arena').classList.contains('active-screen')) {
-                        nav('arena');
-                    }
-                    
-                    if(mRole === 'p1' && !m.state.needBw && m.state.mov.p1 >= 0 && m.state.mov.p2 >= 0) {
-                        if(!calcLock) {
-                            calcLock = true;
-                            calcBall(m).finally(() => { calcLock = false; });
-                        }
-                        return;
-                    }
-                    
-                    if(m.state.bls !== lastBallProcessed) {
-                        if(lastBallProcessed !== -1 && m.state.bls > 0 && m.state.sum && m.state.sum.length > 0) {
-                            let lastRes = String(m.state.sum[m.state.sum.length-1]);
-                            if(lastRes === 'W') playSound('wicket'); 
-                            else if(lastRes === '6') playSound('six'); 
-                            else if(lastRes === '5') playSound('five'); 
-                            else if(lastRes === '4') playSound('four'); 
-                            else if(lastRes === '3') playSound('three'); 
-                            else if(lastRes === '2') playSound('two'); 
-                            else if(lastRes === '1') playSound('single'); 
-                            else if(lastRes === '0') playSound('dot');
-                        }
-                        lastBallProcessed = m.state.bls;
-                    }
-                    
-                    if(m.state.needBw) {
-                        let bwRole = m.state.bat === 'p1' ? 'p2' : 'p1';
-                        disableMoves(true);
-                        if(mRole === bwRole) { 
-                            showBowlerModal(m); 
-                            document.getElementById('action-msg').innerHTML = "<span class='text-amber-400 animate-pulse'>SELECT YOUR BOWLER FOR THIS OVER</span>";
-                        } else { 
-                            document.getElementById('bowler-modal').style.display = 'none'; 
-                            document.getElementById('action-msg').innerHTML = "<span class='text-slate-300 animate-pulse'>OPPONENT IS ASSIGNING BOWLER...</span>"; 
-                        }
-                    } else {
-                        document.getElementById('bowler-modal').style.display = 'none'; 
-                        if(m.state.mov[mRole] >= 0) {
-                            disableMoves(true);
-                            document.getElementById('action-msg').innerText = "MOVE LOCKED • WAITING FOR OPPONENT";
-                        } else {
-                            disableMoves(false);
-                            let roleTxt = (mRole === m.state.bat) ? "BATTING TURN • PICK SHOT (0-6)" : "BOWLING TURN • PICK DELIVERY (0-6)";
-                            document.getElementById('action-msg').innerText = roleTxt;
-                        }
-                    }
-                    renderScore(m);
-                }
-
-                if(m.status === 'finished') {
-                    document.getElementById('bowler-modal').style.display = 'none';
-                    nav('summary-screen'); 
-                    renderSummaryScreen(m);
-                    if(mRole === 'p1' && !m.statsUpdated) {
-                        let totP1 = (m.state.innScores?.p1 || 0);
-                        let totP2 = (m.state.innScores?.p2 || 0);
-                        if(totP1 !== totP2) {
-                            let p1Win = totP1 > totP2;
-                            updateUserAndPlayerStats(m.p1.uid, p1Win, m.p1.team.p, m.state.st.p1); 
-                            if(m.p2) updateUserAndPlayerStats(m.p2.uid, !p1Win, m.p2.team.p, m.state.st.p2); 
-                        }
-                        db.ref('matches/'+mId).update({statsUpdated: true});
-                    }
-                }
-            });
-        }
-
-        function updateUserAndPlayerStats(uid, isWin, playerNames, matchStats) {
-            let userRef = db.ref('users/'+uid);
-            userRef.once('value', s => { 
-                let d = s.val() || {};
-                let st = d.stats || {p:0, w:0, l:0};
-                st.p += 1; if(isWin) st.w += 1; else st.l += 1; 
-                
-                let career = d.career || {};
-                if(playerNames && matchStats) {
-                    playerNames.forEach((pName, i) => {
-                        let key = pName.toUpperCase().replace(/[.#$/[\]]/g, "_");
-                        if(!career[key]) career[key] = { m:0, r:0, b:0, f4:0, s6:0, w:0, bb:0, br:0 };
-                        career[key].m += 1;
-                        career[key].r += (matchStats[i]?.r || 0);
-                        career[key].b += (matchStats[i]?.b || 0);
-                        career[key].f4 += (matchStats[i]?.f4 || 0);
-                        career[key].s6 += (matchStats[i]?.s6 || 0);
-                        career[key].w += (matchStats[i]?.w || 0);
-                        career[key].bb += (matchStats[i]?.bb || 0);
-                        career[key].br += (matchStats[i]?.br || 0);
-                    });
-                }
-                userRef.update({ stats: st, career: career }); 
-            });
-        }
-
-        function listenTourney() {
-            document.getElementById('tourney-ui').classList.remove('hidden');
-            db.ref('tournaments/'+mId).on('value', snap => {
-                let t = snap.val(); if(!t) return;
-                let tCount = Object.keys(t.teams).length;
-                document.getElementById('lobby-status').innerHTML = `Waiting for players (${tCount}/${t.set.tQty} Joined)`;
-                let ptHtml = '';
-                Object.values(t.teams).sort((a,b)=> b.pts - a.pts || b.nrr - a.nrr).forEach(tm => {
-                    ptHtml += `<tr class="border-b border-white/5"><td class="p-2.5 text-white truncate">${tm.name}</td><td class="p-2.5 text-center font-mono-num">${tm.p}</td><td class="p-2.5 text-center font-mono-num text-emerald-400">${tm.w}</td><td class="p-2.5 text-center font-mono-num text-red-400">${tm.l}</td><td class="p-2.5 text-center font-mono-num text-amber-400 font-extrabold">${tm.pts}</td><td class="p-2.5 text-right font-mono-num text-slate-400">${tm.nrr.toFixed(3)}</td></tr>`;
-                });
-                document.getElementById('pt-body').innerHTML = ptHtml;
-            });
-        }
-        
-        function disableMoves(d) { 
-            document.querySelectorAll('.btn-move').forEach(b => { 
-                b.disabled = d; 
-                b.style.pointerEvents = d ? 'none' : 'auto'; 
-                b.style.opacity = d ? 0.35 : 1; 
-            }); 
-        }
-
-        window.sendMove = function(v, btnEl) {
-            if(btnEl && btnEl.disabled) return;
-            playSound('click');
-            document.querySelectorAll('.btn-move').forEach(b => b.classList.remove('selected-move'));
-            if(btnEl) btnEl.classList.add('selected-move');
-            document.getElementById('action-msg').innerText = "MOVE LOCKED • WAITING FOR OPPONENT";
-            disableMoves(true); 
-            db.ref(`matches/${mId}/state/mov/${mRole}`).set(v);
-        }
-
-        function calcBall(m) {
-            let s = m.state; 
-            let r1 = s.mov.p1; 
-            let r2 = s.mov.p2;
-            let btM = s.bat === 'p1' ? r1 : r2; 
-            let bwM = s.bat === 'p2' ? r1 : r2;
-            let bowlR = s.bat === 'p1' ? 'p2' : 'p1';
-            let res = ''; let out = false; let run = 0;
-
-            let btTeam = s.bat === 'p1' ? m.p1 : m.p2; 
-            let bwTeam = s.bat === 'p1' ? m.p2 : m.p1;
-            let btName = (btTeam && btTeam.team && btTeam.team.p[s.sIdx]) ? btTeam.team.p[s.sIdx] : "Batter"; 
-            let bwName = (bwTeam && bwTeam.team && bwTeam.team.p[s.bwIdx]) ? bwTeam.team.p[s.bwIdx] : "Bowler";
-            let commTxt = "";
-
-            s.needBw = false; 
-            if(!s.innScores) s.innScores = { p1: 0, p2: 0 };
-            if(!s.innHistory) s.innHistory = [];
-
-            s.lastClash = `BAT ${btM} vs BOWL ${bwM}`;
-
-            if(btM === 0 && bwM === 0) { 
-                res = '0'; 
-                commTxt = `<span class='text-slate-400'>${bwName} to ${btName}, 0 run. Defended solidly.</span>`; 
-            } else if(btM === bwM) { 
-                out = true; res = 'W'; 
-                commTxt = `<span class='text-red-400 font-bold'>WICKET! ${bwName} clean bowls ${btName} (Both picked ${btM})!</span>`; 
-            } else { 
-                run = btM; res = String(run); 
-                if(run===4) commTxt = `<span class='text-emerald-400 font-bold'>CHAUKA! 4 RUNS! ${btName} drives ${bwName} through the covers!</span>`;
-                else if(run===6) commTxt = `<span class='text-purple-400 font-bold'>CHHAKKA! 6 RUNS! ${btName} launches ${bwName} into the stands!</span>`;
-                else commTxt = `<span class='text-slate-200'>${bwName} to ${btName}, ${run} run(s).</span>`;
-            }
-
-            if(!s.sum || s.sum[0] === 'Start' || s.sum[0] === 'New Inn' || (s.bls % 6 === 0 && s.bls > 0)) {
-                s.sum = [];
-            }
-
-            s.bls++;
-            let strikerStat = s.st[s.bat][s.sIdx];
-            let bowlerStat = s.st[bowlR][s.bwIdx];
-            strikerStat.b = (strikerStat.b || 0) + 1; 
-            bowlerStat.bb = (bowlerStat.bb || 0) + 1;
-
-            let ovNum = Math.floor((s.bls - 1) / 6);
-            let ballInOv = ((s.bls - 1) % 6) + 1;
-            let ballLabel = `${ovNum}.${ballInOv}`;
-
-            if(out) {
-                s.wic++; 
-                bowlerStat.w = (bowlerStat.w || 0) + 1;
-                let nextBatterIdx = Math.max(s.sIdx, s.nsIdx) + 1;
-                if(nextBatterIdx <= 10) {
-                    s.sIdx = nextBatterIdx;
-                }
-            } else {
-                s.scr += run; 
-                s.innScores[s.bat] = (s.innScores[s.bat] || 0) + run;
-                strikerStat.r = (strikerStat.r || 0) + run; 
-                if(run === 4) strikerStat.f4 = (strikerStat.f4 || 0) + 1;
-                if(run === 6) strikerStat.s6 = (strikerStat.s6 || 0) + 1;
-                bowlerStat.br = (bowlerStat.br || 0) + run;
-                if(run % 2 !== 0) { 
-                    let t = s.sIdx; s.sIdx = s.nsIdx; s.nsIdx = t; 
-                } 
-            }
-            
-            s.sum.push(res);
-
-            if(!s.comm) s.comm = []; 
-            s.comm.unshift(`[${ballLabel}] ` + commTxt);
-            if(s.comm.length > 10) s.comm.pop();
-
-            s.innHistory[s.inn - 1] = { inn: s.inn, bat: s.bat, scr: s.scr, wic: s.wic, bls: s.bls };
-
-            let totalInns = m.set.totalInns || 2;
-            let isFinalInnings = (s.inn === totalInns);
-            let targetChased = (isFinalInnings && s.trg > 0 && s.scr >= s.trg);
-            let allOutOrOversDone = (s.wic >= m.set.wk || s.bls >= m.set.ov * 6);
-
-            let inningEnded = false;
-            
-            if(targetChased || allOutOrOversDone) {
-                inningEnded = true;
-                if(s.inn === 1) s.inn1data = { bat: s.bat, scr: s.scr, wic: s.wic };
-
-                if(s.inn < totalInns) {
-                    let nextInn = s.inn + 1;
-                    let nextBat = s.bat === 'p1' ? 'p2' : 'p1';
-                    let nextOther = nextBat === 'p1' ? 'p2' : 'p1';
-
-                    if(nextInn === totalInns) {
-                        let lead = (s.innScores[nextOther] || 0) - (s.innScores[nextBat] || 0);
-                        if(lead < 0) {
-                            s.mov = { p1: -1, p2: -1 };
-                            return db.ref('matches/'+mId).update({ status: 'finished', state: s });
-                        }
-                        s.trg = lead + 1;
-                    } else if(totalInns === 2 && nextInn === 2) {
-                        s.trg = s.scr + 1;
-                    } else {
-                        s.trg = 0;
-                    }
-
-                    s.inn = nextInn; s.scr = 0; s.wic = 0; s.bls = 0;
-                    s.sum = ['New Inn']; 
-                    s.comm.unshift(`<span class='text-amber-400 font-bold'>--- INNINGS ${nextInn} BEGINS ${s.trg > 0 ? '(TARGET: '+s.trg+')' : ''} ---</span>`);
-                    s.sIdx = 0; s.nsIdx = 1; s.bwIdx = 10; s.prevBw = -1; s.needBw = true; 
-                    s.bat = nextBat;
-                } else {
-                    s.mov = { p1: -1, p2: -1 };
-                    return db.ref('matches/'+mId).update({ status: 'finished', state: s });
-                }
-            }
-
-            if(!inningEnded && s.bls > 0 && s.bls % 6 === 0) {
-                let t = s.sIdx; s.sIdx = s.nsIdx; s.nsIdx = t; 
-                s.prevBw = s.bwIdx; 
-                s.needBw = true; 
-                s.comm.unshift(`<span class='text-blue-400 font-bold'>--- END OF OVER ${s.bls/6} (Score: ${s.scr}/${s.wic}) ---</span>`);
-            }
-
-            s.mov = { p1: -1, p2: -1 };
-            return db.ref(`matches/${mId}/state`).set(s);
-        }
-
-        function showBowlerModal(m) {
-            let bwTeamRole = m.state.bat === 'p1' ? 'p2' : 'p1';
-            let bwTeam = bwTeamRole === 'p1' ? m.p1 : m.p2;
-            if(!bwTeam || !bwTeam.team) return;
-
-            let html = '';
-            for(let i=0; i<11; i++) {
-                let pName = bwTeam.team.p[i] || `Player ${i+1}`;
-                let isPrev = (i === m.state.prevBw);
-                let bwStats = (m.state.st && m.state.st[bwTeamRole] && m.state.st[bwTeamRole][i]) ? m.state.st[bwTeamRole][i] : {bb:0, br:0, w:0};
-                let bBowled = bwStats.bb || 0;
-                let oversStr = `${Math.floor(bBowled/6)}.${bBowled%6} Ov • ${bwStats.br||0} R • ${bwStats.w||0} W`;
-                let disClass = isPrev ? 'opacity-40 cursor-not-allowed bg-red-950/30 border-red-500/40' : 'bg-slate-900 border-white/10 hover:border-amber-400';
-                let disBtn = isPrev ? 'disabled' : '';
-                let subInfo = isPrev ? '<span class="text-[9px] text-red-400 block mt-0.5 uppercase">Rested (Bowled Previous Over)</span>' : '';
-                
-                html += `<button onclick="setBowler(${i})" class="w-full p-2.5 sm:p-3 rounded-xl text-left border font-bold text-white transition ${disClass}" ${disBtn}>
-                            <div class="flex justify-between items-center gap-2">
-                                <div class="min-w-0">
-                                    <div class="text-xs uppercase font-extrabold truncate">${pName}</div>
-                                    <div class="text-[10px] font-mono-num text-slate-400">${oversStr}</div>
-                                </div>
-                                ${isPrev ? '' : '<span class="bg-amber-400 text-slate-950 text-[10px] font-extrabold px-3 py-1 rounded-lg shrink-0">BOWL</span>'}
-                            </div>
-                            ${subInfo}
-                         </button>`;
-            }
-            document.getElementById('bowler-list').innerHTML = html;
-            document.getElementById('bowler-modal').style.display = 'flex';
-        }
-
-        window.setBowler = function(idx) { 
-            playSound('click'); 
-            document.getElementById('bowler-modal').style.display = 'none';
-            db.ref(`matches/${mId}/state`).update({ bwIdx: idx, needBw: false }); 
-        }
-
-        function renderScore(m) {
-            let s = m.state; 
-            let bRole = s.bat; 
-            let bwRole = bRole === 'p1' ? 'p2' : 'p1';
-            let tBat = bRole === 'p1' ? m.p1 : m.p2; 
-            let tBw = bRole === 'p2' ? m.p1 : m.p2;
-            let fmt = m.set.fmt || 'T20';
-            
-            document.getElementById('ui-bat-team').innerText = (tBat?.team?.name || "Team 1"); 
-            document.getElementById('ui-bowl-team').innerText = (tBw?.team?.name || "Team 2");
-            document.getElementById('ui-format-badge').innerText = `${fmt} • INN ${s.inn}/${m.set.totalInns || 2}`;
-
-            document.getElementById('ui-score').innerHTML = `${s.scr}<span class="text-xl sm:text-4xl text-slate-400">/${s.wic}</span>`;
-            
-            let completedOvers = Math.floor(s.bls / 6);
-            let ballsInCurrentOver = s.bls % 6;
-            document.getElementById('ui-overs').innerText = `${completedOvers}.${ballsInCurrentOver}`;
-            document.getElementById('ui-max-overs').innerText = `/${m.set.ov}`;
-            document.getElementById('ui-balls-count').innerText = `Balls: ${s.bls}/${m.set.ov * 6}`;
-            
-            document.getElementById('ui-crr').innerText = s.bls > 0 ? ((s.scr / s.bls)*6).toFixed(2) : "0.00";
-            document.getElementById('ui-target').innerText = s.trg > 0 ? s.trg : '--';
-            document.getElementById('ui-last-clash').innerText = s.lastClash || '';
-
-            let totBat = (s.innScores && s.innScores[bRole]) || s.scr;
-            let totBowl = (s.innScores && s.innScores[bwRole]) || 0;
-            let diff = totBat - totBowl;
-            if(s.trg > 0) {
-                let remRuns = Math.max(0, s.trg - s.scr);
-                let remBalls = Math.max(0, (m.set.ov * 6) - s.bls);
-                document.getElementById('ui-test-trail').innerText = `Need ${remRuns} off ${remBalls}b`;
-            } else if(s.inn > 1) {
-                document.getElementById('ui-test-trail').innerText = diff >= 0 ? `Lead by ${diff} runs` : `Trail by ${Math.abs(diff)} runs`;
-            } else {
-                document.getElementById('ui-test-trail').innerText = `1st Innings`;
-            }
-
-            // BATTERS
-            let stS = (s.st && s.st[bRole] && s.st[bRole][s.sIdx]) ? s.st[bRole][s.sIdx] : {r:0, b:0, f4:0, s6:0}; 
-            let stNS = (s.st && s.st[bRole] && s.st[bRole][s.nsIdx]) ? s.st[bRole][s.nsIdx] : {r:0, b:0, f4:0, s6:0};
-            
-            document.getElementById('ui-s-name').innerText = tBat?.team?.p[s.sIdx] || `Batter ${s.sIdx+1}`;
-            document.getElementById('ui-ns-name').innerText = tBat?.team?.p[s.nsIdx] || `Batter ${s.nsIdx+1}`;
-            document.getElementById('ui-s-score').innerText = `${stS.r||0}(${stS.b||0})`; 
-            document.getElementById('ui-ns-score').innerText = `${stNS.r||0}(${stNS.b||0})`;
-            document.getElementById('ui-s-bounds').innerText = `${stS.f4||0}/${stS.s6||0}`;
-            document.getElementById('ui-ns-bounds').innerText = `${stNS.f4||0}/${stNS.s6||0}`;
-            document.getElementById('ui-s-sr').innerText = stS.b > 0 ? ((stS.r/stS.b)*100).toFixed(1) : "0.0";
-            document.getElementById('ui-ns-sr').innerText = stNS.b > 0 ? ((stNS.r/stNS.b)*100).toFixed(1) : "0.0";
-
-            // BOWLER
-            let bwS = (s.st && s.st[bwRole] && s.st[bwRole][s.bwIdx]) ? s.st[bwRole][s.bwIdx] : {bb:0, br:0, w:0};
-            let bBowled = bwS.bb || 0;
-            document.getElementById('ui-b-name').innerText = tBw?.team?.p[s.bwIdx] || 'Bowler';
-            let eco = bBowled > 0 ? (((bwS.br||0)/bBowled)*6).toFixed(1) : "0.0";
-            document.getElementById('ui-b-stats').innerHTML = `
-                <span class="col-span-2 text-right text-amber-300">${Math.floor(bBowled/6)}.${bBowled%6}</span>
-                <span class="col-span-2 text-right text-slate-400">${bBowled}</span>
-                <span class="col-span-1 text-right">${bwS.br||0}</span>
-                <span class="col-span-1 text-right text-red-400">${bwS.w||0}</span>
-                <span class="col-span-2 text-right text-slate-300">${eco}</span>`;
-
-            // THIS OVER BALL SLOTS
-            let curOverNo = (s.bls > 0 && s.bls % 6 === 0) ? (s.bls / 6) : (Math.floor(s.bls / 6) + 1);
-            document.getElementById('ui-over-label').innerText = `OVER ${curOverNo}`;
-
-            let validBalls = (s.sum && s.sum[0] !== 'Start' && s.sum[0] !== 'New Inn') ? s.sum : [];
-            let ballsH = '';
-            for(let i=0; i<6; i++) {
-                if(i < validBalls.length) {
-                    let b = validBalls[i];
-                    let bg = 'bg-slate-800 text-slate-200 border-white/15';
-                    if(b === 'W') bg = 'bg-red-600 text-white border-red-400';
-                    else if(b == 4) bg = 'bg-emerald-600 text-white border-emerald-400';
-                    else if(b == 6) bg = 'bg-purple-600 text-white border-purple-400';
-                    ballsH += `<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[9px] sm:text-[10px] font-mono-num font-extrabold border ${bg} shrink-0">${b}</span>`;
-                } else {
-                    ballsH += `<span class="w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[8px] sm:text-[9px] font-mono-num text-slate-600 border border-dashed border-slate-700 shrink-0">${i+1}</span>`;
-                }
-            }
-            document.getElementById('ui-over-balls').innerHTML = ballsH;
-
-            let commH = '';
-            if(s.comm && s.comm.length > 0) { s.comm.forEach(c => { commH += `<div>${c}</div>`; }); } 
-            document.getElementById('ui-commentary').innerHTML = commH;
-
-            if(s.mov[mRole] === -1 && !s.needBw) {
-                document.querySelectorAll('.btn-move').forEach(b => b.classList.remove('selected-move'));
-            }
-        }
-
-        function renderSummaryScreen(m) {
-            let s = m.state; 
-            let totP1 = (s.innScores && s.innScores.p1 !== undefined) ? s.innScores.p1 : (s.inn1data?.bat === 'p1' ? s.inn1data.scr : s.scr);
-            let totP2 = (s.innScores && s.innScores.p2 !== undefined) ? s.innScores.p2 : (s.inn1data?.bat === 'p2' ? s.inn1data.scr : s.scr);
-
-            document.getElementById('sum-t1-name').innerText = `${m.p1?.team?.name || "Team 1"} (Total: ${totP1})`;
-            document.getElementById('sum-t2-name').innerText = `${m.p2?.team?.name || "Team 2"} (Total: ${totP2})`;
-
-            let pillsH = '';
-            if(s.innHistory && s.innHistory.length > 0) {
-                s.innHistory.forEach(ih => {
-                    let tName = ih.bat === 'p1' ? (m.p1?.team?.name || 'Team 1') : (m.p2?.team?.name || 'Team 2');
-                    let ovStr = ih.bls !== undefined ? `(${Math.floor(ih.bls/6)}.${ih.bls%6} Ov)` : '';
-                    pillsH += `<div class="bg-black/50 px-3.5 py-2.5 rounded-xl border border-white/10 flex justify-between items-center">
-                        <span class="text-xs font-extrabold uppercase text-slate-300 truncate">Innings ${ih.inn} • <span class="text-amber-400">${tName}</span></span>
-                        <span class="text-xl sm:text-2xl font-bold text-white score-font shrink-0 ml-2">${ih.scr}/${ih.wic} <span class="text-[11px] font-mono-num text-slate-400">${ovStr}</span></span>
-                    </div>`;
-                });
-            }
-            document.getElementById('summary-innings-pills').innerHTML = pillsH;
-
-            let winMsg = "";
-            if(totP1 > totP2) {
-                winMsg = s.bat === 'p1' ? `${m.p1?.team?.name} WON BY ${m.set.wk - s.wic} WICKETS` : `${m.p1?.team?.name} WON BY ${totP1 - totP2} RUNS`;
-            } else if(totP2 > totP1) {
-                winMsg = s.bat === 'p2' ? `${m.p2?.team?.name} WON BY ${m.set.wk - s.wic} WICKETS` : `${m.p2?.team?.name} WON BY ${totP2 - totP1} RUNS`;
-            } else {
-                winMsg = "MATCH TIED";
-            }
-            document.getElementById('summary-result').innerText = winMsg;
-
-            let bestPlayer = { name: "N/A", pts: -1, desc: "" };
-            ['p1', 'p2'].forEach(role => {
-                let tm = role === 'p1' ? m.p1 : m.p2;
-                if(s.st && s.st[role] && tm && tm.team) {
-                    s.st[role].forEach((ps, idx) => {
-                        let pts = (ps.r || 0) + ((ps.w || 0) * 25);
-                        if(pts > bestPlayer.pts) {
-                            bestPlayer = { name: tm.team.p[idx], pts: pts, desc: `${ps.r||0}(${ps.b||0}) & ${ps.w||0} Wkts` };
-                        }
-                    });
-                }
-            });
-            document.getElementById('summary-mom').innerText = `Player of the Match: ${bestPlayer.name} (${bestPlayer.desc})`;
-
-            function getFullCard(teamUidRole) {
-                if(!s.st || !s.st[teamUidRole]) return "";
-                let stats = s.st[teamUidRole]; 
-                let teamInfo = teamUidRole === 'p1' ? m.p1 : m.p2;
-                if(!teamInfo || !teamInfo.team) return "";
-
-                let html = `<div class="text-[10px] text-amber-400 uppercase font-extrabold mb-1 tracking-wider">Batting Performance</div>`;
-                let anyBat = false;
-                stats.forEach((v, i) => {
-                    if((v.b || 0) > 0 || (v.r || 0) > 0) {
-                        anyBat = true;
-                        let sr = v.b > 0 ? ((v.r/v.b)*100).toFixed(0) : 0;
-                        html += `<div class="flex justify-between border-b border-white/5 py-1 gap-2">
-                            <span class="text-white font-bold font-sans truncate">${teamInfo.team.p[i] || 'P'+(i+1)}</span>
-                            <span class="text-blue-300 shrink-0">${v.r||0}(${v.b||0}) • 4s:${v.f4||0} 6s:${v.s6||0} • SR:${sr}</span>
-                        </div>`;
-                    }
-                });
-                if(!anyBat) html += `<div class="text-slate-500 text-[11px] py-1">Yet to bat</div>`;
-
-                html += `<div class="text-[10px] text-red-400 uppercase font-extrabold mt-3 mb-1 tracking-wider">Bowling Figures</div>`;
-                let anyBowl = false;
-                stats.forEach((v, i) => {
-                    let bBowled = v.bb || 0;
-                    if(bBowled > 0 || (v.w || 0) > 0 || (v.br || 0) > 0) {
-                        anyBowl = true;
-                        let ovs = `${Math.floor(bBowled/6)}.${bBowled%6}`;
-                        let eco = bBowled > 0 ? (((v.br||0)/bBowled)*6).toFixed(1) : '0.0';
-                        html += `<div class="flex justify-between border-b border-white/5 py-1 gap-2">
-                            <span class="text-white font-bold font-sans truncate">${teamInfo.team.p[i] || 'P'+(i+1)}</span>
-                            <span class="text-emerald-400 shrink-0">${ovs} Ov • ${v.br||0} R • <b class="text-red-400">${v.w||0} W</b> • Eco:${eco}</span>
-                        </div>`;
-                    }
-                });
-                if(!anyBowl) html += `<div class="text-slate-500 text-[11px] py-1">Yet to bowl</div>`;
-                return html;
-            }
-            document.getElementById('sum-t1-full').innerHTML = getFullCard('p1'); 
-            document.getElementById('sum-t2-full').innerHTML = getFullCard('p2');
-        }
     </script>
 </body>
 </html>
